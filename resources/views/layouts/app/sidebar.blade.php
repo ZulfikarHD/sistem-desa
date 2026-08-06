@@ -21,6 +21,18 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
 
+                    @if (auth()->user()->isWarga())
+                        <flux:sidebar.item
+                            icon="clipboard-document-list"
+                            :href="route('persyaratan-dokumen.index')"
+                            :current="request()->routeIs('persyaratan-dokumen.*')"
+                            wire:navigate
+                            data-test="sidebar-persyaratan-dokumen"
+                        >
+                            {{ __('Persyaratan Dokumen') }}
+                        </flux:sidebar.item>
+                    @endif
+
                     @if (auth()->user()->isAdmin())
                         <flux:sidebar.item
                             icon="document-text"

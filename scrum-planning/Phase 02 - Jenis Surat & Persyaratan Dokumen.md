@@ -40,16 +40,25 @@
 **Primary route:** `/admin/jenis-surat` (`jenis-surat.index`) — Livewire `DataJenisSurat`  
 **Docs:** `docs/dev-docs/features/jenis-surat.md`, `docs/user-docs/guides/jenis-surat.md`, ADR-006
 
-### US-2.2: Tampilan Persyaratan Dokumen untuk Warga
+### US-2.2: Tampilan Persyaratan Dokumen untuk Warga — ✅ DONE
 
 **As a** warga
 **I want** to view document requirements for each type of letter before applying
 **So that** I can prepare complete documents and avoid repeat visits to the office
 
 **Acceptance Criteria:**
-- [ ] Halaman warga menampilkan daftar jenis surat beserta deskripsi dan persyaratan dokumen
-- [ ] Warga dapat membuka detail per jenis surat sebelum memilih untuk mengajukan
-- [ ] Tampilan responsif (dapat diakses dari smartphone)
+- [x] Halaman warga menampilkan daftar jenis surat beserta deskripsi dan persyaratan dokumen
+- [x] Warga dapat membuka detail per jenis surat sebelum memilih untuk mengajukan
+- [x] Tampilan responsif (dapat diakses dari smartphone)
+
+**Implemented extras (beyond AC wording):**
+- Pencarian nama/deskripsi/persyaratan (`?q=`)
+- Soft-deleted jenis surat disembunyikan dari warga
+- Nav sidebar/header untuk warga; admin mendapat 403
+- Callout informatif (pengajuan ditunda ke Phase 03)
+
+**Primary route:** `/persyaratan-dokumen` (`persyaratan-dokumen.index`) — Livewire `PersyaratanDokumen`  
+**Docs:** `docs/dev-docs/features/persyaratan-dokumen.md`, `docs/user-docs/guides/persyaratan-dokumen.md`, ADR-007
 
 ### US-2.3: Akses Publik ke Informasi Persyaratan Dokumen
 
@@ -80,10 +89,10 @@ jenis_surat
 | # | Story | Story Points | Priority | Status |
 |---|-------|-------------|----------|--------|
 | 1 | US-2.1 Kelola Data Jenis Surat | 3 | Must | ✅ Done |
-| 2 | US-2.2 Tampilan Persyaratan Dokumen | 2 | Must | Pending |
+| 2 | US-2.2 Tampilan Persyaratan Dokumen | 2 | Must | ✅ Done |
 | 3 | US-2.3 Akses Publik Persyaratan Dokumen | 2 | Must | Pending |
 
-**Total Story Points: 7** (3 done / 4 remaining)
+**Total Story Points: 7** (5 done / 2 remaining)
 
 ---
 

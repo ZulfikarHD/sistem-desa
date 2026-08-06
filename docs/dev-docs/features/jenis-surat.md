@@ -2,7 +2,7 @@
 
 ## Overview
 
-Admin/petugas desa manage master data for letter types (`jenis_surat`): list with search, create/edit (Flux modal), soft delete (archive), restore, and hard delete from archive. Each record stores required `nama_surat` + `persyaratan_dokumen`, optional `deskripsi`. This reference data will feed Phase 03 pengajuan and Phase 02 warga/public requirement views (US-2.2 / US-2.3).
+Admin/petugas desa manage master data for letter types (`jenis_surat`): list with search, create/edit (Flux modal), soft delete (archive), restore, and hard delete from archive. Each record stores required `nama_surat` + `persyaratan_dokumen`, optional `deskripsi`. This reference data feeds Phase 03 pengajuan, the warga browse page (US-2.2 — [persyaratan-dokumen.md](persyaratan-dokumen.md)), and the future public view (US-2.3).
 
 ## Architecture Diagram
 

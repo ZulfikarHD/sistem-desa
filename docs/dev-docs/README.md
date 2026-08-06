@@ -14,6 +14,7 @@ Technical documentation for contributors working on sistem-desa.
 | Profile Management (US-1.4) | [features/profile-management.md](features/profile-management.md) |
 | Password Reset (US-1.5) | [features/password-reset.md](features/password-reset.md) |
 | Jenis Surat Management (US-2.1) | [features/jenis-surat.md](features/jenis-surat.md) |
+| Persyaratan Dokumen Warga (US-2.2) | [features/persyaratan-dokumen.md](features/persyaratan-dokumen.md) |
 
 ## API
 
@@ -29,3 +30,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [004](decisions/004-profile-password-reset-fortify.md) | Profile + password reset via Fortify settings (not Breeze) |
 | [005](decisions/005-public-pages-brand-redesign.md) | Public pages brand redesign (forest / saffron + split auth) |
 | [006](decisions/006-jenis-surat-table-and-admin-crud.md) | `jenis_surat` naming, modal CRUD, soft/hard delete |
+| [007](decisions/007-warga-persyaratan-dokumen-view.md) | Warga persyaratan view via Livewire modal |

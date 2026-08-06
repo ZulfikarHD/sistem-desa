@@ -13,3 +13,4 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Manajemen Profil](guides/profile-management.md) | Cara melihat/mengubah profil dan ganti password |
 | [Lupa Password](guides/password-reset.md) | Cara mereset password melalui email |
 | [Kelola Jenis Surat](guides/jenis-surat.md) | Cara admin menambah, mengubah, mengarsipkan, dan menghapus jenis surat |
+| [Persyaratan Dokumen](guides/persyaratan-dokumen.md) | Cara warga melihat daftar dan detail persyaratan jenis surat |

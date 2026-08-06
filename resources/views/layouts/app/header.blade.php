@@ -18,6 +18,18 @@
                 >
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+
+                @if (auth()->user()->isWarga())
+                    <flux:navbar.item
+                        icon="clipboard-document-list"
+                        :href="route('persyaratan-dokumen.index')"
+                        :current="request()->routeIs('persyaratan-dokumen.*')"
+                        wire:navigate
+                        data-test="header-persyaratan-dokumen"
+                    >
+                        {{ __('Persyaratan Dokumen') }}
+                    </flux:navbar.item>
+                @endif
             </flux:navbar>
 
             <flux:spacer />
@@ -66,6 +78,18 @@
                     >
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+
+                    @if (auth()->user()->isWarga())
+                        <flux:sidebar.item
+                            icon="clipboard-document-list"
+                            :href="route('persyaratan-dokumen.index')"
+                            :current="request()->routeIs('persyaratan-dokumen.*')"
+                            wire:navigate
+                            data-test="sidebar-persyaratan-dokumen-mobile"
+                        >
+                            {{ __('Persyaratan Dokumen') }}
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

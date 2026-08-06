@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Livewire\JenisSurat;
+
+use App\Models\JenisSurat;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+/**
+ * Tampilan read-only daftar & detail persyaratan dokumen untuk warga (US-2.2).
+ */
+#[Title('Persyaratan Dokumen')]
+class PersyaratanDokumen extends Component
+{
+    use WithPagination;
+
+    /** Kata kunci pencarian nama / deskripsi / persyaratan. */
+    #[Url(as: 'q', except: '')]
+    public string $search = '';
+
+    /** Apakah modal detail sedang terbuka. */
+    public bool $showDetail = false;
+
+    /** ID jenis surat yang sedang dilihat detailnya. */
+    public ?int $selectedId = null;
+
+    /**
+     * Reset halaman daftar saat kata kunci pencarian berubah.
+     */
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Buka modal detail untuk jenis surat yang dipilih.
+     */
+    public function openDetail(int $id): void
+    {
+        // Pastikan hanya data aktif (bukan arsip) yang bisa dibuka
+        JenisSurat::query()->findOrFail($id);
+
+        $this->selectedId = $id;
+        $this->showDetail = true;
+    }
+
+    /**
+     * Tutup modal detail dan bersihkan state pilihan.
+     */
+    public function closeDetail(): void
+    {
+        $this->showDetail = false;
+        $this->selectedId = null;
+    }
+
+    public function render(): View
+    {
+        $query = JenisSurat::query()->latest();
+
+        if (trim($this->search) !== '') {
+            $term = '%'.trim($this->search).'%';
+            $query->where(function ($builder) use ($term): void {
+                $builder->where('nama_surat', 'like', $term)
+                    ->orWhere('deskripsi', 'like', $term)
+                    ->orWhere('persyaratan_dokumen', 'like', $term);
+            });
+        }
+
+        $selectedJenisSurat = null;
+        if ($this->showDetail && $this->selectedId !== null) {
+            $selectedJenisSurat = JenisSurat::query()->find($this->selectedId);
+        }
+
+        return view('livewire.jenis-surat.persyaratan-dokumen', [
+            'jenisSuratList' => $query->paginate(9),
+            'selectedJenisSurat' => $selectedJenisSurat,
+        ]);
+    }
+}

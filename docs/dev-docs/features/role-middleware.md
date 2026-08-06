@@ -38,7 +38,7 @@ Role checks read `users.role` only; no new tables.
 |-------|------|---------|
 | Middleware | `app/Http/Middleware/EnsureUserHasRole.php` | Abort 403 unless user role is allowed |
 | Bootstrap | `bootstrap/app.php` | Registers alias `role` |
-| Routes | `routes/web.php` | `role:warga` on `/dashboard`; `role:admin` group under `/admin` |
+| Routes | `routes/web.php` | `role:warga` on `/dashboard` and `/persyaratan-dokumen`; `role:admin` group under `/admin` |
 | Settings | `routes/settings.php` | Shared auth routes — **no** role middleware |
 | Model helpers | `app/Models/User.php` | `isWarga()`, `isAdmin()`, `homeRouteName()` |
 | Pest | `tests/Feature/RoleMiddlewareTest.php` | Feature coverage |
@@ -58,6 +58,7 @@ No JSON API. Session web routes only:
 | Method | URI | Purpose | Auth |
 |--------|-----|---------|------|
 | GET | `/dashboard` | Dashboard Warga | auth + verified + role:warga |
+| GET | `/persyaratan-dokumen` | Persyaratan dokumen (US-2.2) | auth + verified + role:warga |
 | GET | `/admin/dashboard` | Dashboard Admin | auth + verified + role:admin |
 | GET | `/admin/jenis-surat` | Kelola jenis surat (US-2.1) | auth + verified + role:admin |
 | GET | `/settings/profile` | Profil bersama | auth (no role gate) |

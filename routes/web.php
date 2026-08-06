@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\JenisSurat\DataJenisSurat;
+use App\Livewire\JenisSurat\PersyaratanDokumen;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -10,6 +11,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')
         ->middleware('role:warga')
         ->name('dashboard');
+
+    // US-2.2 — Tampilan Persyaratan Dokumen untuk Warga
+    Route::livewire('persyaratan-dokumen', PersyaratanDokumen::class)
+        ->middleware('role:warga')
+        ->name('persyaratan-dokumen.index');
 
     // Dashboard Admin (role: admin) — US-1.2 + US-1.3
     // Route admin Phase 02/04/06 ditambah di grup `role:admin` yang sama.
