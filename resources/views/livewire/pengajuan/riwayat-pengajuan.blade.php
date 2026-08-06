@@ -55,6 +55,7 @@
                 <flux:table.column>{{ __('Jenis Surat') }}</flux:table.column>
                 <flux:table.column>{{ __('Tanggal') }}</flux:table.column>
                 <flux:table.column>{{ __('Status') }}</flux:table.column>
+                <flux:table.column>{{ __('Pengambilan') }}</flux:table.column>
                 <flux:table.column>{{ __('Catatan Admin') }}</flux:table.column>
                 <flux:table.column>{{ __('Aksi') }}</flux:table.column>
             </flux:table.columns>
@@ -91,6 +92,25 @@
                             >
                                 {{ \App\Models\PengajuanSurat::statusLabel($item->status) }}
                             </flux:badge>
+                        </flux:table.cell>
+                        <flux:table.cell data-test="riwayat-pengajuan-pengambilan-{{ $item->id }}">
+                            @if ($item->suratTerbit?->tanggal_pengambilan)
+                                <div class="text-sm">
+                                    <div data-test="riwayat-pengajuan-tanggal-ambil-{{ $item->id }}">
+                                        {{ $item->suratTerbit->tanggal_pengambilan->timezone('Asia/Jakarta')->translatedFormat('d M Y') }}
+                                    </div>
+                                    @if ($item->suratTerbit->jam_kerja_label)
+                                        <div
+                                            class="text-zinc-500 dark:text-zinc-400"
+                                            data-test="riwayat-pengajuan-jam-kerja-{{ $item->id }}"
+                                        >
+                                            {{ $item->suratTerbit->jam_kerja_label }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
+                                <span class="text-zinc-400">—</span>
+                            @endif
                         </flux:table.cell>
                         <flux:table.cell>
                             @if ($item->status === \App\Models\PengajuanSurat::STATUS_DITOLAK && $item->catatan_admin)

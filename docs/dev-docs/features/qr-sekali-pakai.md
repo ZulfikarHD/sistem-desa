@@ -78,7 +78,7 @@ Scan itself is a Livewire action (`prosesScan`), not a separate JSON API.
 - Conditional `WHERE qr_status = valid` is required by the plan for two-admin race safety (also uses `lockForUpdate`).
 - No TTL: validity is scan-based only.
 - Camera uses native `BarcodeDetector` (no new npm dependency); manual input always available for browsers without camera support and for E2E.
-- Marking `siap_diambil` remains US-7.5; tests seed that status until that story ships.
+- Marking `siap_diambil` is US-7.5 (`SuratTerbit::tandaiSiapDiambil` + detail verifikasi UI).
 - Token is opaque `Str::random(64)`, never plain NIK.
 
 ## Related

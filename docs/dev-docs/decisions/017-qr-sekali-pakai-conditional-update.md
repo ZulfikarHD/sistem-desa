@@ -25,7 +25,7 @@ Pickup must be registered exactly once. Two admins could scan the same QR at the
 
 ### Negative
 
-- Until US-7.5 ships, production flow needs `siap_diambil` set by seed/manual DB for end-to-end pickup (scan page itself is ready).
+- Related: [Dokumen Siap Diambil (US-7.5)](../features/dokumen-siap-diambil.md) sets `siap_diambil` before scan.
 - `BarcodeDetector` is not available in all browsers; manual input is the universal path.
 
 ### Neutral

@@ -25,6 +25,7 @@ Technical documentation for contributors working on sistem-desa.
 | Generate Surat PDF (US-7.2) | [features/generate-surat-pdf.md](features/generate-surat-pdf.md) |
 | Nomor Surat Resmi Otomatis (US-7.3) | [features/nomor-surat-resmi.md](features/nomor-surat-resmi.md) |
 | QR Code Sekali Pakai (US-7.4) | [features/qr-sekali-pakai.md](features/qr-sekali-pakai.md) |
+| Dokumen Siap Diambil (US-7.5) | [features/dokumen-siap-diambil.md](features/dokumen-siap-diambil.md) |
 | Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3) | [features/notifikasi-pengajuan.md](features/notifikasi-pengajuan.md) |
 | Rekap Pengajuan & Reporting (US-6.1 – US-6.2) | [features/rekap-pengajuan.md](features/rekap-pengajuan.md) |
 
@@ -53,3 +54,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [015](decisions/015-dompdf-surat-terbit-on-approve.md) | DomPDF + surat_terbit generated on approve |
 | [016](decisions/016-nomor-surat-resmi-format.md) | Official nomor surat format + per-year sequence |
 | [017](decisions/017-qr-sekali-pakai-conditional-update.md) | QR once-only scan via conditional update |
+| [018](decisions/018-jam-kerja-dan-libur-nasional-config.md) | Jam kerja labels + libur nasional config; reject invalid dates |

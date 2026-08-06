@@ -281,6 +281,167 @@ class SuratTerbit extends Model
     }
 
     /**
+     * Label jam kerja kantor untuk tanggal pengambilan (US-7.5).
+     * Null jika Sabtu/Minggu atau libur nasional (kantor tutup).
+     */
+    public static function jamKerjaLabelUntuk(CarbonInterface $tanggal): ?string
+    {
+        $hari = (int) $tanggal->dayOfWeekIso; // 1=Senin ... 7=Minggu
+
+        if ($hari >= 6) {
+            return null;
+        }
+
+        if (self::isLiburNasional($tanggal)) {
+            return null;
+        }
+
+        if ($hari === 5) {
+            return (string) config('desa.jam_kerja.jumat', 'Jumat 08.00–16.30 WIB');
+        }
+
+        return (string) config('desa.jam_kerja.senin_kamis', 'Senin–Kamis 08.00–16.00 WIB');
+    }
+
+    /**
+     * Apakah tanggal termasuk libur nasional (config desa.libur_nasional).
+     */
+    public static function isLiburNasional(CarbonInterface $tanggal): bool
+    {
+        $list = config('desa.libur_nasional', []);
+
+        if (! is_array($list)) {
+            return false;
+        }
+
+        return in_array($tanggal->format('Y-m-d'), $list, true);
+    }
+
+    /**
+     * Validasi tanggal pengambilan: hari kerja + bukan libur + tidak di masa lalu (WIB).
+     *
+     * @return array{ok: bool, message: string, jam_kerja_label: string|null}
+     */
+    public static function validasiTanggalPengambilan(CarbonInterface $tanggal): array
+    {
+        $today = now('Asia/Jakarta')->startOfDay();
+        $tanggal = $tanggal->copy()->timezone('Asia/Jakarta')->startOfDay();
+
+        if ($tanggal->lt($today)) {
+            return [
+                'ok' => false,
+                'message' => 'Tanggal pengambilan tidak boleh di masa lalu.',
+                'jam_kerja_label' => null,
+            ];
+        }
+
+        $hari = (int) $tanggal->dayOfWeekIso;
+
+        if ($hari >= 6) {
+            return [
+                'ok' => false,
+                'message' => 'Kantor tutup pada Sabtu–Minggu. Pilih hari kerja Senin–Jumat.',
+                'jam_kerja_label' => null,
+            ];
+        }
+
+        if (self::isLiburNasional($tanggal)) {
+            return [
+                'ok' => false,
+                'message' => 'Tanggal tersebut adalah libur nasional. Kantor tutup — pilih tanggal lain.',
+                'jam_kerja_label' => null,
+            ];
+        }
+
+        $label = self::jamKerjaLabelUntuk($tanggal);
+
+        return [
+            'ok' => true,
+            'message' => 'Tanggal pengambilan valid.',
+            'jam_kerja_label' => $label,
+        ];
+    }
+
+    /**
+     * Tandai dokumen siap diambil: diproses → siap_diambil + simpan tanggal & jam kerja (US-7.5).
+     *
+     * @return array{ok: bool, message: string}
+     */
+    public static function tandaiSiapDiambil(PengajuanSurat $pengajuan, CarbonInterface $tanggalPengambilan): array
+    {
+        $validasi = self::validasiTanggalPengambilan($tanggalPengambilan);
+
+        if (! $validasi['ok']) {
+            return [
+                'ok' => false,
+                'message' => $validasi['message'],
+            ];
+        }
+
+        return DB::transaction(function () use ($pengajuan, $tanggalPengambilan, $validasi): array {
+            $pengajuanLocked = PengajuanSurat::query()
+                ->whereKey($pengajuan->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($pengajuanLocked === null) {
+                return [
+                    'ok' => false,
+                    'message' => 'Pengajuan tidak ditemukan.',
+                ];
+            }
+
+            if ($pengajuanLocked->status !== PengajuanSurat::STATUS_DIPROSES) {
+                return [
+                    'ok' => false,
+                    'message' => 'Hanya pengajuan berstatus diproses yang dapat ditandai siap diambil.',
+                ];
+            }
+
+            $surat = static::query()
+                ->where('pengajuan_id', $pengajuanLocked->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($surat === null) {
+                return [
+                    'ok' => false,
+                    'message' => 'PDF surat belum tersedia. Tidak dapat menandai siap diambil.',
+                ];
+            }
+
+            $tanggal = $tanggalPengambilan->copy()->timezone('Asia/Jakarta')->startOfDay();
+
+            $surat->update([
+                'tanggal_pengambilan' => $tanggal->toDateString(),
+                'jam_kerja_label' => $validasi['jam_kerja_label'],
+            ]);
+
+            $pengajuanLocked->update([
+                'status' => PengajuanSurat::STATUS_SIAP_DIAMBIL,
+            ]);
+
+            $pengajuanLocked->loadMissing('jenisSurat');
+            $namaSurat = $pengajuanLocked->jenisSurat?->nama_surat ?? 'Surat';
+            $tanggalLabel = $tanggal->translatedFormat('d M Y');
+            $jamLabel = $validasi['jam_kerja_label'] ?? '';
+
+            Notifikasi::query()->create([
+                'user_id' => $pengajuanLocked->user_id,
+                'pengajuan_id' => $pengajuanLocked->id,
+                'pesan' => "Pengajuan {$namaSurat} ({$pengajuanLocked->nomor_pengajuan}) siap diambil. Tanggal pengambilan: {$tanggalLabel}. Jam kerja: {$jamLabel}.",
+                'status_baca' => Notifikasi::STATUS_BELUM,
+                'created_at' => now(),
+            ]);
+
+            return [
+                'ok' => true,
+                'message' => 'Dokumen ditandai siap diambil. Warga telah diberi notifikasi.',
+            ];
+        });
+    }
+
+    /**
      * Scan QR pengambilan sekali pakai (US-7.4).
      * Sukses hanya jika pengajuan siap_diambil dan qr_status=valid;
      * update kondisional WHERE qr_status=valid agar race dua admin aman.

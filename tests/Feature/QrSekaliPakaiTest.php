@@ -16,7 +16,6 @@ beforeEach(function () {
 
 /**
  * Buat pengajuan siap_diambil + surat_terbit dengan QR valid (prasyarat scan US-7.4).
- * Status siap_diambil di-seed langsung — UI US-7.5 belum ada.
  *
  * @return array{pengajuan: PengajuanSurat, surat: SuratTerbit, warga: User, admin: User}
  */

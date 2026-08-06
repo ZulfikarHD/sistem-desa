@@ -24,4 +24,7 @@ US-7.2: table surat_terbit (singular). On setujui→diproses, DetailPengajuanVer
 US-7.3: nomor_surat format {kode_klasifikasi}/{urut}/{kode_desa}/{bulanRomawi}/{tahun} via config/desa.php (default 470/.../DS-WDN/...). Sequential per calendar year of tanggal_terbit under Cache::lock + DB::transaction + lockForUpdate; unique column. Separate from nomor_pengajuan. Printed on PDF templates. Rekap display remains US-7.7; no manual override UI.
 
 ## US-7.4 QR scan once via conditional update
-Scan QR pengambilan is ScanQrPengambilan at /admin/scan-qr-pengambilan. SuratTerbit::scanUntukPengambilan uses DB transaction + lockForUpdate + conditional UPDATE WHERE qr_status=valid; sets invalid + qr_digunakan_* + pengajuan selesai + notifikasi. No TTL. Re-download/terbitkanUntuk must not regenerate token. Marking siap_diambil stays US-7.5.
+Scan QR pengambilan is ScanQrPengambilan at /admin/scan-qr-pengambilan. SuratTerbit::scanUntukPengambilan uses DB transaction + lockForUpdate + conditional UPDATE WHERE qr_status=valid; sets invalid + qr_digunakan_* + pengajuan selesai + notifikasi. No TTL. Re-download/terbitkanUntuk must not regenerate token.
+
+## US-7.5 tandai siap diambil + jam kerja WIB
+SuratTerbit::tandaiSiapDiambil moves diproses→siap_diambil, saves tanggal_pengambilan + jam_kerja_label, notifies warga. Validate dates via validasiTanggalPengambilan using Asia/Jakarta: reject past, Sat/Sun, and config desa.libur_nasional (tolak not warn). Jam labels from config desa.jam_kerja (Senin–Kamis 08–16, Jumat 08–16.30). UI lives on DetailPengajuanVerifikasi when status diproses + PDF exists. Detail warga tanggal display remains US-7.6; rekap columns US-7.7.

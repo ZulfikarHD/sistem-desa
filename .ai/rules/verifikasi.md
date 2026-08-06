@@ -16,3 +16,6 @@ US-7.2 fills triggerGenerateSurat: creates surat_terbit + PDF inside the setujui
 
 ## Scan QR pengambilan admin page
 US-7.4 ScanQrPengambilan is admin Livewire page route scan-qr-pengambilan.index. Camera uses BarcodeDetector + getUserMedia; manual token always available. prosesScan calls SuratTerbit::scanUntukPengambilan.
+
+## US-7.5 panel Dokumen Siap Diambil on detail
+DetailPengajuanVerifikasi shows tanggal_pengambilan date input + jam kerja preview + Dokumen Siap Diambil button only when canMarkSiapDiambil (diproses + suratTerbit). Button disabled until isTanggalPengambilanSiap. Action tandaiDokumenSiapDiambil calls SuratTerbit::tandaiSiapDiambil then redirects to verifikasi.index.

@@ -31,6 +31,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Generate Surat PDF (US-7.2)](dev-docs/features/generate-surat-pdf.md) | Auto PDF + nomor + QR on approve into diproses |
 | [Nomor Surat Resmi Otomatis (US-7.3)](dev-docs/features/nomor-surat-resmi.md) | Official letter number format, year sequence, PDF print |
 | [QR Code Sekali Pakai (US-7.4)](dev-docs/features/qr-sekali-pakai.md) | One-time pickup QR scan → selesai + invalid |
+| [Dokumen Siap Diambil (US-7.5)](dev-docs/features/dokumen-siap-diambil.md) | Admin set pickup date + jam kerja + notifikasi warga |
 | [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [Rekap Pengajuan & Reporting (US-6.1 – US-6.2)](dev-docs/features/rekap-pengajuan.md) | Admin filterable recap table, summary counts, CSV export |
 | [ADR-001: Keep `name` column + logout after register](dev-docs/decisions/001-registration-name-column-and-redirect.md) | Why `name` (not `nama`) and guest redirect after register |
@@ -50,6 +51,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-015: DomPDF surat_terbit on approve](dev-docs/decisions/015-dompdf-surat-terbit-on-approve.md) | Generate PDF + nomor + QR into surat_terbit on setujui |
 | [ADR-016: Official nomor surat format](dev-docs/decisions/016-nomor-surat-resmi-format.md) | `470/{urut}/DS-WDN/{romawi}/{tahun}` + year sequence |
 | [ADR-017: QR sekali pakai conditional update](dev-docs/decisions/017-qr-sekali-pakai-conditional-update.md) | Scan once; concurrent-safe invalidation |
+| [ADR-018: Jam kerja + libur nasional config](dev-docs/decisions/018-jam-kerja-dan-libur-nasional-config.md) | Reject invalid pickup dates; labels from config |
 
 ## User Docs
 
@@ -75,5 +77,6 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Generate Surat PDF](user-docs/guides/generate-surat-pdf.md) | Cara surat PDF otomatis dibuat saat admin setujui |
 | [Panduan Nomor Surat Resmi](user-docs/guides/nomor-surat-resmi.md) | Arti format nomor surat resmi otomatis |
 | [Panduan Scan QR Pengambilan](user-docs/guides/qr-sekali-pakai.md) | Cara admin scan QR sekali pakai saat pengambilan |
+| [Panduan Dokumen Siap Diambil](user-docs/guides/dokumen-siap-diambil.md) | Cara admin set tanggal pengambilan + notifikasi warga |
 | [Panduan Notifikasi & Riwayat Pengajuan](user-docs/guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
 | [Panduan Rekap Pengajuan](user-docs/guides/rekap-pengajuan.md) | Cara admin memfilter dan ekspor laporan pengajuan |

@@ -13,3 +13,6 @@ Table `dokumen_persyaratan` (singular). Model DokumenPersyaratan. jenis_dokumen 
 
 ## US-3.4 ajukan ulang + riwayat routes
 Riwayat at route pengajuan-surat.riwayat (/riwayat-pengajuan). Resubmit at pengajuan-surat.resubmit (/pengajuan-surat/ajukan-ulang/{pengajuan}) — mount pre-fills ditolak pengajuan; owner+status ditolak only. Nomor generator uses max numeric suffix (not string orderByDesc) to avoid collision after 9999.
+
+## US-7.5 riwayat shows pickup date and hours
+RiwayatPengajuan eager-loads suratTerbit tanggal_pengambilan + jam_kerja_label and shows a Pengambilan column for warga. Do not confuse with US-7.6 detail page display of the same fields.

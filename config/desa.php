@@ -43,4 +43,48 @@ return [
     'kode_klasifikasi' => env('DESA_KODE_KLASIFIKASI', '470'),
     'kode_desa' => env('DESA_KODE', 'DS-WDN'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Jam Kerja Kantor (US-7.5)
+    |--------------------------------------------------------------------------
+    |
+    | Bukan time-picker bebas. Label disimpan ke surat_terbit.jam_kerja_label.
+    | Validasi tanggal: Senin–Jumat (bukan Sabtu/Minggu), bukan libur nasional.
+    |
+    */
+
+    'jam_kerja' => [
+        'senin_kamis' => 'Senin–Kamis 08.00–16.00 WIB',
+        'jumat' => 'Jumat 08.00–16.30 WIB',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Libur Nasional (YYYY-MM-DD, timezone Asia/Jakarta)
+    |--------------------------------------------------------------------------
+    |
+    | Daftar tanggal tutup kantor. Perbarui tiap tahun sesuai SKB bersama.
+    | Tanggal di daftar ini ditolak saat admin set tanggal pengambilan.
+    |
+    */
+
+    'libur_nasional' => [
+        '2026-01-01', // Tahun Baru
+        '2026-01-16', // Isra Mikraj (perkiraan/tetapkan ulang tiap tahun)
+        '2026-03-20', // Hari Raya Nyepi
+        '2026-03-21', // Hari Suci Nyepi (cuti bersama — sesuaikan)
+        '2026-04-03', // Wafat Isa Almasih (Good Friday)
+        '2026-04-05', // Hari Paskah
+        '2026-05-01', // Hari Buruh
+        '2026-05-14', // Kenaikan Isa Almasih
+        '2026-05-27', // Hari Raya Waisak
+        '2026-06-01', // Hari Lahir Pancasila
+        '2026-06-16', // Idul Adha (perkiraan — sesuaikan SKB)
+        '2026-06-17', // Idul Adha cuti bersama (sesuaikan)
+        '2026-07-07', // Tahun Baru Islam 1 Muharram (perkiraan)
+        '2026-08-17', // Hari Kemerdekaan RI
+        '2026-08-25', // Maulid Nabi (perkiraan)
+        '2026-12-25', // Natal
+    ],
+
 ];
