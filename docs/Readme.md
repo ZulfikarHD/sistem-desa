@@ -19,11 +19,13 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Role-Based Middleware (US-1.3)](dev-docs/features/role-middleware.md) | Technical docs for role gate + 403 |
 | [Profile Management (US-1.4)](dev-docs/features/profile-management.md) | Technical docs for profile edit + password change |
 | [Password Reset (US-1.5)](dev-docs/features/password-reset.md) | Technical docs for forgot-password flow |
+| [Jenis Surat Management (US-2.1)](dev-docs/features/jenis-surat.md) | Admin CRUD jenis surat + soft/hard delete |
 | [ADR-001: Keep `name` column + logout after register](dev-docs/decisions/001-registration-name-column-and-redirect.md) | Why `name` (not `nama`) and guest redirect after register |
 | [ADR-002: Role-based login redirect](dev-docs/decisions/002-role-based-login-redirect.md) | Why custom LoginResponse + dual dashboards |
 | [ADR-003: Role middleware 403](dev-docs/decisions/003-role-middleware-403.md) | Why denied access uses HTTP 403 |
 | [ADR-004: Profile + password reset via Fortify](dev-docs/decisions/004-profile-password-reset-fortify.md) | Why Fortify/settings over Breeze for US-1.4/1.5 |
 | [ADR-005: Public pages brand redesign](dev-docs/decisions/005-public-pages-brand-redesign.md) | Why forest/saffron brand + split auth layout |
+| [ADR-006: jenis_surat table + admin CRUD](dev-docs/decisions/006-jenis-surat-table-and-admin-crud.md) | Why `jenis_surat` naming, modal CRUD, soft/hard delete |
 
 ## User Docs
 
@@ -37,3 +39,4 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Proteksi Akses Role](user-docs/guides/role-middleware.md) | Batasan akses warga vs admin |
 | [Panduan Manajemen Profil](user-docs/guides/profile-management.md) | Cara edit profil dan ganti password |
 | [Panduan Lupa Password](user-docs/guides/password-reset.md) | Cara reset password via email |
+| [Panduan Kelola Jenis Surat](user-docs/guides/jenis-surat.md) | Cara admin menambah/ubah/arsip/hapus jenis surat |

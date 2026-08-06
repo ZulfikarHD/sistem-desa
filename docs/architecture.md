@@ -7,7 +7,7 @@ High-level overview of Sistem Informasi Pelayanan Surat Keterangan (**Pelayanan 
 - **Backend:** Laravel 13 + Fortify (authentication)
 - **Frontend:** Livewire 4 + Flux UI + Blade + Tailwind CSS v4
 - **Database:** SQLite (local/dev); schema via Eloquent migrations
-- **E2E:** Playwright (Chromium) — `e2e/smoke.spec.ts`, `e2e/public-pages.spec.ts`, plus Phase 01 auth specs
+- **E2E:** Playwright (Chromium) — `e2e/` includes Phase 01 auth specs and `e2e/jenis-surat.spec.ts` (US-2.1)
 - **Test data:** `UserSeeder` via `php artisan db:seed` (admin + warga baku); covered by `tests/Feature/DatabaseSeederTest.php`
 
 ## Public UI Brand
@@ -35,6 +35,23 @@ Phase 01 stories:
 | US-1.3 Middleware Proteksi Role | Implemented |
 | US-1.4 Manajemen Profil | Implemented |
 | US-1.5 Lupa Password | Implemented |
+
+## Master Data — Jenis Surat (Phase 02)
+
+```mermaid
+flowchart LR
+    Admin[Admin] --> JS[/admin/jenis-surat]
+    JS --> Model[JenisSurat SoftDeletes]
+    Model --> Table[(jenis_surat)]
+```
+
+| Story | Status |
+|-------|--------|
+| US-2.1 Kelola Data Jenis Surat (admin CRUD + soft/hard delete) | Implemented |
+| US-2.2 Tampilan Persyaratan untuk Warga | Pending |
+| US-2.3 Akses Publik Persyaratan | Pending |
+
+Details: [dev-docs/features/jenis-surat.md](dev-docs/features/jenis-surat.md), ADR-006.
 
 ## Local seed accounts
 

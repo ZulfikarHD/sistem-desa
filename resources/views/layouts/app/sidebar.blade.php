@@ -20,6 +20,18 @@
                     >
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+
+                    @if (auth()->user()->isAdmin())
+                        <flux:sidebar.item
+                            icon="document-text"
+                            :href="route('jenis-surat.index')"
+                            :current="request()->routeIs('jenis-surat.*')"
+                            wire:navigate
+                            data-test="sidebar-jenis-surat"
+                        >
+                            {{ __('Jenis Surat') }}
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

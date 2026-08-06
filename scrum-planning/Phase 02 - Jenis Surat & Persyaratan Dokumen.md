@@ -20,17 +20,25 @@
 
 ## User Stories
 
-### US-2.1: Kelola Data Jenis Surat (Admin)
+### US-2.1: Kelola Data Jenis Surat (Admin) — ✅ DONE
 
 **As an** admin/petugas desa
 **I want** to add, edit, and view types of surat keterangan
 **So that** the list of available letters stays accurate and up to date
 
 **Acceptance Criteria:**
-- [ ] Halaman daftar jenis surat (list + pencarian)
-- [ ] Form tambah/ubah: nama_surat, deskripsi, persyaratan_dokumen
-- [ ] Validasi nama_surat wajib diisi dan tidak duplikat
-- [ ] Hanya role admin yang dapat mengakses halaman ini
+- [x] Halaman daftar jenis surat (list + pencarian)
+- [x] Form tambah/ubah: nama_surat, deskripsi, persyaratan_dokumen
+- [x] Validasi nama_surat wajib diisi dan tidak duplikat
+- [x] Hanya role admin yang dapat mengakses halaman ini
+
+**Implemented extras (beyond AC wording):**
+- Soft delete (**Arsipkan**) + restore (**Pulihkan**) + hard delete (**Hapus Permanen** dari arsip)
+- `persyaratan_dokumen` wajib; `deskripsi` opsional
+- Placeholder contoh format pada field persyaratan
+
+**Primary route:** `/admin/jenis-surat` (`jenis-surat.index`) — Livewire `DataJenisSurat`  
+**Docs:** `docs/dev-docs/features/jenis-surat.md`, `docs/user-docs/guides/jenis-surat.md`, ADR-006
 
 ### US-2.2: Tampilan Persyaratan Dokumen untuk Warga
 
@@ -54,33 +62,50 @@
 - [ ] Halaman menampilkan ajakan "Daftar/Login untuk Mengajukan" bagi pengunjung yang belum punya akun
 - [ ] Konten tetap read-only untuk pengunjung publik — tidak bisa submit pengajuan tanpa login
 
-**Data Model:**
+**Data Model (as implemented):**
 ```
 jenis_surat
   - id (PK, AI)
-  - nama_surat (varchar 100)
-  - deskripsi (text)
-  - persyaratan_dokumen (text)
+  - nama_surat (varchar 100, unique)
+  - deskripsi (text, nullable)
+  - persyaratan_dokumen (text, required at app layer)
   - timestamps
+  - deleted_at (soft deletes)
 ```
 
 ---
 
 ## Sprint Backlog Priority
 
-| # | Story | Story Points | Priority |
-|---|-------|-------------|----------|
-| 1 | US-2.1 Kelola Data Jenis Surat | 3 | Must |
-| 2 | US-2.2 Tampilan Persyaratan Dokumen | 2 | Must |
-| 3 | US-2.3 Akses Publik Persyaratan Dokumen | 2 | Must |
+| # | Story | Story Points | Priority | Status |
+|---|-------|-------------|----------|--------|
+| 1 | US-2.1 Kelola Data Jenis Surat | 3 | Must | ✅ Done |
+| 2 | US-2.2 Tampilan Persyaratan Dokumen | 2 | Must | Pending |
+| 3 | US-2.3 Akses Publik Persyaratan Dokumen | 2 | Must | Pending |
 
-**Total Story Points: 7**
+**Total Story Points: 7** (3 done / 4 remaining)
+
+---
+
+## Implementation Notes & Decisions (US-2.1)
+
+| Topik | Keputusan | Alasan |
+|-------|-----------|--------|
+| Nama tabel | `jenis_surat` (bukan `jenis_surats`) | Ikuti data model plan; set `$table` di model |
+| UI form | Satu halaman + Flux modal tambah/ubah | 1 route = 1 Livewire component (konvensi arsitektur) |
+| Soft delete | Ya — tombol **Arsipkan** | Mitigasi risk Phase 02; data bisa dipulihkan |
+| Hard delete | Ya — hanya dari arsip + modal konfirmasi | Bebaskan unique name; hindari hapus tidak sengaja dari daftar aktif |
+| Guard FK `pengajuan_surat` | Belum | Tabel pengajuan belum ada (Phase 03); tambahkan guard saat FK tersedia |
+| Validasi field | `nama_surat` + `persyaratan_dokumen` wajib; `deskripsi` opsional | Keputusan produk setelah AC (AC hanya sebut unique nama) |
+| Unique vs soft delete | Unique DB tetap berlaku untuk baris terarsip | Nama diarsip tidak bisa dipakai ulang sampai hard delete / restore+rename |
+| Akses | Route di dalam grup `role:admin` | Reuse middleware US-1.3 |
+| Placeholder persyaratan | Disediakan di textarea | Mitigasi risk format teks bebas |
 
 ---
 
 ## Risks
 
-| Risk | Mitigation |
-|------|-----------|
-| Admin menghapus jenis surat yang sudah dipakai di pengajuan lama | Soft delete, atau larangan hapus jika masih direferensikan oleh `pengajuan_surat` |
-| Persyaratan dokumen ditulis bebas teks sehingga format tidak konsisten | Sediakan placeholder/contoh format saat admin mengisi field |
+| Risk | Mitigation | Status |
+|------|-----------|--------|
+| Admin menghapus jenis surat yang sudah dipakai di pengajuan lama | Soft delete diimplementasikan; larangan hapus jika masih direferensikan `pengajuan_surat` ditunda ke Phase 03 | Soft delete ✅; FK guard ⏳ |
+| Persyaratan dokumen ditulis bebas teks sehingga format tidak konsisten | Placeholder/contoh format pada form admin | ✅ Placeholder ada |

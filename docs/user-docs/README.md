@@ -12,3 +12,4 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Proteksi Akses Berdasarkan Role](guides/role-middleware.md) | Batasan halaman warga vs admin dan arti 403 |
 | [Manajemen Profil](guides/profile-management.md) | Cara melihat/mengubah profil dan ganti password |
 | [Lupa Password](guides/password-reset.md) | Cara mereset password melalui email |
+| [Kelola Jenis Surat](guides/jenis-surat.md) | Cara admin menambah, mengubah, mengarsipkan, dan menghapus jenis surat |

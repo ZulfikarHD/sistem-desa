@@ -59,12 +59,13 @@ No JSON API. Session web routes only:
 |--------|-----|---------|------|
 | GET | `/dashboard` | Dashboard Warga | auth + verified + role:warga |
 | GET | `/admin/dashboard` | Dashboard Admin | auth + verified + role:admin |
+| GET | `/admin/jenis-surat` | Kelola jenis surat (US-2.1) | auth + verified + role:admin |
 | GET | `/settings/profile` | Profil bersama | auth (no role gate) |
 
 ## Decisions & Trade-offs
 
 - **403 over redirect** — clearer authorization failure; chosen explicitly for US-1.3 (see ADR-003).
-- **No stubs for Phase 02/04/06** — middleware + admin route group are ready; feature pages land with those phases.
+- **Admin feature routes join `role:admin`** — US-2.1 `/admin/jenis-surat` is in the same group as dashboard admin (no parallel auth pattern).
 - **Settings stay shared** — profile/security/appearance usable by both roles (US-1.4).
 - **Public jenis surat list** — Phase 02 US-2.3 remains explicitly excluded from auth middleware when built.
 
