@@ -23,6 +23,16 @@
 
                     @if (auth()->user()->isWarga())
                         <flux:sidebar.item
+                            icon="document-plus"
+                            :href="route('pengajuan-surat.create')"
+                            :current="request()->routeIs('pengajuan-surat.*')"
+                            wire:navigate
+                            data-test="sidebar-pengajuan-surat"
+                        >
+                            {{ __('Pengajuan Surat') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
                             icon="clipboard-document-list"
                             :href="route('persyaratan-dokumen.index')"
                             :current="request()->routeIs('persyaratan-dokumen.*')"

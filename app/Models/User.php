@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -95,5 +96,13 @@ class User extends Authenticatable implements PasskeyUser
     public function homeRouteName(): string
     {
         return $this->isAdmin() ? 'dashboard.admin' : 'dashboard';
+    }
+
+    /**
+     * Pengajuan surat yang diajukan warga ini.
+     */
+    public function pengajuanSurat(): HasMany
+    {
+        return $this->hasMany(PengajuanSurat::class);
     }
 }

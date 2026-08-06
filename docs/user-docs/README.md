@@ -15,3 +15,4 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Kelola Jenis Surat](guides/jenis-surat.md) | Cara admin menambah, mengubah, mengarsipkan, dan menghapus jenis surat |
 | [Persyaratan Dokumen](guides/persyaratan-dokumen.md) | Cara warga melihat daftar dan detail persyaratan jenis surat |
 | [Akses Publik Persyaratan Dokumen](guides/persyaratan-dokumen-publik.md) | Cara pengunjung tanpa akun melihat persyaratan sebelum daftar |
+| [Pengajuan Surat](guides/pengajuan-surat-form.md) | Cara warga mengajukan surat keterangan online |

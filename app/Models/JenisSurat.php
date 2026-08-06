@@ -6,6 +6,7 @@ use Database\Factories\JenisSuratFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -32,4 +33,12 @@ class JenisSurat extends Model
      * @var string
      */
     protected $table = 'jenis_surat';
+
+    /**
+     * Pengajuan surat yang menggunakan jenis surat ini.
+     */
+    public function pengajuanSurat(): HasMany
+    {
+        return $this->hasMany(PengajuanSurat::class, 'jenis_surat_id');
+    }
 }
