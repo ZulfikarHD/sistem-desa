@@ -16,3 +16,4 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Persyaratan Dokumen](guides/persyaratan-dokumen.md) | Cara warga melihat daftar dan detail persyaratan jenis surat |
 | [Akses Publik Persyaratan Dokumen](guides/persyaratan-dokumen-publik.md) | Cara pengunjung tanpa akun melihat persyaratan sebelum daftar |
 | [Pengajuan Surat](guides/pengajuan-surat-form.md) | Cara warga mengajukan surat keterangan online |
+| [Unggah Dokumen Persyaratan](guides/pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |

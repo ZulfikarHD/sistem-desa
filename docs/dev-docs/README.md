@@ -17,6 +17,7 @@ Technical documentation for contributors working on sistem-desa.
 | Persyaratan Dokumen Warga (US-2.2) | [features/persyaratan-dokumen.md](features/persyaratan-dokumen.md) |
 | Akses Publik Persyaratan Dokumen (US-2.3) | [features/persyaratan-dokumen-publik.md](features/persyaratan-dokumen-publik.md) |
 | Form Pengajuan Surat (US-3.1) | [features/pengajuan-surat-form.md](features/pengajuan-surat-form.md) |
+| Unggah Dokumen Persyaratan (US-3.2) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
 
 ## API
 
@@ -35,3 +36,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [007](decisions/007-warga-persyaratan-dokumen-view.md) | Warga persyaratan view via Livewire modal |
 | [008](decisions/008-public-persyaratan-dokumen-access.md) | Public `/persyaratan-dokumen` + layouts/public for guests |
 | [009](decisions/009-pengajuan-surat-table-and-nomor-format.md) | `pengajuan_surat` naming + PJ-YYYYMMDD-#### nomor generation |
+| [010](decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | KTP/KK text detection + private file storage |

@@ -31,7 +31,7 @@
             <flux:field>
                 <flux:label>{{ __('Jenis Surat') }}</flux:label>
                 <flux:select
-                    wire:model="jenis_surat_id"
+                    wire:model.live="jenis_surat_id"
                     placeholder="{{ __('Pilih jenis surat...') }}"
                     data-test="pengajuan-surat-jenis-select"
                 >
@@ -66,6 +66,121 @@
                 />
                 <flux:error name="keperluan" />
             </flux:field>
+
+            @if ($this->requiredDokumenTypes !== [])
+                <div class="space-y-4" data-test="pengajuan-surat-dokumen-section">
+                    <div>
+                        <flux:heading size="sm">{{ __('Unggah Dokumen Persyaratan') }}</flux:heading>
+                        <flux:text class="mt-1">
+                            {{ __('Format yang diterima: JPG, PNG, atau PDF. Ukuran maksimum :size MB per file.', ['size' => number_format($maxFileSizeKb / 1024, 0)]) }}
+                        </flux:text>
+                    </div>
+
+                    @if (in_array(\App\Models\DokumenPersyaratan::JENIS_KTP, $this->requiredDokumenTypes, true))
+                        <flux:field>
+                            <flux:label>{{ __('Fotokopi KTP') }}</flux:label>
+                            <flux:input
+                                type="file"
+                                wire:model="dokumenKtp"
+                                accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
+                                data-test="pengajuan-surat-dokumen-ktp-input"
+                            />
+                            <flux:error name="dokumenKtp" />
+
+                            @if ($dokumenKtp)
+                                <div
+                                    class="mt-3 flex items-start gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                                    data-test="pengajuan-surat-dokumen-ktp-preview"
+                                >
+                                    @if (str_starts_with($dokumenKtp->getMimeType(), 'image/'))
+                                        <img
+                                            src="{{ $dokumenKtp->temporaryUrl() }}"
+                                            alt="{{ __('Preview KTP') }}"
+                                            class="h-20 w-20 rounded object-cover"
+                                        />
+                                    @else
+                                        <flux:icon.document class="size-10 text-zinc-400" />
+                                    @endif
+
+                                    <div class="min-w-0 flex-1">
+                                        <flux:text class="truncate font-medium">
+                                            {{ $dokumenKtp->getClientOriginalName() }}
+                                        </flux:text>
+                                        <flux:text class="text-sm">
+                                            {{ number_format($dokumenKtp->getSize() / 1024, 1) }} KB
+                                        </flux:text>
+                                    </div>
+
+                                    <flux:button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="x-mark"
+                                        wire:click="removeDokumenKtp"
+                                        data-test="pengajuan-surat-dokumen-ktp-remove"
+                                    >
+                                        {{ __('Hapus') }}
+                                    </flux:button>
+                                </div>
+                            @endif
+                        </flux:field>
+                    @endif
+
+                    @if (in_array(\App\Models\DokumenPersyaratan::JENIS_KK, $this->requiredDokumenTypes, true))
+                        <flux:field>
+                            <flux:label>{{ __('Fotokopi Kartu Keluarga (KK)') }}</flux:label>
+                            <flux:input
+                                type="file"
+                                wire:model="dokumenKk"
+                                accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
+                                data-test="pengajuan-surat-dokumen-kk-input"
+                            />
+                            <flux:error name="dokumenKk" />
+
+                            @if ($dokumenKk)
+                                <div
+                                    class="mt-3 flex items-start gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                                    data-test="pengajuan-surat-dokumen-kk-preview"
+                                >
+                                    @if (str_starts_with($dokumenKk->getMimeType(), 'image/'))
+                                        <img
+                                            src="{{ $dokumenKk->temporaryUrl() }}"
+                                            alt="{{ __('Preview KK') }}"
+                                            class="h-20 w-20 rounded object-cover"
+                                        />
+                                    @else
+                                        <flux:icon.document class="size-10 text-zinc-400" />
+                                    @endif
+
+                                    <div class="min-w-0 flex-1">
+                                        <flux:text class="truncate font-medium">
+                                            {{ $dokumenKk->getClientOriginalName() }}
+                                        </flux:text>
+                                        <flux:text class="text-sm">
+                                            {{ number_format($dokumenKk->getSize() / 1024, 1) }} KB
+                                        </flux:text>
+                                    </div>
+
+                                    <flux:button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="x-mark"
+                                        wire:click="removeDokumenKk"
+                                        data-test="pengajuan-surat-dokumen-kk-remove"
+                                    >
+                                        {{ __('Hapus') }}
+                                    </flux:button>
+                                </div>
+                            @endif
+                        </flux:field>
+                    @endif
+
+                    <div wire:loading wire:target="dokumenKtp,dokumenKk" class="text-sm text-zinc-500">
+                        {{ __('Mengunggah file...') }}
+                    </div>
+                </div>
+            @endif
 
             <div class="flex flex-wrap gap-2">
                 <flux:button

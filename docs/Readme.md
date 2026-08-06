@@ -23,6 +23,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Persyaratan Dokumen Warga (US-2.2)](dev-docs/features/persyaratan-dokumen.md) | Warga browse + detail persyaratan dokumen |
 | [Akses Publik Persyaratan Dokumen (US-2.3)](dev-docs/features/persyaratan-dokumen-publik.md) | Guest browse persyaratan tanpa login + CTA daftar/login |
 | [Form Pengajuan Surat (US-3.1)](dev-docs/features/pengajuan-surat-form.md) | Warga submit pengajuan + auto nomor_pengajuan |
+| [Unggah Dokumen Persyaratan (US-3.2)](dev-docs/features/pengajuan-surat-dokumen.md) | KTP/KK upload, preview, private storage |
 | [ADR-001: Keep `name` column + logout after register](dev-docs/decisions/001-registration-name-column-and-redirect.md) | Why `name` (not `nama`) and guest redirect after register |
 | [ADR-002: Role-based login redirect](dev-docs/decisions/002-role-based-login-redirect.md) | Why custom LoginResponse + dual dashboards |
 | [ADR-003: Role middleware 403](dev-docs/decisions/003-role-middleware-403.md) | Why denied access uses HTTP 403 |
@@ -32,6 +33,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-007: Warga persyaratan dokumen view](dev-docs/decisions/007-warga-persyaratan-dokumen-view.md) | Why warga-only route + modal detail for US-2.2 |
 | [ADR-008: Public persyaratan dokumen access](dev-docs/decisions/008-public-persyaratan-dokumen-access.md) | Why same public route + layouts/public for guests |
 | [ADR-009: pengajuan_surat table + nomor format](dev-docs/decisions/009-pengajuan-surat-table-and-nomor-format.md) | Why singular table name + PJ-YYYYMMDD-#### nomor |
+| [ADR-010: dokumen persyaratan upload](dev-docs/decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | Text-based KTP/KK detection + private disk storage |
 
 ## User Docs
 
@@ -49,3 +51,4 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Persyaratan Dokumen](user-docs/guides/persyaratan-dokumen.md) | Cara warga melihat persyaratan jenis surat |
 | [Panduan Akses Publik Persyaratan Dokumen](user-docs/guides/persyaratan-dokumen-publik.md) | Cara pengunjung tanpa akun melihat persyaratan |
 | [Panduan Pengajuan Surat](user-docs/guides/pengajuan-surat-form.md) | Cara warga mengajukan surat keterangan online |
+| [Panduan Unggah Dokumen Persyaratan](user-docs/guides/pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |
