@@ -19,8 +19,9 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Unggah Dokumen Persyaratan](guides/pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |
 | [Validasi Kelengkapan Pengajuan](guides/pengajuan-surat-kelengkapan.md) | Dokumen wajib dan pesan error sebelum kirim |
 | [Ajukan Ulang Pengajuan](guides/pengajuan-surat-ajukan-ulang.md) | Cara ajukan ulang pengajuan yang ditolak |
-| [Verifikasi Pengajuan](guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
-| [Migrasi Alur Status](guides/migrasi-alur-status.md) | Arti status baru dan alur setujui → diproses |
+| [Verifikasi / Daftar Pengajuan](guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
+| [Daftar Pengajuan & Alur Setujui](guides/daftar-pengajuan-dan-alur-setujui.md) | Rename menu + setujui langsung diproses |
+| [Migrasi Alur Status](guides/migrasi-alur-status.md) | Arti status dan alur setujui → diproses |
 | [Generate Surat PDF](guides/generate-surat-pdf.md) | Surat PDF otomatis dibuat saat admin menyetujui |
 | [Nomor Surat Resmi](guides/nomor-surat-resmi.md) | Format dan arti nomor surat resmi otomatis |
 | [Scan QR Pengambilan](guides/qr-sekali-pakai.md) | Cara admin scan QR sekali pakai saat pengambilan |

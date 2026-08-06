@@ -1,7 +1,7 @@
 <div class="flex h-full w-full flex-1 flex-col gap-6 p-4 md:p-6">
     <div>
         <flux:heading size="xl" data-test="verifikasi-pengajuan-heading">
-            {{ __('Verifikasi Pengajuan') }}
+            {{ __('Daftar Pengajuan Surat') }}
         </flux:heading>
         <flux:text class="mt-1">
             {{ __('Daftar pengajuan surat yang menunggu pemeriksaan dokumen oleh petugas desa.') }}

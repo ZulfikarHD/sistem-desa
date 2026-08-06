@@ -8,7 +8,7 @@ use App\Models\PengajuanSurat;
 use App\Models\User;
 use Livewire\Livewire;
 
-test('admin setujui pengajuan creates notifikasi disetujui and diproses for warga', function () {
+test('admin setujui pengajuan creates single notifikasi diproses for warga', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create(['nama_surat' => 'Surat Domisili']);
@@ -26,12 +26,12 @@ test('admin setujui pengajuan creates notifikasi disetujui and diproses for warg
 
     $notifikasi = Notifikasi::query()->where('pengajuan_id', $pengajuan->id)->orderBy('id')->get();
 
-    expect($notifikasi)->toHaveCount(2)
+    expect($notifikasi)->toHaveCount(1)
         ->and($notifikasi[0]->user_id)->toBe($warga->id)
         ->and($notifikasi[0]->status_baca)->toBe(Notifikasi::STATUS_BELUM)
-        ->and($notifikasi[0]->pesan)->toContain('Surat Domisili')
-        ->and($notifikasi[0]->pesan)->toContain('disetujui')
-        ->and($notifikasi[1]->pesan)->toContain('sedang diproses');
+        ->and($notifikasi[0]->pesan)->toBe(
+            'Pengajuan Surat Domisili Anda (#PJ-'.now()->format('Ymd').'-5001) sedang diproses. Surat Anda sedang disiapkan.'
+        );
 });
 
 test('admin tolak pengajuan creates notifikasi for warga', function () {

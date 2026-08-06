@@ -280,7 +280,7 @@ test('reopening detail does not change diproses status', function () {
     expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
 });
 
-test('admin can approve diajukan pengajuan then auto advances to diproses', function () {
+test('admin can approve diajukan pengajuan directly to diproses', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create();
@@ -307,6 +307,25 @@ test('admin can approve diajukan pengajuan then auto advances to diproses', func
         'aksi' => LogVerifikasi::AKSI_SETUJUI,
         'keterangan' => null,
     ]);
+
+    // Tidak boleh ada jejak status perantara disetujui pada alur baru
+    expect(Notifikasi::query()->where('pengajuan_id', $pengajuan->id)->count())->toBe(1);
+});
+
+test('admin verifikasi list page shows renamed heading Daftar Pengajuan Surat', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('verifikasi.index'))
+        ->assertOk()
+        ->assertSee('Daftar Pengajuan Surat')
+        ->assertDontSee('Verifikasi Pengajuan', false);
+});
+
+test('historical disetujui status displays as Diproses label', function () {
+    expect(PengajuanSurat::statusLabel(PengajuanSurat::STATUS_DISETUJUI))->toBe('Diproses')
+        ->and(PengajuanSurat::statusLabel(PengajuanSurat::STATUS_DIPROSES))->toBe('Diproses')
+        ->and(PengajuanSurat::statusOptions()[PengajuanSurat::STATUS_DISETUJUI])->toBe('Disetujui (historis)');
 });
 
 test('admin can reject diajukan pengajuan with required catatan without entering diproses', function () {

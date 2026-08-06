@@ -15,7 +15,7 @@ Jika admin sudah mengatur tanggal pengambilan, halaman **Detail** menampilkan ta
 3. Klik tombol **Unduh Surat**
 4. File PDF tersimpan di perangkat Anda
 
-> 💡 **Tips:** Tombol unduh tidak muncul untuk status **Diajukan**, **Disetujui**, atau **Ditolak**.
+> 💡 **Tips:** Tombol unduh tidak muncul untuk status **Diajukan** atau **Ditolak**. Data lama berstatus Disetujui juga tidak bisa diunduh sampai statusnya Diproses/Siap Diambil/Selesai.
 
 ### Unduh atau Cetak dari Detail
 

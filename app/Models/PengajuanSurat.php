@@ -44,10 +44,13 @@ class PengajuanSurat extends Model
     /** Status awal saat warga mengajukan / menunggu verifikasi. */
     public const STATUS_DIAJUKAN = 'diajukan';
 
-    /** Pasca-disetujui: PDF + nomor + QR digenerate (Phase 07). */
+    /** Surat digenerate + sedang diproses (US-8.4: langsung dari setujui). */
     public const STATUS_DIPROSES = 'diproses';
 
-    /** Verifikasi data OK — belum berarti surat siap. */
+    /**
+     * Status historis Phase 07 — tetap di DB, tidak dipakai alur baru (US-8.4).
+     * Tampilan UI memakai label "Diproses" agar warga tidak melihat status perantara.
+     */
     public const STATUS_DISETUJUI = 'disetujui';
 
     /** Verifikasi gagal — alur berhenti. */
@@ -73,8 +76,9 @@ class PengajuanSurat extends Model
     {
         return match ($status) {
             self::STATUS_DIAJUKAN => 'Diajukan',
+            // Historis disetujui ditampilkan sebagai Diproses (mitigasi risiko Phase 08)
+            self::STATUS_DISETUJUI,
             self::STATUS_DIPROSES => 'Diproses',
-            self::STATUS_DISETUJUI => 'Disetujui',
             self::STATUS_DITOLAK => 'Ditolak',
             self::STATUS_SIAP_DIAMBIL => 'Siap Diambil',
             self::STATUS_SELESAI => 'Selesai',
@@ -84,6 +88,7 @@ class PengajuanSurat extends Model
 
     /**
      * Opsi filter status lengkap (Phase 07), tanpa opsi "semua".
+     * Filter "Disetujui (historis)" tetap ada untuk data lama; label tampilan beda dari statusLabel.
      *
      * @return array<string, string>
      */
@@ -91,7 +96,7 @@ class PengajuanSurat extends Model
     {
         return [
             self::STATUS_DIAJUKAN => self::statusLabel(self::STATUS_DIAJUKAN),
-            self::STATUS_DISETUJUI => self::statusLabel(self::STATUS_DISETUJUI),
+            self::STATUS_DISETUJUI => 'Disetujui (historis)',
             self::STATUS_DIPROSES => self::statusLabel(self::STATUS_DIPROSES),
             self::STATUS_SIAP_DIAMBIL => self::statusLabel(self::STATUS_SIAP_DIAMBIL),
             self::STATUS_SELESAI => self::statusLabel(self::STATUS_SELESAI),

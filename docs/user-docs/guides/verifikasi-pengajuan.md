@@ -1,24 +1,26 @@
-# Verifikasi Pengajuan - Panduan Pengguna
+# Verifikasi / Daftar Pengajuan Surat - Panduan Pengguna
 
-## Apa itu Verifikasi Pengajuan?
+## Apa itu Daftar Pengajuan Surat?
 
-Fitur ini membantu **admin/petugas desa** memeriksa pengajuan surat keterangan yang sudah dikirim warga. Petugas dapat melihat daftar pengajuan yang menunggu pemeriksaan, membuka detail lengkap, mempratinjau dokumen KTP/KK, lalu **menyetujui** atau **menolak** pengajuan dengan pencatatan log audit.
+Fitur ini membantu **admin/petugas desa** memeriksa pengajuan surat keterangan yang sudah dikirim warga. Petugas melihat daftar pengajuan yang menunggu pemeriksaan, membuka detail, mempratinjau dokumen KTP/KK, lalu **menyetujui** atau **menolak** pengajuan.
+
+Menu di sidebar bernama **Daftar Pengajuan Surat** (sebelumnya "Verifikasi Pengajuan").
 
 ## Cara Menggunakan
 
-### Melihat Daftar Pengajuan Menunggu Verifikasi
+### Melihat Daftar Pengajuan
 
 1. Masuk ke sistem sebagai **admin/petugas desa**.
-2. Di menu samping, klik **Verifikasi Pengajuan**.
+2. Di menu samping, klik **Daftar Pengajuan Surat**.
 3. Halaman menampilkan pengajuan dengan status **Diajukan** secara default.
 4. Tabel menampilkan nomor, nama warga, jenis surat, dan tanggal pengajuan.
-5. Gunakan **Filter Status** untuk status lain (Disetujui, Diproses, Siap Diambil, Selesai, Ditolak).
+5. Gunakan **Filter Status** untuk status lain (termasuk **Disetujui (historis)** untuk data lama).
 
 > 💡 **Tips:** Fokuskan pemeriksaan pada filter **Diajukan** — itulah antrean yang perlu ditindaklanjuti.
 
 ### Membuka Detail Pengajuan
 
-1. Dari daftar verifikasi, **klik baris** pengajuan yang ingin diperiksa.
+1. Dari daftar, **klik baris** pengajuan yang ingin diperiksa.
 2. Status tetap **Diajukan** saat halaman detail dibuka (tidak berubah otomatis).
 3. Halaman detail menampilkan data warga, jenis surat, keperluan, dan dokumen persyaratan.
 
@@ -30,9 +32,9 @@ Fitur ini membantu **admin/petugas desa** memeriksa pengajuan surat keterangan y
 ### Menyetujui Pengajuan
 
 1. Klik **Setujui**.
-2. Sistem mencatat **Disetujui**, lalu otomatis lanjut ke **Diproses** (persiapan surat).
-3. Pengajuan hilang dari daftar filter **Diajukan**.
-4. Warga menerima notifikasi status.
+2. Sistem langsung mengubah status menjadi **Diproses** (tanpa status Disetujui di tengah).
+3. PDF surat digenerate otomatis; warga menerima **satu** notifikasi bahwa surat sedang diproses.
+4. Pengajuan hilang dari daftar filter **Diajukan**.
 
 ### Menolak Pengajuan
 
@@ -50,10 +52,10 @@ Fitur ini membantu **admin/petugas desa** memeriksa pengajuan surat keterangan y
 A: Belum ada pengajuan **Diajukan**, atau filter status sedang diubah.
 
 **Q: Mengapa status tidak jadi Diproses saat saya buka detail?**  
-A: Diproses sekarang berarti surat sedang disiapkan setelah disetujui, bukan “sedang dibaca admin.”
+A: Status hanya berubah setelah Anda menekan **Setujui** atau **Tolak**.
 
-**Q: Setelah setujui, kenapa status akhirnya Diproses?**  
-A: Setelah verifikasi OK, sistem otomatis lanjut ke tahap persiapan surat.
+**Q: Setelah setujui, kenapa langsung Diproses?**  
+A: Alur baru menggabungkan persetujuan dan mulai proses surat dalam satu langkah.
 
 **Q: Apakah saya bisa menolak tanpa alasan?**  
 A: Tidak. Alasan penolakan wajib diisi.
@@ -62,9 +64,6 @@ A: Tidak. Alasan penolakan wajib diisi.
 
 | Masalah | Solusi |
 |---------|--------|
-| Halaman verifikasi tidak muncul di menu | Login sebagai admin, bukan warga |
-| Pratinjau dokumen kosong | Unduh dokumen; file mungkin hilang |
-| Tombol Setujui/Tolak tidak muncul | Status bukan Diajukan lagi |
-| Pengajuan tidak muncul di daftar default | Set filter ke **Diajukan** |
-
-Lihat juga: [Migrasi Alur Status](migrasi-alur-status.md).
+| Tidak menemukan menu Verifikasi Pengajuan | Gunakan **Daftar Pengajuan Surat** |
+| Tombol Setujui hilang | Pengajuan sudah diproses/ditolak |
+| Warga mendapat dua notifikasi | Seharusnya satu; laporkan jika masih terjadi pada pengajuan baru |

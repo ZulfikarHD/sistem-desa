@@ -71,7 +71,7 @@
                             wire:navigate
                             data-test="sidebar-verifikasi-pengajuan"
                         >
-                            {{ __('Verifikasi Pengajuan') }}
+                            {{ __('Daftar Pengajuan Surat') }}
                         </flux:sidebar.item>
 
                         <flux:sidebar.item

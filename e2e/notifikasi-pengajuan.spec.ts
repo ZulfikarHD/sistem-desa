@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
  * US-5.1 — Notifikasi Otomatis Perubahan Status
  * US-5.2 — Panel Notifikasi In-App
  * US-5.3 — Halaman Status & Riwayat Pengajuan (detail)
+ * US-8.4 — Notifikasi setujui digeser ke status diproses (satu pesan)
  */
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -190,7 +191,16 @@ test.describe('US-5.1 Notifikasi Otomatis Perubahan Status', () => {
         await page.locator('[data-test="verifikasi-detail-setujui-button"]').click();
         await expect(page).toHaveURL(/\/admin\/verifikasi$/);
 
-        expect(countUnreadNotifikasi(wargaId)).toBe(2);
+        expect(countUnreadNotifikasi(wargaId)).toBe(1);
+
+        const pesan = runTinker([
+            `$n = \\App\\Models\\Notifikasi::where('user_id', ${wargaId})->latest('id')->first();`,
+            `echo $n ? $n->pesan : '';`,
+        ].join('')).trim();
+
+        expect(pesan).toBe(
+            `Pengajuan ${namaSurat} Anda (#${nomorPengajuan}) sedang diproses. Surat Anda sedang disiapkan.`,
+        );
     });
 
     test('admin buka detail diajukan tidak memicu notifikasi', async ({ page }) => {

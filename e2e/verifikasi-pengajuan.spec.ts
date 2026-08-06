@@ -7,7 +7,9 @@ import { fileURLToPath } from 'node:url';
  * US-4.1 — Daftar Pengajuan Menunggu Verifikasi (Admin)
  * US-4.2 — Detail Pengajuan & Pratinjau Dokumen
  * US-4.3 — Setujui / Tolak Pengajuan
- * US-7.1 — Migrasi Alur Status (hapus auto diajukan→diproses; setujui→disetujui→diproses)
+ * US-7.1 — Migrasi Alur Status (hapus auto diajukan→diproses)
+ * US-8.3 — Rename "Verifikasi Pengajuan" → "Daftar Pengajuan Surat"
+ * US-8.4 — Setujui langsung ke diproses + notifikasi warga
  */
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -159,6 +161,29 @@ function countLogVerifikasi(pengajuanId: number, aksi: 'setujui' | 'tolak'): num
         `->where('aksi', ${JSON.stringify(aksi)})`,
         `->count();`,
     ].join('')).trim();
+
+    return Number(output);
+}
+
+function countNotifikasiForPengajuan(pengajuanId: number): number {
+    const output = runTinker(
+        `echo \\App\\Models\\Notifikasi::where('pengajuan_id', ${pengajuanId})->count();`,
+    ).trim();
+
+    return Number(output);
+}
+
+function getLatestNotifikasiPesan(pengajuanId: number): string {
+    return runTinker([
+        `$n = \\App\\Models\\Notifikasi::where('pengajuan_id', ${pengajuanId})->latest('id')->first();`,
+        `echo $n ? $n->pesan : '';`,
+    ].join('')).trim();
+}
+
+function countSuratTerbitForPengajuan(pengajuanId: number): number {
+    const output = runTinker(
+        `echo \\App\\Models\\SuratTerbit::where('pengajuan_id', ${pengajuanId})->count();`,
+    ).trim();
 
     return Number(output);
 }
@@ -451,7 +476,7 @@ test.describe('US-7.1 Migrasi Alur Status', () => {
         await expect(page.locator('[data-test="verifikasi-detail-setujui-button"]')).toBeVisible();
     });
 
-    test('setujui dari diajukan berakhir di diproses (melewati disetujui)', async ({ page }) => {
+    test('setujui dari diajukan langsung ke diproses tanpa status disetujui (US-8.4)', async ({ page }) => {
         const stamp = Date.now();
         const adminEmail = `admin.verifikasi.setujui.${stamp}@example.com`;
         const wargaEmail = `warga.verifikasi.setujui.${stamp}@example.com`;
@@ -499,6 +524,88 @@ test.describe('US-7.1 Migrasi Alur Status', () => {
 
         expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
         expect(countLogVerifikasi(pengajuanId, 'setujui')).toBe(1);
+        expect(countSuratTerbitForPengajuan(pengajuanId)).toBe(1);
+        expect(countNotifikasiForPengajuan(pengajuanId)).toBe(1);
+        expect(getLatestNotifikasiPesan(pengajuanId)).toBe(
+            `Pengajuan ${namaSurat} Anda (#${nomorPengajuan}) sedang diproses. Surat Anda sedang disiapkan.`,
+        );
+    });
+});
+
+test.describe('US-8.3 Rename Daftar Pengajuan Surat', () => {
+    test('sidebar dan heading menampilkan Daftar Pengajuan Surat bukan Verifikasi Pengajuan', async ({ page }) => {
+        const stamp = Date.now();
+        const adminEmail = `admin.verifikasi.rename.${stamp}@example.com`;
+        const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 20);
+
+        ensureUser({
+            email: adminEmail,
+            name: 'Admin Rename Label',
+            role: 'admin',
+            nik: adminNik,
+        });
+
+        await loginAs(page, adminEmail);
+        await page.goto('/admin/verifikasi');
+
+        await expect(page.locator('[data-test="verifikasi-pengajuan-heading"]')).toHaveText('Daftar Pengajuan Surat');
+        await expect(page.locator('[data-test="sidebar-verifikasi-pengajuan"]')).toContainText('Daftar Pengajuan Surat');
+        await expect(page.locator('[data-test="sidebar-verifikasi-pengajuan"]')).not.toContainText('Verifikasi Pengajuan');
+        await expect(page).toHaveTitle(/Daftar Pengajuan Surat/);
+    });
+});
+
+test.describe('US-8.4 Alur Setujui Langsung Diproses', () => {
+    test('tombol setujui tidak muncul untuk pengajuan yang sudah diproses (edge case)', async ({ page }) => {
+        const stamp = Date.now();
+        const adminEmail = `admin.verifikasi.setujui.edge.${stamp}@example.com`;
+        const wargaEmail = `warga.verifikasi.setujui.edge.${stamp}@example.com`;
+        const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 22);
+        const wargaNik = uniqueNik(Number(String(stamp).slice(-6)) + 23);
+        const namaSurat = `Surat Setujui Edge ${stamp}`;
+        const nomorPengajuan = `PJ-${String(stamp).slice(-8)}-4410`;
+
+        ensureUser({
+            email: adminEmail,
+            name: 'Admin Setujui Edge',
+            role: 'admin',
+            nik: adminNik,
+        });
+
+        ensureUser({
+            email: wargaEmail,
+            name: 'Warga Setujui Edge',
+            role: 'warga',
+            nik: wargaNik,
+        });
+
+        const wargaId = getUserIdByEmail(wargaEmail);
+        const adminId = getUserIdByEmail(adminEmail);
+        ensureJenisSurat(namaSurat);
+        const jenisSuratId = getJenisSuratIdByName(namaSurat);
+
+        const php = [
+            `$p = \\App\\Models\\PengajuanSurat::create([`,
+            `'user_id' => ${wargaId},`,
+            `'jenis_surat_id' => ${jenisSuratId},`,
+            `'nomor_pengajuan' => ${JSON.stringify(nomorPengajuan)},`,
+            `'keperluan' => 'Keperluan edge setujui',`,
+            `'status' => \\App\\Models\\PengajuanSurat::STATUS_DIPROSES,`,
+            `'diverifikasi_oleh' => ${adminId},`,
+            `'tanggal_pengajuan' => now()->toDateString(),`,
+            `]);`,
+            `echo $p->id;`,
+        ].join('');
+
+        const pengajuanId = Number(runTinker(php).trim());
+
+        await loginAs(page, adminEmail);
+        await page.goto(`/admin/verifikasi/${pengajuanId}`);
+
+        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diproses');
+        await expect(page.locator('[data-test="verifikasi-detail-setujui-button"]')).toHaveCount(0);
+        await expect(page.locator('[data-test="verifikasi-detail-tolak-button"]')).toHaveCount(0);
+        expect(countNotifikasiForPengajuan(pengajuanId)).toBe(0);
     });
 });
 

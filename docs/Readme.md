@@ -26,8 +26,10 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Unggah Dokumen Persyaratan (US-3.2)](dev-docs/features/pengajuan-surat-dokumen.md) | KTP/KK upload, preview, private storage |
 | [Validasi Kelengkapan Pengajuan (US-3.3)](dev-docs/features/pengajuan-surat-kelengkapan.md) | Required-doc submit blocking + clear error messages |
 | [Ajukan Ulang Setelah Ditolak (US-3.4)](dev-docs/features/pengajuan-surat-ajukan-ulang.md) | Resubmit ditolak pengajuan + riwayat page |
-| [Verifikasi Pengajuan (US-4.1 – US-4.3 + US-7.1)](dev-docs/features/verifikasi-pengajuan.md) | Admin list, detail preview, setujui/tolak, log audit |
-| [Migrasi Alur Status (US-7.1)](dev-docs/features/migrasi-alur-status.md) | Status flow: diajukan → disetujui → diproses; siap_diambil/selesai filters |
+| [Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4)](dev-docs/features/verifikasi-pengajuan.md) | Admin list, detail preview, setujui/tolak, log audit |
+| [Rename Daftar Pengajuan Surat (US-8.3)](dev-docs/features/daftar-pengajuan-surat-rename.md) | Label sidebar/heading: Verifikasi → Daftar Pengajuan Surat |
+| [Setujui Langsung Diproses (US-8.4)](dev-docs/features/setujui-langsung-diproses.md) | Approve path: diajukan → diproses + satu notifikasi |
+| [Migrasi Alur Status (US-7.1 / US-8.4)](dev-docs/features/migrasi-alur-status.md) | Status flow: diajukan → diproses; siap_diambil/selesai filters |
 | [Generate Surat PDF (US-7.2)](dev-docs/features/generate-surat-pdf.md) | Auto PDF + nomor + QR on approve into diproses |
 | [Nomor Surat Resmi Otomatis (US-7.3)](dev-docs/features/nomor-surat-resmi.md) | Official letter number format, year sequence, PDF print |
 | [QR Code Sekali Pakai (US-7.4)](dev-docs/features/qr-sekali-pakai.md) | One-time pickup QR scan → selesai + invalid |
@@ -48,12 +50,13 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-011: verifikasi dokumen secure route](dev-docs/decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only preview/download routes for private dokumen |
 | [ADR-012: log_verifikasi and concurrent lock](dev-docs/decisions/012-verifikasi-log-and-concurrent-lock.md) | Audit log table + lockForUpdate on approve/reject |
 | [ADR-013: Rekap summary filters + CSV BOM](dev-docs/decisions/013-rekap-summary-filters-and-csv-bom.md) | Ringkasan ignores status filter; CSV UTF-8 BOM |
-| [ADR-014: Status flow migration US-7.1](dev-docs/decisions/014-status-flow-migration-us-7-1.md) | Remove auto diproses on open; approve → disetujui → diproses |
+| [ADR-014: Status flow migration US-7.1](dev-docs/decisions/014-status-flow-migration-us-7-1.md) | Remove auto diproses on open; approve path superseded by ADR-020 |
 | [ADR-015: DomPDF surat_terbit on approve](dev-docs/decisions/015-dompdf-surat-terbit-on-approve.md) | Generate PDF + nomor + QR into surat_terbit on setujui |
 | [ADR-016: Official nomor surat format](dev-docs/decisions/016-nomor-surat-resmi-format.md) | `470/{urut}/DS-WDN/{romawi}/{tahun}` + year sequence |
 | [ADR-017: QR sekali pakai conditional update](dev-docs/decisions/017-qr-sekali-pakai-conditional-update.md) | Scan once; concurrent-safe invalidation |
 | [ADR-018: Jam kerja + libur nasional config](dev-docs/decisions/018-jam-kerja-dan-libur-nasional-config.md) | Reject invalid pickup dates; labels from config |
 | [ADR-019: Warga unduh/cetak existing PDF](dev-docs/decisions/019-warga-unduh-cetak-existing-pdf.md) | Serve stored PDF only; never regenerate QR on download |
+| [ADR-020: Setujui langsung diproses US-8.4](dev-docs/decisions/020-setujui-langsung-diproses-us-8-4.md) | Approve → diproses in one step; keep disetujui for historis |
 
 ## User Docs
 
@@ -74,8 +77,9 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Unggah Dokumen Persyaratan](user-docs/guides/pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |
 | [Panduan Validasi Kelengkapan Pengajuan](user-docs/guides/pengajuan-surat-kelengkapan.md) | Aturan dokumen wajib sebelum kirim pengajuan |
 | [Panduan Ajukan Ulang Pengajuan](user-docs/guides/pengajuan-surat-ajukan-ulang.md) | Cara ajukan ulang setelah pengajuan ditolak |
-| [Panduan Verifikasi Pengajuan](user-docs/guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
-| [Panduan Migrasi Alur Status](user-docs/guides/migrasi-alur-status.md) | Arti status baru dan alur setujui → diproses |
+| [Panduan Verifikasi / Daftar Pengajuan](user-docs/guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
+| [Panduan Daftar Pengajuan & Alur Setujui](user-docs/guides/daftar-pengajuan-dan-alur-setujui.md) | Rename menu + setujui langsung diproses (US-8.3/8.4) |
+| [Panduan Migrasi Alur Status](user-docs/guides/migrasi-alur-status.md) | Arti status dan alur setujui → diproses |
 | [Panduan Generate Surat PDF](user-docs/guides/generate-surat-pdf.md) | Cara surat PDF otomatis dibuat saat admin setujui |
 | [Panduan Nomor Surat Resmi](user-docs/guides/nomor-surat-resmi.md) | Arti format nomor surat resmi otomatis |
 | [Panduan Scan QR Pengambilan](user-docs/guides/qr-sekali-pakai.md) | Cara admin scan QR sekali pakai saat pengambilan |

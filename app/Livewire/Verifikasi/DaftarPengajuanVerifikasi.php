@@ -9,7 +9,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Title('Verifikasi Pengajuan')]
+#[Title('Daftar Pengajuan Surat')]
 class DaftarPengajuanVerifikasi extends Component
 {
     use WithPagination;

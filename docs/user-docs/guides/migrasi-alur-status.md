@@ -2,27 +2,27 @@
 
 ## Apa itu Migrasi Alur Status?
 
-Sistem mengubah arti status pengajuan agar lebih jelas untuk warga dan admin:
+Sistem memakai status pengajuan berikut:
 
 | Status | Arti |
 |--------|------|
-| Diajukan | Menunggu verifikasi admin |
-| Disetujui | Data lolos verifikasi (lalu otomatis diproses) |
-| Diproses | Surat sedang disiapkan (PDF) |
+| Diajukan | Menunggu pemeriksaan admin |
+| Diproses | Surat sedang disiapkan (PDF sudah digenerate setelah Setujui) |
 | Siap Diambil | Surat siap diambil di kantor |
 | Selesai | Sudah diambil (QR sudah digunakan) |
-| Ditolak | Verifikasi gagal — alur berhenti |
+| Ditolak | Pemeriksaan gagal — alur berhenti |
+| Disetujui (historis) | Hanya data lama; di tampilan badge ditulis **Diproses** |
 
 ## Cara Menggunakan
 
-### Untuk Admin — Memverifikasi Pengajuan
+### Untuk Admin — Memeriksa Pengajuan
 
-1. Buka **Verifikasi Pengajuan**
+1. Buka **Daftar Pengajuan Surat**
 2. Filter default menampilkan status **Diajukan**
 3. Klik baris pengajuan untuk melihat detail dan dokumen
 4. Status tetap **Diajukan** saat halaman detail dibuka (tidak berubah otomatis)
 5. Pilih **Setujui** atau **Tolak**
-   - **Setujui**: pengajuan disetujui lalu otomatis masuk **Diproses**
+   - **Setujui**: langsung masuk **Diproses** (+ PDF + notifikasi warga)
    - **Tolak**: wajib isi alasan; status menjadi **Ditolak**
 
 > 💡 **Tips:** Tombol Setujui/Tolak hanya muncul jika status masih Diajukan.
@@ -32,24 +32,18 @@ Sistem mengubah arti status pengajuan agar lebih jelas untuk warga dan admin:
 1. Buka **Status & Riwayat Pengajuan**
 2. Gunakan filter status (termasuk Siap Diambil dan Selesai)
 3. Notifikasi muncul saat admin menyetujui/menolak, bukan saat admin sekadar membuka detail
+4. Setelah Setujui, Anda menerima **satu** notifikasi bahwa surat sedang diproses
 
 ### Untuk Admin — Rekap
 
 1. Buka **Rekap Pengajuan**
 2. Ringkasan menampilkan jumlah per status, termasuk **Siap Diambil** dan **Selesai**
-3. Filter status mendukung semua status baru
+3. Filter status mendukung semua status, termasuk data **Disetujui (historis)**
 
 ## FAQ
 
-**Q: Mengapa status tidak jadi Diproses saat saya buka detail?**  
-A: Itu sengaja. Diproses sekarang berarti surat sedang disiapkan setelah disetujui, bukan “sedang dibaca admin.”
+**Q: Mengapa tidak ada status Disetujui di alur baru?**  
+A: Persetujuan dan proses surat digabung — setelah Setujui langsung **Diproses**.
 
-**Q: Setelah saya setujui, kenapa status akhirnya Diproses bukan Disetujui?**  
-A: Sistem mencatat Disetujui lalu otomatis lanjut Diproses untuk persiapan surat.
-
-## Troubleshooting
-
-| Masalah | Solusi |
-|---------|--------|
-| Tombol Setujui/Tolak hilang | Pastikan status masih Diajukan |
-| Filter Siap Diambil kosong | Status itu baru terisi setelah fitur penjadwalan pengambilan (fase berikutnya) |
+**Q: Apakah data lama Disetujui hilang?**  
+A: Tidak. Nilai di database tetap ada; di layar biasanya tampil sebagai **Diproses**.

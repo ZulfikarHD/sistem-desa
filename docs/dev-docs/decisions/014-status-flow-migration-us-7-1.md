@@ -1,7 +1,8 @@
 # ADR-014: Status Flow Migration (US-7.1)
 
 **Date:** 2026-08-06
-**Status:** accepted
+**Status:** superseded
+**Superseded by:** ADR-020 (approve path only: setujui → diproses langsung)
 **Supersedes:** US-4.4 auto `diajukan` → `diproses` on detail open (behavior only; Phase 04 plan file unchanged)
 
 ## Context

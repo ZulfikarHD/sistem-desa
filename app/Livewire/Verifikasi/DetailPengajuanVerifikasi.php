@@ -160,7 +160,8 @@ class DetailPengajuanVerifikasi extends Component
     }
 
     /**
-     * Setujui pengajuan dari diajukan → disetujui → diproses (US-7.1).
+     * Setujui pengajuan: diajukan → diproses secara langsung (US-8.4).
+     * Status historis `disetujui` tidak lagi dipakai pada alur baru.
      */
     public function setujui(): void
     {
@@ -183,7 +184,7 @@ class DetailPengajuanVerifikasi extends Component
             }
 
             $pengajuan->update([
-                'status' => PengajuanSurat::STATUS_DISETUJUI,
+                'status' => PengajuanSurat::STATUS_DIPROSES,
                 'catatan_admin' => null,
                 'diverifikasi_oleh' => $adminId,
             ]);
@@ -196,16 +197,12 @@ class DetailPengajuanVerifikasi extends Component
                 'created_at' => now(),
             ]);
 
-            $pengajuanFresh = $pengajuan->fresh(['jenisSurat']);
-            $this->buatNotifikasiStatus($pengajuanFresh, PengajuanSurat::STATUS_DISETUJUI);
-
-            // Lanjut otomatis ke diproses + hook generate surat (US-7.2)
-            $pengajuanFresh->update(['status' => PengajuanSurat::STATUS_DIPROSES]);
-            $this->buatNotifikasiStatus($pengajuanFresh->fresh(['jenisSurat']), PengajuanSurat::STATUS_DIPROSES);
-            $this->triggerGenerateSurat($pengajuanFresh->fresh(['jenisSurat']));
+            $pengajuanFresh = $pengajuan->fresh(['jenisSurat', 'user']);
+            $this->buatNotifikasiStatus($pengajuanFresh, PengajuanSurat::STATUS_DIPROSES);
+            $this->triggerGenerateSurat($pengajuanFresh);
         });
 
-        Flux::toast(variant: 'success', text: 'Pengajuan berhasil disetujui.');
+        Flux::toast(variant: 'success', text: 'Pengajuan berhasil disetujui dan sedang diproses.');
 
         $this->redirect(route('verifikasi.index'), navigate: true);
     }
@@ -283,24 +280,25 @@ class DetailPengajuanVerifikasi extends Component
     }
 
     /**
-     * Buat notifikasi in-app untuk warga pemohon (US-5.1 / US-7.1).
+     * Buat notifikasi in-app untuk warga pemohon (US-5.1 / US-8.4).
      */
     private function buatNotifikasiStatus(PengajuanSurat $pengajuan, string $statusBaru): void
     {
         $namaSurat = $pengajuan->jenisSurat?->nama_surat ?? 'Surat';
-        $labelStatus = match ($statusBaru) {
-            PengajuanSurat::STATUS_DIPROSES => 'sedang diproses',
-            PengajuanSurat::STATUS_DISETUJUI => 'disetujui',
-            PengajuanSurat::STATUS_DITOLAK => 'ditolak',
-            PengajuanSurat::STATUS_SIAP_DIAMBIL => 'siap diambil',
-            PengajuanSurat::STATUS_SELESAI => 'selesai',
-            default => $statusBaru,
+
+        // Pesan diproses mengikuti AC US-8.4; tolak & status lain tetap pola lama.
+        $pesan = match ($statusBaru) {
+            PengajuanSurat::STATUS_DIPROSES => "Pengajuan {$namaSurat} Anda (#{$pengajuan->nomor_pengajuan}) sedang diproses. Surat Anda sedang disiapkan.",
+            PengajuanSurat::STATUS_DITOLAK => "Pengajuan {$namaSurat} ({$pengajuan->nomor_pengajuan}) ditolak.",
+            PengajuanSurat::STATUS_SIAP_DIAMBIL => "Pengajuan {$namaSurat} ({$pengajuan->nomor_pengajuan}) siap diambil.",
+            PengajuanSurat::STATUS_SELESAI => "Pengajuan {$namaSurat} ({$pengajuan->nomor_pengajuan}) selesai.",
+            default => "Pengajuan {$namaSurat} ({$pengajuan->nomor_pengajuan}) {$statusBaru}.",
         };
 
         Notifikasi::query()->create([
             'user_id' => $pengajuan->user_id,
             'pengajuan_id' => $pengajuan->id,
-            'pesan' => "Pengajuan {$namaSurat} ({$pengajuan->nomor_pengajuan}) {$labelStatus}.",
+            'pesan' => $pesan,
             'status_baca' => Notifikasi::STATUS_BELUM,
             'created_at' => now(),
         ]);

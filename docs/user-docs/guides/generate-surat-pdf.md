@@ -10,7 +10,7 @@ Jika pengajuan **ditolak**, surat PDF **tidak** dibuat.
 
 ### Untuk Admin — Menerbitkan Surat lewat Persetujuan
 
-1. Buka **Verifikasi Pengajuan**
+1. Buka **Daftar Pengajuan Surat**
 2. Buka detail pengajuan berstatus **Diajukan**
 3. Periksa data dan dokumen
 4. Klik **Setujui**
@@ -27,8 +27,8 @@ Jika pengajuan **ditolak**, surat PDF **tidak** dibuat.
 
 ### Untuk Warga
 
-1. Setelah pengajuan disetujui, status di riwayat menjadi **Diproses**
-2. Notifikasi in-app memberi tahu bahwa pengajuan disetujui dan sedang diproses
+1. Setelah admin menyetujui, status di riwayat menjadi **Diproses**
+2. Notifikasi in-app memberi tahu bahwa pengajuan sedang diproses dan surat sedang disiapkan
 3. Unduh PDF lewat tombol **Unduh Surat** di riwayat atau detail (lihat [Panduan Unduh/Cetak Surat](unduh-surat-warga.md))
 
 ## FAQ

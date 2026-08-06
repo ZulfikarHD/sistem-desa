@@ -79,8 +79,8 @@
                             @php
                                 $statusVariant = match ($item->status) {
                                     \App\Models\PengajuanSurat::STATUS_DITOLAK => 'danger',
-                                    \App\Models\PengajuanSurat::STATUS_DISETUJUI,
                                     \App\Models\PengajuanSurat::STATUS_SELESAI => 'success',
+                                    \App\Models\PengajuanSurat::STATUS_DISETUJUI,
                                     \App\Models\PengajuanSurat::STATUS_DIPROSES,
                                     \App\Models\PengajuanSurat::STATUS_SIAP_DIAMBIL => 'warning',
                                     default => 'neutral',

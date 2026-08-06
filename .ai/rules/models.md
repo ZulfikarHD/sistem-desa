@@ -31,3 +31,6 @@ SuratTerbit::tandaiSiapDiambil moves diproses→siap_diambil, saves tanggal_peng
 
 ## US-7.6 dapatUnduhSurat helper
 PengajuanSurat::dapatUnduhSurat() / statusBolehUnduhSurat() gate warga PDF download for diproses, siap_diambil, selesai when suratTerbit exists. Do not allow diajukan/disetujui/ditolak.
+
+## Historical disetujui displays as Diproses
+STATUS_DISETUJUI remains for DB historis. statusLabel(disetujui)=Diproses. statusOptions uses Disetujui (historis) so admin filters stay distinguishable. New approve path never sets disetujui (US-8.4).

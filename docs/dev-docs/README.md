@@ -20,8 +20,10 @@ Technical documentation for contributors working on sistem-desa.
 | Unggah Dokumen Persyaratan (US-3.2) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
 | Validasi Kelengkapan Pengajuan (US-3.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
 | Ajukan Ulang Setelah Ditolak (US-3.4) | [features/pengajuan-surat-ajukan-ulang.md](features/pengajuan-surat-ajukan-ulang.md) |
-| Verifikasi Pengajuan (US-4.1 – US-4.3 + US-7.1) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
-| Migrasi Alur Status (US-7.1) | [features/migrasi-alur-status.md](features/migrasi-alur-status.md) |
+| Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
+| Rename Daftar Pengajuan Surat (US-8.3) | [features/daftar-pengajuan-surat-rename.md](features/daftar-pengajuan-surat-rename.md) |
+| Setujui Langsung Diproses (US-8.4) | [features/setujui-langsung-diproses.md](features/setujui-langsung-diproses.md) |
+| Migrasi Alur Status (US-7.1 / US-8.4) | [features/migrasi-alur-status.md](features/migrasi-alur-status.md) |
 | Generate Surat PDF (US-7.2) | [features/generate-surat-pdf.md](features/generate-surat-pdf.md) |
 | Nomor Surat Resmi Otomatis (US-7.3) | [features/nomor-surat-resmi.md](features/nomor-surat-resmi.md) |
 | QR Code Sekali Pakai (US-7.4) | [features/qr-sekali-pakai.md](features/qr-sekali-pakai.md) |
@@ -51,9 +53,10 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [011](decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only secure routes for dokumen preview/download |
 | [012](decisions/012-verifikasi-log-and-concurrent-lock.md) | `log_verifikasi` audit table + pessimistic locking |
 | [013](decisions/013-rekap-summary-filters-and-csv-bom.md) | Rekap summary ignores status filter; CSV UTF-8 BOM |
-| [014](decisions/014-status-flow-migration-us-7-1.md) | Status flow migration: approve → disetujui → diproses |
+| [014](decisions/014-status-flow-migration-us-7-1.md) | Status flow migration (approve path superseded by 020) |
 | [015](decisions/015-dompdf-surat-terbit-on-approve.md) | DomPDF + surat_terbit generated on approve |
 | [016](decisions/016-nomor-surat-resmi-format.md) | Official nomor surat format + per-year sequence |
 | [017](decisions/017-qr-sekali-pakai-conditional-update.md) | QR once-only scan via conditional update |
 | [018](decisions/018-jam-kerja-dan-libur-nasional-config.md) | Jam kerja labels + libur nasional config; reject invalid dates |
 | [019](decisions/019-warga-unduh-cetak-existing-pdf.md) | Warga unduh/cetak existing PDF; no QR regeneration |
+| [020](decisions/020-setujui-langsung-diproses-us-8-4.md) | Setujui langsung diproses; keep disetujui historis |
