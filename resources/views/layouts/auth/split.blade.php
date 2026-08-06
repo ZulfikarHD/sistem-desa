@@ -1,39 +1,59 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
-        <div class="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div class="bg-muted relative hidden h-full flex-col p-10 text-white lg:flex dark:border-e dark:border-neutral-800">
-                <div class="absolute inset-0 bg-neutral-900"></div>
-                <a href="{{ route('home') }}" class="relative z-20 flex items-center text-lg font-medium" wire:navigate>
-                    <span class="flex h-10 w-10 items-center justify-center rounded-md">
-                        <x-app-logo-icon class="me-2 h-7 fill-current text-white" />
+    <body class="min-h-dvh bg-brand-paper font-sans text-brand-ink antialiased">
+        <div class="grid min-h-dvh lg:grid-cols-2">
+            {{-- Panel brand (desktop) --}}
+            <aside class="relative hidden flex-col overflow-hidden bg-brand-fields p-10 text-white lg:flex">
+                <div
+                    class="pointer-events-none absolute inset-0 opacity-[0.1]"
+                    aria-hidden="true"
+                    style="background-image: repeating-linear-gradient(
+                        -12deg,
+                        transparent,
+                        transparent 24px,
+                        rgb(255 255 255 / 0.4) 24px,
+                        rgb(255 255 255 / 0.4) 25px
+                    );"
+                ></div>
+
+                <a href="{{ route('home') }}" class="relative z-10 flex items-center gap-3" wire:navigate>
+                    <span class="flex size-10 items-center justify-center rounded-lg bg-white/10 ring-1 ring-white/20">
+                        <x-app-logo-icon class="size-6 fill-current text-brand-sun" />
                     </span>
-                    {{ config('app.name', 'Laravel') }}
+                    <span class="font-display text-xl font-semibold tracking-tight">
+                        {{ config('app.name') }}
+                    </span>
                 </a>
 
-                @php
-                    [$message, $author] = str(Illuminate\Foundation\Inspiring::quotes()->random())->explode('-');
-                @endphp
-
-                <div class="relative z-20 mt-auto">
-                    <blockquote class="space-y-2">
-                        <flux:heading size="lg">&ldquo;{{ trim($message) }}&rdquo;</flux:heading>
-                        <footer><flux:heading>{{ trim($author) }}</flux:heading></footer>
-                    </blockquote>
+                <div class="relative z-10 mt-auto max-w-md space-y-4 pb-6">
+                    <p class="font-display text-3xl font-semibold leading-tight tracking-tight">
+                        {{ __('Pelayanan surat desa yang lebih mudah.') }}
+                    </p>
+                    <p class="text-base leading-relaxed text-white/75">
+                        {{ __('Ajukan surat keterangan secara daring. Warga mendaftar dengan NIK; petugas desa memverifikasi dan menerbitkan surat.') }}
+                    </p>
                 </div>
-            </div>
-            <div class="w-full lg:p-8">
-                <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-                    <a href="{{ route('home') }}" class="z-20 flex flex-col items-center gap-2 font-medium lg:hidden" wire:navigate>
-                        <span class="flex h-9 w-9 items-center justify-center rounded-md">
-                            <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
-                        </span>
+            </aside>
 
-                        <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>
-                    </a>
+            {{-- Form --}}
+            <div class="flex flex-col justify-center px-6 py-10 sm:px-10 lg:px-14">
+                <a
+                    href="{{ route('home') }}"
+                    class="mb-8 flex items-center gap-3 lg:hidden"
+                    wire:navigate
+                >
+                    <span class="flex size-9 items-center justify-center rounded-lg bg-brand-mist">
+                        <x-app-logo-icon class="size-5 fill-current text-brand-forest" />
+                    </span>
+                    <span class="font-display text-lg font-semibold text-brand-forest">
+                        {{ config('app.name') }}
+                    </span>
+                </a>
+
+                <div class="mx-auto w-full max-w-md">
                     {{ $slot }}
                 </div>
             </div>

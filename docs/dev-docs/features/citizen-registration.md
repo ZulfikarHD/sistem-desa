@@ -48,6 +48,8 @@ erDiagram
 | Validation | `app/Concerns/ProfileValidationRules.php` | NIK/email/phone/address rules |
 | Migration | `database/migrations/0001_01_01_000000_create_users_table.php` | users schema termasuk nik, no_telepon, alamat, role |
 | View | `resources/views/pages/auth/register.blade.php` | Registration form (Indonesian UI) |
+| Layout | `resources/views/layouts/auth/split.blade.php` | Shared branded auth shell |
+| Seeder | `database/seeders/UserSeeder.php` | Local test warga/admin accounts |
 | Feature tests | `tests/Feature/Auth/RegistrationTest.php` | Pest coverage |
 | E2E | `e2e/registration.spec.ts` | Playwright coverage |
 

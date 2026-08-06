@@ -51,6 +51,7 @@ Login does not alter the schema; it reads `email`, `password`, and `role` from `
 | Bootstrap | `bootstrap/app.php` | Authenticated-user redirect by role |
 | Routes | `routes/web.php` | `dashboard` + `dashboard.admin` |
 | View | `resources/views/pages/auth/login.blade.php` | Login form (Indonesian UI) |
+| Layout | `resources/views/layouts/auth/split.blade.php` | Shared branded auth shell |
 | View | `resources/views/dashboard.blade.php` | Dashboard Warga |
 | View | `resources/views/admin/dashboard.blade.php` | Dashboard Admin |
 | Feature tests | `tests/Feature/Auth/AuthenticationTest.php` | Pest coverage |

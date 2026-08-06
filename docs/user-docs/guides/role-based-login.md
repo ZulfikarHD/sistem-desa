@@ -8,7 +8,7 @@ Setelah punya akun, Anda masuk dengan **email** dan **password**. Sistem mengena
 
 ### Masuk sebagai warga atau admin
 
-1. Buka halaman **Masuk** (`/login`).
+1. Buka halaman **Masuk** (`/login`), atau dari beranda klik **Masuk**.
 2. Isi form:
    - **Email**: email yang terdaftar
    - **Password**: password akun Anda

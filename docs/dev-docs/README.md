@@ -6,6 +6,8 @@ Technical documentation for contributors working on sistem-desa.
 
 | Feature | Doc |
 |---------|-----|
+| Public Pages (Welcome / Auth UI) | [features/public-pages.md](features/public-pages.md) |
+| Database Seeders | [features/database-seeders.md](features/database-seeders.md) |
 | Citizen Registration (US-1.1) | [features/citizen-registration.md](features/citizen-registration.md) |
 | Role-Based Login (US-1.2) | [features/role-based-login.md](features/role-based-login.md) |
 | Role-Based Middleware (US-1.3) | [features/role-middleware.md](features/role-middleware.md) |
@@ -24,3 +26,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [002](decisions/002-role-based-login-redirect.md) | Role-based login redirect via LoginResponse |
 | [003](decisions/003-role-middleware-403.md) | Role middleware denies with HTTP 403 |
 | [004](decisions/004-profile-password-reset-fortify.md) | Profile + password reset via Fortify settings (not Breeze) |
+| [005](decisions/005-public-pages-brand-redesign.md) | Public pages brand redesign (forest / saffron + split auth) |

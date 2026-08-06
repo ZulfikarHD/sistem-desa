@@ -8,7 +8,7 @@ Fitur ini memungkinkan warga desa membuat akun sendiri agar bisa mengajukan sura
 
 ### Mendaftar akun baru
 
-1. Buka halaman **Registrasi** (`/register`), atau dari halaman login klik tautan **Daftar** / **Sign up**.
+1. Buka halaman **Registrasi** (`/register`), dari beranda klik **Daftar** / **Daftar sebagai Warga**, atau dari halaman login klik tautan **Daftar**.
 2. Isi form:
    - **NIK**: 16 digit angka sesuai KTP (tidak boleh sama dengan akun lain)
    - **Nama**: nama lengkap

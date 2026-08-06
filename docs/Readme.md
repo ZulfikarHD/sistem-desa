@@ -4,7 +4,7 @@ Index of all documentation for **Sistem Informasi Pelayanan Surat Keterangan** (
 
 ## Architecture
 
-- [System Architecture](architecture.md) *(placeholder — expand as the system grows)*
+- [System Architecture](architecture.md)
 
 ## Developer Docs
 
@@ -12,6 +12,8 @@ See [dev-docs/README.md](dev-docs/README.md)
 
 | Document | Description |
 |----------|-------------|
+| [Public Pages](dev-docs/features/public-pages.md) | Welcome + auth layout brand redesign |
+| [Database Seeders](dev-docs/features/database-seeders.md) | Local admin/warga seed accounts |
 | [Citizen Registration (US-1.1)](dev-docs/features/citizen-registration.md) | Technical docs for warga account registration |
 | [Role-Based Login (US-1.2)](dev-docs/features/role-based-login.md) | Technical docs for login + role dashboards |
 | [Role-Based Middleware (US-1.3)](dev-docs/features/role-middleware.md) | Technical docs for role gate + 403 |
@@ -21,6 +23,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-002: Role-based login redirect](dev-docs/decisions/002-role-based-login-redirect.md) | Why custom LoginResponse + dual dashboards |
 | [ADR-003: Role middleware 403](dev-docs/decisions/003-role-middleware-403.md) | Why denied access uses HTTP 403 |
 | [ADR-004: Profile + password reset via Fortify](dev-docs/decisions/004-profile-password-reset-fortify.md) | Why Fortify/settings over Breeze for US-1.4/1.5 |
+| [ADR-005: Public pages brand redesign](dev-docs/decisions/005-public-pages-brand-redesign.md) | Why forest/saffron brand + split auth layout |
 
 ## User Docs
 
@@ -28,6 +31,7 @@ See [user-docs/README.md](user-docs/README.md)
 
 | Document | Description |
 |----------|-------------|
+| [Panduan Beranda, Masuk, dan Daftar](user-docs/guides/public-pages.md) | Cara memakai beranda dan akun uji |
 | [Panduan Registrasi Akun Warga](user-docs/guides/citizen-registration.md) | Cara warga mendaftar akun |
 | [Panduan Login Berbasis Role](user-docs/guides/role-based-login.md) | Cara masuk dan keluar sesuai role |
 | [Panduan Proteksi Akses Role](user-docs/guides/role-middleware.md) | Batasan akses warga vs admin |
