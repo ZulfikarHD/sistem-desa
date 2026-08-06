@@ -27,9 +27,9 @@
 **So that** I know which requests need my review
 
 **Acceptance Criteria:**
-- [ ] Halaman daftar pengajuan, default filter status = `diajukan`
-- [ ] Menampilkan: nomor_pengajuan, nama warga, jenis surat, tanggal pengajuan
-- [ ] Klik baris untuk membuka detail pengajuan
+- [x] Halaman daftar pengajuan, default filter status = `diajukan`
+- [x] Menampilkan: nomor_pengajuan, nama warga, jenis surat, tanggal pengajuan
+- [x] Klik baris untuk membuka detail pengajuan
 
 ### US-4.2: Detail Pengajuan & Pratinjau Dokumen
 
@@ -38,9 +38,9 @@
 **So that** I can check completeness without printing physical copies
 
 **Acceptance Criteria:**
-- [ ] Halaman detail menampilkan data pengajuan lengkap + keperluan
-- [ ] Pratinjau dokumen (KTP/KK) langsung di halaman (image/PDF viewer)
-- [ ] Tombol Setujui dan Tolak tersedia di halaman ini
+- [x] Halaman detail menampilkan data pengajuan lengkap + keperluan
+- [x] Pratinjau dokumen (KTP/KK) langsung di halaman (image/PDF viewer)
+- [x] Tombol Setujui dan Tolak tersedia di halaman ini
 
 ### US-4.3: Setujui / Tolak Pengajuan
 
@@ -49,11 +49,11 @@
 **So that** the process is documented and warga get clear results
 
 **Acceptance Criteria:**
-- [ ] Aksi "Setujui" mengubah status pengajuan menjadi `disetujui`
-- [ ] Aksi "Tolak" wajib mengisi catatan_admin (alasan penolakan), status menjadi `ditolak`
-- [ ] Setiap aksi tercatat di log_verifikasi (admin_id, aksi, keterangan, timestamp)
-- [ ] Kolom diverifikasi_oleh pada pengajuan_surat terisi user_id admin yang melakukan aksi
-- [ ] Setelah aksi selesai, pengajuan hilang dari daftar "menunggu verifikasi"
+- [x] Aksi "Setujui" mengubah status pengajuan menjadi `disetujui`
+- [x] Aksi "Tolak" wajib mengisi catatan_admin (alasan penolakan), status menjadi `ditolak`
+- [x] Setiap aksi tercatat di log_verifikasi (admin_id, aksi, keterangan, timestamp)
+- [x] Kolom diverifikasi_oleh pada pengajuan_surat terisi user_id admin yang melakukan aksi
+- [x] Setelah aksi selesai, pengajuan hilang dari daftar "menunggu verifikasi"
 
 ### US-4.4: Transisi Status Otomatis ke "Diproses"
 
@@ -62,9 +62,9 @@
 **So that** I get more granular visibility into where my request stands, not just "diajukan" until a final decision
 
 **Acceptance Criteria:**
-- [ ] Saat admin membuka Halaman Detail Pengajuan (US-4.2) untuk pertama kali, status otomatis berubah dari `diajukan` menjadi `diproses`
-- [ ] Perubahan status ini memicu notifikasi in-app ke warga (terhubung ke Phase 05, US-5.1, setelah phase tersebut dibangun)
-- [ ] Status `diproses` tetap dapat berlanjut ke `disetujui` atau `ditolak` melalui US-4.3
+- [x] Saat admin membuka Halaman Detail Pengajuan (US-4.2) untuk pertama kali, status otomatis berubah dari `diajukan` menjadi `diproses`
+- [x] Perubahan status ini memicu notifikasi in-app ke warga (terhubung ke Phase 05, US-5.1, setelah phase tersebut dibangun)
+- [x] Status `diproses` tetap dapat berlanjut ke `disetujui` atau `ditolak` melalui US-4.3
 
 **Data Model:**
 ```

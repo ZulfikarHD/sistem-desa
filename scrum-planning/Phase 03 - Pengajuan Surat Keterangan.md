@@ -27,11 +27,11 @@
 **So that** I can formally request a surat keterangan
 
 **Acceptance Criteria:**
-- [ ] Form: pilih jenis_surat (dropdown dari master data Phase 02), keperluan (textarea)
-- [ ] Validasi jenis surat wajib dipilih, keperluan wajib diisi
-- [ ] Sistem generate nomor_pengajuan unik otomatis saat submit
-- [ ] Status awal pengajuan: `diajukan`
-- [ ] tanggal_pengajuan otomatis terisi (tanggal submit)
+- [x] Form: pilih jenis_surat (dropdown dari master data Phase 02), keperluan (textarea)
+- [x] Validasi jenis surat wajib dipilih, keperluan wajib diisi
+- [x] Sistem generate nomor_pengajuan unik otomatis saat submit
+- [x] Status awal pengajuan: `diajukan`
+- [x] tanggal_pengajuan otomatis terisi (tanggal submit)
 
 ### US-3.2: Unggah Dokumen Persyaratan
 
@@ -40,10 +40,10 @@
 **So that** admin can verify my documents digitally without me visiting in person
 
 **Acceptance Criteria:**
-- [ ] Area unggah file untuk KTP dan/atau KK sesuai persyaratan jenis surat terpilih
-- [ ] Validasi format file (jpg/png/pdf) dan ukuran maksimum (misal 2MB)
-- [ ] File disimpan via Laravel Storage; path tersimpan di tabel dokumen_persyaratan
-- [ ] Preview file yang sudah diunggah sebelum submit final
+- [x] Area unggah file untuk KTP dan/atau KK sesuai persyaratan jenis surat terpilih
+- [x] Validasi format file (jpg/png/pdf) dan ukuran maksimum (misal 2MB)
+- [x] File disimpan via Laravel Storage; path tersimpan di tabel dokumen_persyaratan
+- [x] Preview file yang sudah diunggah sebelum submit final
 
 ### US-3.3: Validasi Kelengkapan Pengajuan
 
@@ -52,9 +52,9 @@
 **So that** incomplete submissions are caught immediately, not after visiting the office
 
 **Acceptance Criteria:**
-- [ ] Sistem menolak submit jika dokumen wajib belum diunggah
-- [ ] Pesan error jelas menunjukkan field/dokumen mana yang kurang
-- [ ] Data hanya tersimpan dengan status `diajukan` jika seluruh validasi lolos
+- [x] Sistem menolak submit jika dokumen wajib belum diunggah
+- [x] Pesan error jelas menunjukkan field/dokumen mana yang kurang
+- [x] Data hanya tersimpan dengan status `diajukan` jika seluruh validasi lolos
 
 ### US-3.4: Ajukan Ulang Setelah Ditolak
 
@@ -63,10 +63,10 @@
 **So that** I don't have to re-enter everything from scratch, addressing the repeat-effort problem the system was meant to solve
 
 **Acceptance Criteria:**
-- [ ] Tombol "Ajukan Ulang" muncul pada baris berstatus `ditolak` di Halaman Status & Riwayat Pengajuan (Phase 05)
-- [ ] Form pengajuan baru terisi otomatis dari data pengajuan sebelumnya (jenis surat, keperluan); warga hanya perlu memperbaiki bagian yang kurang, misalnya mengunggah ulang dokumen
-- [ ] Pengajuan ulang tersimpan sebagai record baru di pengajuan_surat dengan nomor_pengajuan baru, status `diajukan`
-- [ ] catatan_admin dari pengajuan yang ditolak tetap dapat dilihat warga sebagai referensi perbaikan
+- [x] Tombol "Ajukan Ulang" muncul pada baris berstatus `ditolak` di Halaman Status & Riwayat Pengajuan (Phase 05)
+- [x] Form pengajuan baru terisi otomatis dari data pengajuan sebelumnya (jenis surat, keperluan); warga hanya perlu memperbaiki bagian yang kurang, misalnya mengunggah ulang dokumen
+- [x] Pengajuan ulang tersimpan sebagai record baru di pengajuan_surat dengan nomor_pengajuan baru, status `diajukan`
+- [x] catatan_admin dari pengajuan yang ditolak tetap dapat dilihat warga sebagai referensi perbaikan
 
 **Data Model:**
 ```

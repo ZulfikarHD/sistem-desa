@@ -27,9 +27,9 @@
 **So that** I know the outcome without needing to check manually
 
 **Acceptance Criteria:**
-- [ ] Setiap perubahan status (disetujui/ditolak) oleh admin memicu insert record baru di tabel notifikasi
-- [ ] Notifikasi berisi pesan singkat (jenis surat, status baru)
-- [ ] status_baca default `belum`
+- [x] Setiap perubahan status (disetujui/ditolak) oleh admin memicu insert record baru di tabel notifikasi
+- [x] Notifikasi berisi pesan singkat (jenis surat, status baru)
+- [x] status_baca default `belum`
 
 ### US-5.2: Panel Notifikasi In-App
 
@@ -38,10 +38,10 @@
 **So that** I can quickly check what's new without opening full history
 
 **Acceptance Criteria:**
-- [ ] Icon/dropdown notifikasi di header, menampilkan badge jumlah belum dibaca
-- [ ] Klik notifikasi menandai status_baca menjadi `dibaca`
-- [ ] Klik notifikasi mengarahkan ke detail pengajuan terkait
-- [ ] Interaktivitas dropdown menggunakan Alpine.js (tanpa reload halaman)
+- [x] Icon/dropdown notifikasi di header, menampilkan badge jumlah belum dibaca
+- [x] Klik notifikasi menandai status_baca menjadi `dibaca`
+- [x] Klik notifikasi mengarahkan ke detail pengajuan terkait
+- [x] Interaktivitas dropdown menggunakan Alpine.js (tanpa reload halaman)
 
 ### US-5.3: Halaman Status & Riwayat Pengajuan
 
@@ -50,9 +50,9 @@
 **So that** I can track progress and reference past requests
 
 **Acceptance Criteria:**
-- [ ] Tabel: nomor_pengajuan, jenis surat, tanggal pengajuan, status, catatan_admin (jika ditolak)
-- [ ] Filter/sort berdasarkan status
-- [ ] Detail per baris dapat dibuka untuk melihat info lengkap
+- [x] Tabel: nomor_pengajuan, jenis surat, tanggal pengajuan, status, catatan_admin (jika ditolak)
+- [x] Filter/sort berdasarkan status
+- [x] Detail per baris dapat dibuka untuk melihat info lengkap
 
 **Data Model:**
 ```

@@ -28,12 +28,12 @@
 **So that** I can access the letter submission system
 
 **Acceptance Criteria:**
-- [ ] Form registrasi: NIK, nama, no. telepon, alamat, email, password (+ konfirmasi password)
-- [ ] Validasi NIK 16 digit dan unik (tidak boleh duplikat dengan akun lain)
-- [ ] Validasi email unik dan format valid
-- [ ] Password di-hash (bcrypt) sebelum disimpan ke basis data
-- [ ] Role default untuk akun baru adalah `warga`
-- [ ] Setelah registrasi berhasil, warga diarahkan ke halaman login
+- [x] Form registrasi: NIK, nama, no. telepon, alamat, email, password (+ konfirmasi password)
+- [x] Validasi NIK 16 digit dan unik (tidak boleh duplikat dengan akun lain)
+- [x] Validasi email unik dan format valid
+- [x] Password di-hash (bcrypt) sebelum disimpan ke basis data
+- [x] Role default untuk akun baru adalah `warga`
+- [x] Setelah registrasi berhasil, warga diarahkan ke halaman login
 
 ### US-1.2: Login Berbasis Role
 
@@ -42,11 +42,11 @@
 **So that** I can access the dashboard sesuai role saya
 
 **Acceptance Criteria:**
-- [ ] Form login: email, password
-- [ ] Autentikasi memverifikasi kredensial dan role pengguna
-- [ ] Redirect ke Dashboard Warga jika role = `warga`, ke Dashboard Admin jika role = `admin`
-- [ ] Pesan error generik untuk kredensial salah (tidak mengungkap field mana yang salah)
-- [ ] Fitur logout tersedia di kedua dashboard
+- [x] Form login: email, password
+- [x] Autentikasi memverifikasi kredensial dan role pengguna
+- [x] Redirect ke Dashboard Warga jika role = `warga`, ke Dashboard Admin jika role = `admin`
+- [x] Pesan error generik untuk kredensial salah (tidak mengungkap field mana yang salah)
+- [x] Fitur logout tersedia di kedua dashboard
 
 ### US-1.3: Middleware Proteksi Role
 
@@ -55,10 +55,10 @@
 **So that** warga cannot access admin pages and vice versa
 
 **Acceptance Criteria:**
-- [ ] Middleware memblokir akses warga ke route admin (Kelola Jenis Surat, Verifikasi, Rekap Pengajuan)
-- [ ] Middleware memblokir akses admin ke route khusus warga jika tidak relevan
-- [ ] Percobaan akses tanpa izin menampilkan halaman 403 atau redirect ke dashboard sesuai role
-- [ ] Guest (belum login) yang mengakses route terproteksi diarahkan ke halaman login
+- [x] Middleware memblokir akses warga ke route admin (Kelola Jenis Surat, Verifikasi, Rekap Pengajuan)
+- [x] Middleware memblokir akses admin ke route khusus warga jika tidak relevan
+- [x] Percobaan akses tanpa izin menampilkan halaman 403 atau redirect ke dashboard sesuai role
+- [x] Guest (belum login) yang mengakses route terproteksi diarahkan ke halaman login
 
 ### US-1.4: Manajemen Profil Pengguna
 
@@ -67,9 +67,9 @@
 **So that** my contact information stays accurate
 
 **Acceptance Criteria:**
-- [ ] Halaman profil menampilkan: nama, no. telepon, alamat, email
-- [ ] Form edit profil (NIK dan role tidak dapat diubah sendiri oleh pengguna)
-- [ ] Ganti password mewajibkan verifikasi password lama
+- [x] Halaman profil menampilkan: nama, no. telepon, alamat, email
+- [x] Form edit profil (NIK dan role tidak dapat diubah sendiri oleh pengguna)
+- [x] Ganti password mewajibkan verifikasi password lama
 
 ### US-1.5: Lupa Password (Reset Password)
 
@@ -78,11 +78,11 @@
 **So that** I can regain access without needing to visit the village office in person
 
 **Acceptance Criteria:**
-- [ ] Link "Lupa Password?" tersedia di halaman login
-- [ ] Form input email untuk memulai proses reset
-- [ ] Sistem mengirim link/token reset password ke email (memanfaatkan fitur bawaan Laravel Breeze)
-- [ ] Token reset memiliki masa berlaku terbatas (misal 60 menit)
-- [ ] Setelah reset berhasil, pengguna dapat login dengan password baru
+- [x] Link "Lupa Password?" tersedia di halaman login
+- [x] Form input email untuk memulai proses reset
+- [x] Sistem mengirim link/token reset password ke email (memanfaatkan fitur bawaan Laravel Breeze)
+- [x] Token reset memiliki masa berlaku terbatas (misal 60 menit)
+- [x] Setelah reset berhasil, pengguna dapat login dengan password baru
 
 **Data Model:**
 ```

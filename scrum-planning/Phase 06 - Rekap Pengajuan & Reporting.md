@@ -27,10 +27,10 @@
 **So that** I can generate periodic reports without manual recap
 
 **Acceptance Criteria:**
-- [ ] Tabel: nomor_pengajuan, nama warga, jenis surat, tanggal pengajuan, status, admin yang memverifikasi
-- [ ] Filter: jenis_surat, status, rentang tanggal (dari - sampai)
-- [ ] Pagination untuk data dalam jumlah besar
-- [ ] Ringkasan jumlah pengajuan per status di bagian atas halaman (total, diajukan, disetujui, ditolak)
+- [x] Tabel: nomor_pengajuan, nama warga, jenis surat, tanggal pengajuan, status, admin yang memverifikasi
+- [x] Filter: jenis_surat, status, rentang tanggal (dari - sampai)
+- [x] Pagination untuk data dalam jumlah besar
+- [x] Ringkasan jumlah pengajuan per status di bagian atas halaman (total, diajukan, disetujui, ditolak)
 
 ### US-6.2: Export Data Rekap
 
@@ -39,9 +39,9 @@
 **So that** I can share reports with the Kepala Desa outside the system
 
 **Acceptance Criteria:**
-- [ ] Tombol export CSV pada halaman rekap
-- [ ] Export mengikuti filter yang sedang aktif (bukan seluruh data)
-- [ ] Kolom export sesuai kolom tabel yang ditampilkan
+- [x] Tombol export CSV pada halaman rekap
+- [x] Export mengikuti filter yang sedang aktif (bukan seluruh data)
+- [x] Kolom export sesuai kolom tabel yang ditampilkan
 
 ---
 

@@ -67,6 +67,8 @@ Catatan: kolom `status` pada `pengajuan_surat` (Tabel 3.11) sudah mencantumkan e
 
 *(Alternatif jika tidak ingin menambah kompleksitas: hapus nilai enum `diproses` dari Tabel 3.11 dan sebutkan di BAB V sebagai saran pengembangan. Tapi karena perubahan ini kecil dan langsung mendukung tujuan transparansi status, folding ke Phase 04 lebih disarankan.)*
 
+> **Update implementasi:** Phase 04 (termasuk US-4.4 `diajukan→diproses` saat buka detail) **sudah selesai di kode**. Target alur akhir `diajukan → disetujui|ditolak → diproses → siap_diambil → selesai` dikerjakan sebagai **migrasi di Phase 07** (US-7.1), bukan dengan mengulang Phase 04.
+
 ---
 
 ## Ringkasan Prioritas Revisi

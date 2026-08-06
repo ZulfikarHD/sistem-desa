@@ -6,6 +6,16 @@
                 "artisan",
                 "boost:mcp"
             ]
+        },
+        "playwright": {
+            "command": "/home/passerby/.nvm/versions/node/v24.18.0/bin/npx",
+            "args": [
+                "-y",
+                "@playwright/mcp@latest",
+                "--browser",
+                "chromium",
+                "--headless"
+            ]
         }
     }
 }
