@@ -90,6 +90,38 @@
                             {{ __('Persyaratan Dokumen') }}
                         </flux:sidebar.item>
                     @endif
+
+                    @if (auth()->user()->isAdmin())
+                        <flux:sidebar.item
+                            icon="document-text"
+                            :href="route('jenis-surat.index')"
+                            :current="request()->routeIs('jenis-surat.*')"
+                            wire:navigate
+                            data-test="sidebar-jenis-surat-mobile"
+                        >
+                            {{ __('Jenis Surat') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
+                            icon="clipboard-document-check"
+                            :href="route('verifikasi.index')"
+                            :current="request()->routeIs('verifikasi.*')"
+                            wire:navigate
+                            data-test="sidebar-verifikasi-pengajuan-mobile"
+                        >
+                            {{ __('Verifikasi Pengajuan') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
+                            icon="chart-bar"
+                            :href="route('rekap-pengajuan.index')"
+                            :current="request()->routeIs('rekap-pengajuan.*')"
+                            wire:navigate
+                            data-test="sidebar-rekap-pengajuan-mobile"
+                        >
+                            {{ __('Rekap Pengajuan') }}
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

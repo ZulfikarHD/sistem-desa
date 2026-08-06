@@ -21,3 +21,4 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Ajukan Ulang Pengajuan](guides/pengajuan-surat-ajukan-ulang.md) | Cara ajukan ulang pengajuan yang ditolak |
 | [Verifikasi Pengajuan](guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
 | [Notifikasi & Riwayat Pengajuan](guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
+| [Rekap Pengajuan](guides/rekap-pengajuan.md) | Cara admin memfilter rekap dan ekspor CSV |

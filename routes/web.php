@@ -5,6 +5,7 @@ use App\Livewire\JenisSurat\PersyaratanDokumen;
 use App\Livewire\Pengajuan\DetailPengajuanWarga;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
 use App\Livewire\Pengajuan\RiwayatPengajuan;
+use App\Livewire\Rekap\RekapPengajuan;
 use App\Livewire\Verifikasi\DaftarPengajuanVerifikasi;
 use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
 use App\Models\DokumenPersyaratan;
@@ -69,6 +70,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('verifikasi/{pengajuan}', DetailPengajuanVerifikasi::class)
             ->name('verifikasi.show')
             ->whereNumber('pengajuan');
+
+        // US-6.1 + US-6.2 — Rekap pengajuan & export CSV
+        Route::livewire('rekap-pengajuan', RekapPengajuan::class)->name('rekap-pengajuan.index');
     });
 });
 

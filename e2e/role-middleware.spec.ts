@@ -119,6 +119,26 @@ test.describe('US-1.3 Middleware Proteksi Role', () => {
         await expect(page.getByText(/403|Forbidden|tidak diizinkan|Unauthorized/i).first()).toBeVisible();
     });
 
+    test('warga yang mengakses rekap pengajuan mendapat 403', async ({ page }) => {
+        const stamp = Date.now();
+        const email = `warga.role.rekap.${stamp}@example.com`;
+        const nik = uniqueNik(Number(String(stamp).slice(-6)) + 6);
+
+        ensureUser({
+            email,
+            name: 'Warga Role Rekap Forbid',
+            role: 'warga',
+            nik,
+        });
+
+        await loginAs(page, email);
+        await expect(page).toHaveURL(/\/dashboard$/);
+
+        const response = await page.goto('/admin/rekap-pengajuan');
+        expect(response?.status()).toBe(403);
+        await expect(page.locator('[data-test="rekap-pengajuan-heading"]')).toHaveCount(0);
+    });
+
     test('admin yang mengakses dashboard warga mendapat 403', async ({ page }) => {
         const stamp = Date.now();
         const email = `admin.role.forbid.${stamp}@example.com`;

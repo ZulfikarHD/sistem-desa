@@ -73,6 +73,16 @@
                         >
                             {{ __('Verifikasi Pengajuan') }}
                         </flux:sidebar.item>
+
+                        <flux:sidebar.item
+                            icon="chart-bar"
+                            :href="route('rekap-pengajuan.index')"
+                            :current="request()->routeIs('rekap-pengajuan.*')"
+                            wire:navigate
+                            data-test="sidebar-rekap-pengajuan"
+                        >
+                            {{ __('Rekap Pengajuan') }}
+                        </flux:sidebar.item>
                     @endif
                 </flux:sidebar.group>
             </flux:sidebar.nav>

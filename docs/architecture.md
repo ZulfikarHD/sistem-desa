@@ -7,7 +7,7 @@ High-level overview of Sistem Informasi Pelayanan Surat Keterangan (**Pelayanan 
 - **Backend:** Laravel 13 + Fortify (authentication)
 - **Frontend:** Livewire 4 + Flux UI + Blade + Tailwind CSS v4
 - **Database:** SQLite (local/dev); schema via Eloquent migrations
-- **E2E:** Playwright (Chromium) — `e2e/` includes Phase 01 auth specs, Phase 02 persyaratan specs, and `e2e/pengajuan-surat.spec.ts` (US-3.1–3.3)
+- **E2E:** Playwright (Chromium) — `e2e/` covers Phase 01–06 (auth, jenis surat, pengajuan, verifikasi, notifikasi, rekap)
 - **Test data:** `UserSeeder` via `php artisan db:seed` (admin + warga baku); covered by `tests/Feature/DatabaseSeederTest.php`
 
 ## Public UI Brand
@@ -75,6 +75,23 @@ flowchart LR
 | US-3.4 Ajukan Ulang Setelah Ditolak | Done |
 
 Details: [dev-docs/features/pengajuan-surat-form.md](dev-docs/features/pengajuan-surat-form.md), [dev-docs/features/pengajuan-surat-dokumen.md](dev-docs/features/pengajuan-surat-dokumen.md), [dev-docs/features/pengajuan-surat-kelengkapan.md](dev-docs/features/pengajuan-surat-kelengkapan.md), ADR-009, ADR-010.
+
+## Rekap Pengajuan & Reporting (Phase 06)
+
+```mermaid
+flowchart LR
+    Admin[Admin] --> Rekap[/admin/rekap-pengajuan]
+    Rekap --> Filter[jenis + status + tanggal]
+    Filter --> Table[(pengajuan_surat)]
+    Rekap --> CSV[Export CSV UTF-8 BOM]
+```
+
+| Story | Status |
+|-------|--------|
+| US-6.1 Halaman Rekap dengan Filter | Implemented |
+| US-6.2 Export Data Rekap | Implemented |
+
+Details: [dev-docs/features/rekap-pengajuan.md](dev-docs/features/rekap-pengajuan.md), ADR-013.
 
 ## Local seed accounts
 
