@@ -77,7 +77,7 @@ Login does not alter the schema; it reads `email`, `password`, and `role` from `
 
 - Custom `LoginResponse` instead of a single `fortify.home` path — see [ADR-002](../decisions/002-role-based-login-redirect.md).
 - Route name `dashboard` kept for warga (not renamed to `dashboard.warga`) to limit churn in existing links/tests.
-- Cross-role route blocking (warga cannot open admin URLs) is **US-1.3**, not implemented here.
+- Cross-role route blocking is implemented in **US-1.3** — see [role-middleware.md](role-middleware.md).
 
 ## Related
 

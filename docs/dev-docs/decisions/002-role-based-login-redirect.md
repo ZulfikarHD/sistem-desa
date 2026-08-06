@@ -25,7 +25,7 @@ US-1.2 requires post-login redirects to **Dashboard Warga** (`role = warga`) or 
 
 ### Negative
 
-- Until US-1.3 middleware lands, a logged-in admin can still manually open `/dashboard` (and vice versa) if they know the URL.
+- ~~Until US-1.3 middleware lands, a logged-in admin can still manually open `/dashboard` (and vice versa) if they know the URL.~~ **Resolved by US-1.3 / ADR-003** (`role` middleware → 403).
 - `fortify.home` remains `/dashboard` as a fallback for non-login Fortify flows (e.g. email verification defaults).
 
 ### Neutral

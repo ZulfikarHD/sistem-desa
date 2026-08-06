@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Alias proteksi role (US-1.3) — pakai `role:warga` / `role:admin` di route
+        $middleware->alias([
+            'role' => EnsureUserHasRole::class,
+        ]);
+
         // User yang sudah login diarahkan ke dashboard sesuai role (US-1.2)
         $middleware->redirectUsersTo(function (Request $request) {
             $user = $request->user();
