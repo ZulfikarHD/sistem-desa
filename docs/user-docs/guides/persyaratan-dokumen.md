@@ -3,9 +3,11 @@
 ## Apa itu Persyaratan Dokumen?
 Halaman ini menampilkan daftar jenis surat keterangan yang tersedia di desa, beserta deskripsi singkat dan dokumen apa saja yang perlu Anda siapkan sebelum mengajukan surat.
 
+Halaman yang sama juga dapat dibuka **tanpa login** oleh pengunjung publik. Panduan khusus akses publik: [Akses Publik Persyaratan Dokumen](persyaratan-dokumen-publik.md).
+
 ## Cara Menggunakan
 
-### Melihat daftar jenis surat
+### Melihat daftar jenis surat (setelah login sebagai warga)
 
 1. Masuk dengan akun **warga**
 2. Di menu samping, klik **Persyaratan Dokumen**
@@ -28,20 +30,22 @@ Halaman ini dapat dibuka dari smartphone. Kartu jenis surat ditata satu kolom di
 
 ## FAQ
 
-**Q: Mengapa saya tidak bisa membuka halaman ini sebagai admin?**
-A: Halaman ini khusus untuk akun warga. Admin mengelola data jenis surat lewat menu **Jenis Surat**.
+**Q: Apakah admin juga bisa melihat halaman ini?**
+A: Ya. Karena halaman bersifat informasi publik, admin dapat membukanya. Pengelolaan data tetap lewat menu **Jenis Surat**.
 
 **Q: Mengapa jenis surat yang sudah diarsip tidak muncul?**
-A: Jenis surat yang diarsip admin tidak ditampilkan kepada warga.
+A: Jenis surat yang diarsip admin tidak ditampilkan di halaman ini.
 
 **Q: Bisakah saya mengajukan surat dari halaman ini?**
 A: Belum. Saat ini halaman hanya menampilkan persyaratan. Pengajuan akan tersedia di fitur berikutnya.
+
+**Q: Saya belum punya akun — bisa lihat persyaratan?**
+A: Bisa. Lihat panduan [Akses Publik Persyaratan Dokumen](persyaratan-dokumen-publik.md).
 
 ## Troubleshooting
 
 | Masalah | Solusi |
 |---------|--------|
-| Dialihkan ke halaman masuk | Login terlebih dahulu dengan akun warga |
-| Halaman 403 / terlarang | Pastikan akun Anda ber-role warga, bukan admin |
 | Daftar kosong | Belum ada jenis surat aktif, atau kata kunci pencarian tidak cocok |
-| Tidak menemukan menu | Buka menu samping (ikon garis di ponsel) lalu pilih **Persyaratan Dokumen** |
+| Tidak menemukan menu (setelah login) | Buka menu samping (ikon garis di ponsel) lalu pilih **Persyaratan Dokumen** |
+| Ingin daftar/masuk dari halaman publik | Gunakan tombol **Daftar** atau **Login untuk Mengajukan** |

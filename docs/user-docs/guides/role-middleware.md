@@ -7,6 +7,7 @@ Sistem membatasi halaman sesuai jenis akun Anda:
 - **Warga** hanya boleh membuka **Dashboard Warga**
 - **Admin / Petugas Desa** hanya boleh membuka **Dashboard Admin**
 - Halaman **Profil / Pengaturan** bisa dipakai kedua jenis akun
+- Halaman **Persyaratan Dokumen** (`/persyaratan-dokumen`) **bisa dibuka tanpa login** (informasi publik)
 
 Jika Anda mencoba membuka halaman yang bukan untuk role Anda, sistem menampilkan halaman **403 (Akses Ditolak)**.
 
@@ -43,6 +44,9 @@ A: Bisa. Halaman profil/pengaturan dipakai bersama oleh warga dan admin.
 
 **Q: Apa bedanya 403 dengan diarahkan ke login?**  
 A: Belum login → diarahkan ke login. Sudah login tapi role salah → 403.
+
+**Q: Apakah Persyaratan Dokumen juga dilindungi login?**  
+A: Tidak. `/persyaratan-dokumen` bersifat informasi publik dan bisa dibuka tanpa akun.
 
 ## Troubleshooting
 

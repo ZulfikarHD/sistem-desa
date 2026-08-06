@@ -10,7 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 /**
- * Tampilan read-only daftar & detail persyaratan dokumen untuk warga (US-2.2).
+ * Tampilan read-only daftar & detail persyaratan dokumen (US-2.2 warga + US-2.3 publik).
  */
 #[Title('Persyaratan Dokumen')]
 class PersyaratanDokumen extends Component
@@ -74,9 +74,12 @@ class PersyaratanDokumen extends Component
             $selectedJenisSurat = JenisSurat::query()->find($this->selectedId);
         }
 
+        // Guest memakai layout publik (app layout bergantung auth()->user())
+        $layout = auth()->check() ? 'layouts::app' : 'layouts::public';
+
         return view('livewire.jenis-surat.persyaratan-dokumen', [
             'jenisSuratList' => $query->paginate(9),
             'selectedJenisSurat' => $selectedJenisSurat,
-        ]);
+        ])->layout($layout);
     }
 }

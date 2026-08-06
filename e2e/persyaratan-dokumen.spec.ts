@@ -85,31 +85,48 @@ async function loginAs(page: import('@playwright/test').Page, email: string, pas
 }
 
 test.describe('US-2.2 Tampilan Persyaratan Dokumen untuk Warga', () => {
-    test('guest yang mengakses persyaratan dokumen diarahkan ke login', async ({ page }) => {
-        await page.goto('/persyaratan-dokumen');
-        await expect(page).toHaveURL(/\/login/);
-        await expect(page.locator('input[name="email"]')).toBeVisible();
-    });
-
-    test('admin yang mengakses persyaratan dokumen mendapat 403', async ({ page }) => {
+    test('warga tidak melihat CTA guest Daftar/Login untuk Mengajukan', async ({ page }) => {
         const stamp = Date.now();
-        const email = `admin.persyaratan.${stamp}@example.com`;
+        const email = `warga.persyaratan.cta.${stamp}@example.com`;
         const nik = uniqueNik(Number(String(stamp).slice(-6)));
 
         ensureUser({
             email,
-            name: 'Admin Persyaratan Forbid',
+            name: 'Warga Persyaratan CTA',
+            role: 'warga',
+            nik,
+        });
+
+        await loginAs(page, email);
+        await page.goto('/persyaratan-dokumen');
+
+        await expect(page.locator('[data-test="persyaratan-dokumen-heading"]')).toBeVisible();
+        await expect(page.locator('[data-test="persyaratan-dokumen-guest-cta"]')).toHaveCount(0);
+    });
+
+    test('admin dapat membuka halaman persyaratan dokumen publik', async ({ page }) => {
+        const stamp = Date.now();
+        const email = `admin.persyaratan.${stamp}@example.com`;
+        const nik = uniqueNik(Number(String(stamp).slice(-6)));
+        const namaSurat = `Surat Admin Lihat Persyaratan ${stamp}`;
+
+        ensureUser({
+            email,
+            name: 'Admin Persyaratan View',
             role: 'admin',
             nik,
         });
+        ensureJenisSurat(namaSurat, 'Deskripsi untuk admin view');
 
         await loginAs(page, email);
         await expect(page).toHaveURL(/\/admin\/dashboard/);
 
         const response = await page.goto('/persyaratan-dokumen');
-        expect(response?.status()).toBe(403);
-        await expect(page.locator('[data-test="persyaratan-dokumen-heading"]')).toHaveCount(0);
-        await expect(page.getByText(/403|Forbidden|tidak diizinkan|Unauthorized/i).first()).toBeVisible();
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('[data-test="persyaratan-dokumen-heading"]')).toBeVisible();
+        await expect(page.locator('[data-test="persyaratan-dokumen-guest-cta"]')).toHaveCount(0);
+        await page.locator('[data-test="persyaratan-dokumen-search"]').fill(namaSurat);
+        await expect(page.getByText(namaSurat)).toBeVisible();
     });
 
     test('warga dapat melihat daftar jenis surat beserta deskripsi dan persyaratan', async ({ page }) => {

@@ -7,12 +7,12 @@ High-level overview of Sistem Informasi Pelayanan Surat Keterangan (**Pelayanan 
 - **Backend:** Laravel 13 + Fortify (authentication)
 - **Frontend:** Livewire 4 + Flux UI + Blade + Tailwind CSS v4
 - **Database:** SQLite (local/dev); schema via Eloquent migrations
-- **E2E:** Playwright (Chromium) — `e2e/` includes Phase 01 auth specs, `e2e/jenis-surat.spec.ts` (US-2.1), and `e2e/persyaratan-dokumen.spec.ts` (US-2.2)
+- **E2E:** Playwright (Chromium) — `e2e/` includes Phase 01 auth specs, `e2e/jenis-surat.spec.ts` (US-2.1), `e2e/persyaratan-dokumen.spec.ts` (US-2.2), and `e2e/persyaratan-dokumen-public.spec.ts` (US-2.3)
 - **Test data:** `UserSeeder` via `php artisan db:seed` (admin + warga baku); covered by `tests/Feature/DatabaseSeederTest.php`
 
 ## Public UI Brand
 
-Guest-facing pages (welcome, login, register) use a forest-green / saffron brand with Fraunces (display) + Instrument Sans. Auth forms share `layouts/auth/split` (brand panel + form). See [ADR-005](dev-docs/decisions/005-public-pages-brand-redesign.md).
+Guest-facing pages (welcome, login, register, and public persyaratan dokumen) use a forest-green / saffron brand with Fraunces (display) + Instrument Sans. Auth forms share `layouts/auth/split` (brand panel + form). Guest Livewire pages use `layouts/public`. See [ADR-005](dev-docs/decisions/005-public-pages-brand-redesign.md) and [ADR-008](dev-docs/decisions/008-public-persyaratan-dokumen-access.md).
 
 ## Auth Foundation (Phase 01)
 
@@ -43,7 +43,8 @@ flowchart LR
     Admin[Admin] --> JS[/admin/jenis-surat]
     JS --> Model[JenisSurat SoftDeletes]
     Model --> Table[(jenis_surat)]
-    Warga[Warga] --> PD[/persyaratan-dokumen]
+    Guest[Guest] --> PD[/persyaratan-dokumen]
+    Warga[Warga] --> PD
     PD --> Model
 ```
 
@@ -51,9 +52,9 @@ flowchart LR
 |-------|--------|
 | US-2.1 Kelola Data Jenis Surat (admin CRUD + soft/hard delete) | Implemented |
 | US-2.2 Tampilan Persyaratan untuk Warga | Implemented |
-| US-2.3 Akses Publik Persyaratan | Pending |
+| US-2.3 Akses Publik Persyaratan | Implemented |
 
-Details: [dev-docs/features/jenis-surat.md](dev-docs/features/jenis-surat.md), [dev-docs/features/persyaratan-dokumen.md](dev-docs/features/persyaratan-dokumen.md), ADR-006, ADR-007.
+Details: [dev-docs/features/jenis-surat.md](dev-docs/features/jenis-surat.md), [dev-docs/features/persyaratan-dokumen.md](dev-docs/features/persyaratan-dokumen.md), [dev-docs/features/persyaratan-dokumen-publik.md](dev-docs/features/persyaratan-dokumen-publik.md), ADR-006, ADR-007, ADR-008.
 
 ## Local seed accounts
 

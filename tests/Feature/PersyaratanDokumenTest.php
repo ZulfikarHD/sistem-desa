@@ -6,17 +6,51 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
 
-test('guests are redirected to login from persyaratan dokumen page', function () {
+test('guests can visit persyaratan dokumen page without login', function () {
     $this->get(route('persyaratan-dokumen.index'))
-        ->assertRedirect(route('login'));
+        ->assertOk()
+        ->assertSeeLivewire(PersyaratanDokumen::class)
+        ->assertSee('Daftar/Login untuk Mengajukan')
+        ->assertSee('Login untuk Mengajukan');
 });
 
-test('admin cannot visit persyaratan dokumen warga page', function () {
+test('guests see active jenis surat list as read-only', function () {
+    $jenisSurat = JenisSurat::factory()->create([
+        'nama_surat' => 'Surat Domisili Publik Test',
+        'deskripsi' => 'Keterangan tempat tinggal publik',
+        'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
+    ]);
+
+    $this->get(route('persyaratan-dokumen.index'))
+        ->assertOk()
+        ->assertSee('Surat Domisili Publik Test')
+        ->assertSee('Keterangan tempat tinggal publik')
+        ->assertSee('Fotokopi KTP')
+        ->assertDontSee('Ajukan Surat', false);
+
+    expect($jenisSurat->exists)->toBeTrue();
+});
+
+test('guests do not see soft deleted jenis surat', function () {
+    $active = JenisSurat::factory()->create(['nama_surat' => 'Surat Aktif Publik']);
+    $archived = JenisSurat::factory()->create(['nama_surat' => 'Surat Arsip Publik']);
+    $archived->delete();
+
+    Livewire::test(PersyaratanDokumen::class)
+        ->assertSee('Surat Aktif Publik')
+        ->assertDontSee('Surat Arsip Publik');
+
+    expect($active->trashed())->toBeFalse();
+});
+
+test('admin can visit public persyaratan dokumen page', function () {
     $user = User::factory()->create(['role' => 'admin']);
 
     $this->actingAs($user)
         ->get(route('persyaratan-dokumen.index'))
-        ->assertForbidden();
+        ->assertOk()
+        ->assertSeeLivewire(PersyaratanDokumen::class)
+        ->assertDontSee('Daftar/Login untuk Mengajukan');
 });
 
 test('warga can visit persyaratan dokumen page', function () {
@@ -25,7 +59,8 @@ test('warga can visit persyaratan dokumen page', function () {
     $this->actingAs($user)
         ->get(route('persyaratan-dokumen.index'))
         ->assertOk()
-        ->assertSeeLivewire(PersyaratanDokumen::class);
+        ->assertSeeLivewire(PersyaratanDokumen::class)
+        ->assertDontSee('Daftar/Login untuk Mengajukan');
 });
 
 test('warga sees active jenis surat with deskripsi and persyaratan', function () {
@@ -118,4 +153,19 @@ test('jenis surat without deskripsi shows fallback text', function () {
         ->test(PersyaratanDokumen::class)
         ->assertSee('Surat Tanpa Deskripsi')
         ->assertSee('Tidak ada deskripsi.');
+});
+
+test('guest can open detail modal without submitting pengajuan', function () {
+    $jenisSurat = JenisSurat::factory()->create([
+        'nama_surat' => 'Surat Detail Publik',
+        'deskripsi' => 'Deskripsi publik',
+        'persyaratan_dokumen' => '- KTP',
+    ]);
+
+    Livewire::test(PersyaratanDokumen::class)
+        ->call('openDetail', $jenisSurat->id)
+        ->assertSet('showDetail', true)
+        ->assertSee('Surat Detail Publik')
+        ->assertSee('Daftar atau masuk terlebih dahulu')
+        ->assertDontSee('Submit Pengajuan', false);
 });

@@ -21,6 +21,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Password Reset (US-1.5)](dev-docs/features/password-reset.md) | Technical docs for forgot-password flow |
 | [Jenis Surat Management (US-2.1)](dev-docs/features/jenis-surat.md) | Admin CRUD jenis surat + soft/hard delete |
 | [Persyaratan Dokumen Warga (US-2.2)](dev-docs/features/persyaratan-dokumen.md) | Warga browse + detail persyaratan dokumen |
+| [Akses Publik Persyaratan Dokumen (US-2.3)](dev-docs/features/persyaratan-dokumen-publik.md) | Guest browse persyaratan tanpa login + CTA daftar/login |
 | [ADR-001: Keep `name` column + logout after register](dev-docs/decisions/001-registration-name-column-and-redirect.md) | Why `name` (not `nama`) and guest redirect after register |
 | [ADR-002: Role-based login redirect](dev-docs/decisions/002-role-based-login-redirect.md) | Why custom LoginResponse + dual dashboards |
 | [ADR-003: Role middleware 403](dev-docs/decisions/003-role-middleware-403.md) | Why denied access uses HTTP 403 |
@@ -28,6 +29,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-005: Public pages brand redesign](dev-docs/decisions/005-public-pages-brand-redesign.md) | Why forest/saffron brand + split auth layout |
 | [ADR-006: jenis_surat table + admin CRUD](dev-docs/decisions/006-jenis-surat-table-and-admin-crud.md) | Why `jenis_surat` naming, modal CRUD, soft/hard delete |
 | [ADR-007: Warga persyaratan dokumen view](dev-docs/decisions/007-warga-persyaratan-dokumen-view.md) | Why warga-only route + modal detail for US-2.2 |
+| [ADR-008: Public persyaratan dokumen access](dev-docs/decisions/008-public-persyaratan-dokumen-access.md) | Why same public route + layouts/public for guests |
 
 ## User Docs
 
@@ -43,3 +45,4 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Lupa Password](user-docs/guides/password-reset.md) | Cara reset password via email |
 | [Panduan Kelola Jenis Surat](user-docs/guides/jenis-surat.md) | Cara admin menambah/ubah/arsip/hapus jenis surat |
 | [Panduan Persyaratan Dokumen](user-docs/guides/persyaratan-dokumen.md) | Cara warga melihat persyaratan jenis surat |
+| [Panduan Akses Publik Persyaratan Dokumen](user-docs/guides/persyaratan-dokumen-publik.md) | Cara pengunjung tanpa akun melihat persyaratan |

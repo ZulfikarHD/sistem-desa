@@ -20,7 +20,7 @@ US-2.2 requires warga to see letter types with descriptions and document require
 - Soft-delete semantics stay consistent for warga consumers
 
 ### Negative
-- Guests still cannot browse requirements until US-2.3
+- ~~Guests still cannot browse requirements until US-2.3~~ **Resolved by US-2.3 / ADR-008** (same route is public)
 - “Ajukan” remains informational until Phase 03
 
 ### Neutral

@@ -60,16 +60,25 @@
 **Primary route:** `/persyaratan-dokumen` (`persyaratan-dokumen.index`) — Livewire `PersyaratanDokumen`  
 **Docs:** `docs/dev-docs/features/persyaratan-dokumen.md`, `docs/user-docs/guides/persyaratan-dokumen.md`, ADR-007
 
-### US-2.3: Akses Publik ke Informasi Persyaratan Dokumen
+### US-2.3: Akses Publik ke Informasi Persyaratan Dokumen — ✅ DONE
 
 **As a** calon pemohon (belum punya akun / belum login)
 **I want** to view document requirements without needing to register or log in first
 **So that** I can decide whether to apply and prepare documents before creating an account
 
 **Acceptance Criteria:**
-- [ ] Halaman daftar jenis surat & persyaratan dapat diakses tanpa login (route publik, dikecualikan dari middleware auth Phase 01 US-1.3)
-- [ ] Halaman menampilkan ajakan "Daftar/Login untuk Mengajukan" bagi pengunjung yang belum punya akun
-- [ ] Konten tetap read-only untuk pengunjung publik — tidak bisa submit pengajuan tanpa login
+- [x] Halaman daftar jenis surat & persyaratan dapat diakses tanpa login (route publik, dikecualikan dari middleware auth Phase 01 US-1.3)
+- [x] Halaman menampilkan ajakan "Daftar/Login untuk Mengajukan" bagi pengunjung yang belum punya akun
+- [x] Konten tetap read-only untuk pengunjung publik — tidak bisa submit pengajuan tanpa login
+
+**Implemented extras (beyond AC wording):**
+- Reuse `/persyaratan-dokumen` + `PersyaratanDokumen` (bukan route terpisah)
+- Layout `layouts/public` untuk guest; `layouts/app` untuk user login
+- Tautan **Lihat Persyaratan Dokumen** di beranda
+- Soft-deleted jenis surat tetap disembunyikan
+
+**Primary route:** `/persyaratan-dokumen` (`persyaratan-dokumen.index`) — publik  
+**Docs:** `docs/dev-docs/features/persyaratan-dokumen-publik.md`, `docs/user-docs/guides/persyaratan-dokumen-publik.md`, ADR-008
 
 **Data Model (as implemented):**
 ```
@@ -90,9 +99,9 @@ jenis_surat
 |---|-------|-------------|----------|--------|
 | 1 | US-2.1 Kelola Data Jenis Surat | 3 | Must | ✅ Done |
 | 2 | US-2.2 Tampilan Persyaratan Dokumen | 2 | Must | ✅ Done |
-| 3 | US-2.3 Akses Publik Persyaratan Dokumen | 2 | Must | Pending |
+| 3 | US-2.3 Akses Publik Persyaratan Dokumen | 2 | Must | ✅ Done |
 
-**Total Story Points: 7** (5 done / 2 remaining)
+**Total Story Points: 7** (7 done / 0 remaining)
 
 ---
 

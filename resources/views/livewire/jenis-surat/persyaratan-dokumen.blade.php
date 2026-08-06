@@ -8,6 +8,39 @@
         </flux:text>
     </div>
 
+    @guest
+        <flux:callout icon="information-circle" variant="secondary" data-test="persyaratan-dokumen-guest-cta">
+            <flux:callout.heading>{{ __('Daftar/Login untuk Mengajukan') }}</flux:callout.heading>
+            <flux:callout.text>
+                {{ __('Halaman ini hanya menampilkan informasi persyaratan. Untuk mengajukan surat, silakan daftar atau masuk terlebih dahulu.') }}
+            </flux:callout.text>
+            <x-slot name="actions">
+                @if (Route::has('register'))
+                    <flux:button
+                        :href="route('register')"
+                        variant="primary"
+                        size="sm"
+                        wire:navigate
+                        data-test="persyaratan-dokumen-cta-register"
+                    >
+                        {{ __('Daftar') }}
+                    </flux:button>
+                @endif
+                @if (Route::has('login'))
+                    <flux:button
+                        :href="route('login')"
+                        variant="filled"
+                        size="sm"
+                        wire:navigate
+                        data-test="persyaratan-dokumen-cta-login"
+                    >
+                        {{ __('Login untuk Mengajukan') }}
+                    </flux:button>
+                @endif
+            </x-slot>
+        </flux:callout>
+    @endguest
+
     <div class="max-w-md">
         <flux:input
             wire:model.live.debounce.300ms="search"
@@ -115,7 +148,11 @@
 
                 <flux:callout icon="information-circle" data-test="persyaratan-dokumen-detail-note">
                     <flux:callout.text>
-                        {{ __('Siapkan dokumen di atas sebelum mengajukan surat. Fitur pengajuan akan tersedia di tahap berikutnya.') }}
+                        @guest
+                            {{ __('Siapkan dokumen di atas sebelum mengajukan surat. Daftar atau masuk terlebih dahulu untuk mengajukan (fitur pengajuan akan tersedia di tahap berikutnya).') }}
+                        @else
+                            {{ __('Siapkan dokumen di atas sebelum mengajukan surat. Fitur pengajuan akan tersedia di tahap berikutnya.') }}
+                        @endguest
                     </flux:callout.text>
                 </flux:callout>
 

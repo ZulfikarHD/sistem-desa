@@ -97,6 +97,14 @@
                                     {{ __('Sudah punya akun? Masuk') }}
                                 </a>
                             @endif
+                            <a
+                                href="{{ route('persyaratan-dokumen.index') }}"
+                                class="inline-flex items-center justify-center rounded-lg px-6 py-3 text-sm font-semibold text-white/90 underline-offset-4 transition hover:text-white hover:underline"
+                                wire:navigate
+                                data-test="welcome-persyaratan-dokumen"
+                            >
+                                {{ __('Lihat Persyaratan Dokumen') }}
+                            </a>
                         </div>
                     @endguest
                 </div>
