@@ -2,7 +2,7 @@
 
 ## Overview
 
-Admin/petugas desa review submitted letter requests (`pengajuan_surat`). US-4.1 provides a filterable list (default `diajukan`). US-4.2 provides detail with KTP/KK preview. US-4.3 implements approve/reject with mandatory rejection note, audit log, and `diverifikasi_oleh`. US-4.4 auto-transitions `diajukan` → `diproses` on first detail page open (in-app notification hook deferred to Phase 05 US-5.1).
+Admin/petugas desa review submitted letter requests (`pengajuan_surat`). US-4.1 provides a filterable list (default `diajukan`). US-4.2 provides detail with KTP/KK preview. US-4.3 implements approve/reject with mandatory rejection note, audit log, and `diverifikasi_oleh`. US-4.4 auto-transitions `diajukan` → `diproses` on first detail page open; in-app notifications are sent via Phase 05 (see [notifikasi-pengajuan.md](notifikasi-pengajuan.md)).
 
 ## Architecture Diagram
 
@@ -110,7 +110,7 @@ No JSON API. Session web routes only:
 - **Secure document routes** — files on private `local` disk; admin-only middleware.
 - **Preview fallback** — callout + download when file missing or unsupported.
 - **Pessimistic locking** — `lockForUpdate()` inside transaction mitigates two admins acting on the same pengajuan (Phase 04 risk).
-- **Notification deferred** — US-4.4 AC references Phase 05 US-5.1 for in-app notification on `diproses`; not implemented here.
+- **Notifications (Phase 05)** — US-4.4 `diproses` transition and US-4.3 approve/reject insert rows into `notifikasi` via `DetailPengajuanVerifikasi::buatNotifikasiStatus()`. See [notifikasi-pengajuan.md](notifikasi-pengajuan.md).
 - **Optional note on approve** — `keterangan` in `log_verifikasi` is nullable for `setujui`; only `tolak` requires `catatan_admin`.
 
 ## Related

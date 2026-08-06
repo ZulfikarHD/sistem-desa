@@ -105,4 +105,12 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(PengajuanSurat::class);
     }
+
+    /**
+     * Notifikasi in-app warga (Phase 05).
+     */
+    public function notifikasi(): HasMany
+    {
+        return $this->hasMany(Notifikasi::class);
+    }
 }

@@ -27,6 +27,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Validasi Kelengkapan Pengajuan (US-3.3)](dev-docs/features/pengajuan-surat-kelengkapan.md) | Required-doc submit blocking + clear error messages |
 | [Ajukan Ulang Setelah Ditolak (US-3.4)](dev-docs/features/pengajuan-surat-ajukan-ulang.md) | Resubmit ditolak pengajuan + riwayat page |
 | [Verifikasi Pengajuan (US-4.1 – US-4.4)](dev-docs/features/verifikasi-pengajuan.md) | Admin list, detail preview, setujui/tolak, log audit, auto diproses |
+| [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [ADR-001: Keep `name` column + logout after register](dev-docs/decisions/001-registration-name-column-and-redirect.md) | Why `name` (not `nama`) and guest redirect after register |
 | [ADR-002: Role-based login redirect](dev-docs/decisions/002-role-based-login-redirect.md) | Why custom LoginResponse + dual dashboards |
 | [ADR-003: Role middleware 403](dev-docs/decisions/003-role-middleware-403.md) | Why denied access uses HTTP 403 |
@@ -60,3 +61,4 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Validasi Kelengkapan Pengajuan](user-docs/guides/pengajuan-surat-kelengkapan.md) | Aturan dokumen wajib sebelum kirim pengajuan |
 | [Panduan Ajukan Ulang Pengajuan](user-docs/guides/pengajuan-surat-ajukan-ulang.md) | Cara ajukan ulang setelah pengajuan ditolak |
 | [Panduan Verifikasi Pengajuan](user-docs/guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
+| [Panduan Notifikasi & Riwayat Pengajuan](user-docs/guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |

@@ -20,3 +20,4 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Validasi Kelengkapan Pengajuan](guides/pengajuan-surat-kelengkapan.md) | Dokumen wajib dan pesan error sebelum kirim |
 | [Ajukan Ulang Pengajuan](guides/pengajuan-surat-ajukan-ulang.md) | Cara ajukan ulang pengajuan yang ditolak |
 | [Verifikasi Pengajuan](guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
+| [Notifikasi & Riwayat Pengajuan](guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |

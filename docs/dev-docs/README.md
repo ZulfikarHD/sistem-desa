@@ -21,6 +21,7 @@ Technical documentation for contributors working on sistem-desa.
 | Validasi Kelengkapan Pengajuan (US-3.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
 | Ajukan Ulang Setelah Ditolak (US-3.4) | [features/pengajuan-surat-ajukan-ulang.md](features/pengajuan-surat-ajukan-ulang.md) |
 | Verifikasi Pengajuan (US-4.1 – US-4.4) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
+| Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3) | [features/notifikasi-pengajuan.md](features/notifikasi-pengajuan.md) |
 
 ## API
 

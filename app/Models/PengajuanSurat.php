@@ -105,4 +105,12 @@ class PengajuanSurat extends Model
     {
         return $this->hasMany(LogVerifikasi::class, 'pengajuan_id');
     }
+
+    /**
+     * Notifikasi in-app terkait pengajuan (Phase 05).
+     */
+    public function notifikasi(): HasMany
+    {
+        return $this->hasMany(Notifikasi::class, 'pengajuan_id');
+    }
 }

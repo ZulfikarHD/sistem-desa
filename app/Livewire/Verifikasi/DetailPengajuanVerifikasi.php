@@ -4,6 +4,7 @@ namespace App\Livewire\Verifikasi;
 
 use App\Models\DokumenPersyaratan;
 use App\Models\LogVerifikasi;
+use App\Models\Notifikasi;
 use App\Models\PengajuanSurat;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
@@ -38,6 +39,8 @@ class DetailPengajuanVerifikasi extends Component
         if ($pengajuan->status === PengajuanSurat::STATUS_DIAJUKAN) {
             $pengajuan->update(['status' => PengajuanSurat::STATUS_DIPROSES]);
             $pengajuan->refresh();
+
+            $this->buatNotifikasiStatus($pengajuan, PengajuanSurat::STATUS_DIPROSES);
         }
 
         $this->pengajuan = $pengajuan;
@@ -111,6 +114,8 @@ class DetailPengajuanVerifikasi extends Component
                 'keterangan' => null,
                 'created_at' => now(),
             ]);
+
+            $this->buatNotifikasiStatus($pengajuan->fresh(['jenisSurat']), PengajuanSurat::STATUS_DISETUJUI);
         });
 
         Flux::toast(variant: 'success', text: 'Pengajuan berhasil disetujui.');
@@ -162,6 +167,8 @@ class DetailPengajuanVerifikasi extends Component
                 'keterangan' => $catatan,
                 'created_at' => now(),
             ]);
+
+            $this->buatNotifikasiStatus($pengajuan->fresh(['jenisSurat']), PengajuanSurat::STATUS_DITOLAK);
         });
 
         $this->closeTolakModal();
@@ -169,6 +176,28 @@ class DetailPengajuanVerifikasi extends Component
         Flux::toast(variant: 'success', text: 'Pengajuan berhasil ditolak.');
 
         $this->redirect(route('verifikasi.index'), navigate: true);
+    }
+
+    /**
+     * Buat notifikasi in-app untuk warga pemohon (US-5.1).
+     */
+    private function buatNotifikasiStatus(PengajuanSurat $pengajuan, string $statusBaru): void
+    {
+        $namaSurat = $pengajuan->jenisSurat?->nama_surat ?? 'Surat';
+        $labelStatus = match ($statusBaru) {
+            PengajuanSurat::STATUS_DIPROSES => 'sedang diproses',
+            PengajuanSurat::STATUS_DISETUJUI => 'disetujui',
+            PengajuanSurat::STATUS_DITOLAK => 'ditolak',
+            default => $statusBaru,
+        };
+
+        Notifikasi::query()->create([
+            'user_id' => $pengajuan->user_id,
+            'pengajuan_id' => $pengajuan->id,
+            'pesan' => "Pengajuan {$namaSurat} ({$pengajuan->nomor_pengajuan}) {$labelStatus}.",
+            'status_baca' => Notifikasi::STATUS_BELUM,
+            'created_at' => now(),
+        ]);
     }
 
     /**

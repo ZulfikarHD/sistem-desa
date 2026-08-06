@@ -25,7 +25,7 @@
                         <flux:sidebar.item
                             icon="document-plus"
                             :href="route('pengajuan-surat.create')"
-                            :current="request()->routeIs('pengajuan-surat.create', 'pengajuan-surat.resubmit')"
+                            :current="request()->routeIs('pengajuan-surat.create', 'pengajuan-surat.resubmit', 'pengajuan-surat.show')"
                             wire:navigate
                             data-test="sidebar-pengajuan-surat"
                         >
@@ -35,7 +35,7 @@
                         <flux:sidebar.item
                             icon="clock"
                             :href="route('pengajuan-surat.riwayat')"
-                            :current="request()->routeIs('pengajuan-surat.riwayat')"
+                            :current="request()->routeIs('pengajuan-surat.riwayat', 'pengajuan-surat.show')"
                             wire:navigate
                             data-test="sidebar-riwayat-pengajuan"
                         >
@@ -88,6 +88,12 @@
                     {{ __('Documentation') }}
                 </flux:sidebar.item>
             </flux:sidebar.nav>
+
+            @if (auth()->user()->isWarga())
+                @persist('panel-notifikasi')
+                    <livewire:notifikasi.panel-notifikasi />
+                @endpersist
+            @endif
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>

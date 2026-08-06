@@ -2,6 +2,7 @@
 
 use App\Livewire\JenisSurat\DataJenisSurat;
 use App\Livewire\JenisSurat\PersyaratanDokumen;
+use App\Livewire\Pengajuan\DetailPengajuanWarga;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
 use App\Livewire\Pengajuan\RiwayatPengajuan;
 use App\Livewire\Verifikasi\DaftarPengajuanVerifikasi;
@@ -28,6 +29,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // US-3.4 + US-5.3 — Riwayat pengajuan & ajukan ulang
         Route::livewire('riwayat-pengajuan', RiwayatPengajuan::class)
             ->name('pengajuan-surat.riwayat');
+
+        // US-5.3 — Detail pengajuan warga
+        Route::livewire('pengajuan-surat/detail/{pengajuan}', DetailPengajuanWarga::class)
+            ->name('pengajuan-surat.show')
+            ->whereNumber('pengajuan');
 
         Route::livewire('pengajuan-surat/ajukan-ulang/{pengajuan}', FormPengajuanSurat::class)
             ->name('pengajuan-surat.resubmit')

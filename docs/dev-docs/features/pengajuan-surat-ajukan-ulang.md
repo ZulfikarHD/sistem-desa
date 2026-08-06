@@ -69,7 +69,7 @@ erDiagram
 
 ## Decisions & Trade-offs
 
-- **Minimal riwayat page now (US-5.3 subset)** — US-3.4 AC requires the button on riwayat; full Phase 05 (notifications, detail modal, sort) deferred but table + filter + catatan_admin implemented.
+- **Riwayat page completed in Phase 05** — US-3.4 introduced minimal riwayat; Phase 05 adds notification panel, detail route, and full US-5.3 coverage.
 - **Separate resubmit route** — clearer authorization vs query param on create form; `{pengajuan}` route model binding in `mount()`.
 - **No document copy** — AC says warga may need to re-upload; avoids stale/invalid file references and keeps storage simple.
 - **404 for non-ditolak resubmit URL** — prevents accidental resubmit of active pengajuan.

@@ -103,6 +103,17 @@
                             @endif
                         </flux:table.cell>
                         <flux:table.cell>
+                            <flux:button
+                                variant="ghost"
+                                size="sm"
+                                icon="eye"
+                                :href="route('pengajuan-surat.show', $item)"
+                                wire:navigate
+                                data-test="riwayat-pengajuan-detail-{{ $item->id }}"
+                            >
+                                {{ __('Detail') }}
+                            </flux:button>
+
                             @if ($item->status === \App\Models\PengajuanSurat::STATUS_DITOLAK)
                                 <flux:button
                                     variant="primary"
@@ -114,8 +125,6 @@
                                 >
                                     {{ __('Ajukan Ulang') }}
                                 </flux:button>
-                            @else
-                                <span class="text-zinc-400">—</span>
                             @endif
                         </flux:table.cell>
                     </flux:table.row>
