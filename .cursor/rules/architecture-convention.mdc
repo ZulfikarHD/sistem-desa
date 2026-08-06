@@ -1,0 +1,73 @@
+---
+description: Flat, beginner-friendly architecture convention — no service classes, no abstraction layers, no enum files. One controller per route group, one Vue file per page. Project language is Indonesian.
+alwaysApply: true
+---
+
+# Architecture Convention (Pragmatic, No Over-Engineering)
+
+Proyek ini sengaja dibuat sederhana dan flat. Jangan tambahkan abstraction layer.
+
+## Backend (Laravel)
+
+- **1 route group = 1 controller** — semua logic untuk fitur tersebut ditulis langsung di controller.
+- JANGAN buat service class, repository, action class, atau form request class.
+- JANGAN buat file enum atau constants tersendiri — definisikan inline atau sebagai array biasa.
+- JANGAN buat trait kecuali benar-benar dipakai di 3+ controller dengan logic yang identik.
+- Gunakan Eloquent langsung di dalam method controller. Jangan bungkus dengan query builder wrapper.
+
+```php
+// ✅ BENAR — semua ada di controller
+class PendudukController extends Controller
+{
+    public function index()
+    {
+        $data = Penduduk::latest()->paginate(10);
+        return Inertia::render('Penduduk/Index', compact('data'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([...]);
+        Penduduk::create($request->all());
+        return back()->with('success', 'Data berhasil disimpan.');
+    }
+}
+
+// ❌ SALAH — jangan buat PendudukService, PendudukRepository, StorePendudukAction, dll.
+```
+
+## Frontend (Vue + Inertia)
+
+- **1 halaman = 1 file Vue** — semua logic (form state, handler, computed) ada di file tersebut.
+- JANGAN buat composable kecuali dipakai di 3+ halaman dengan logic yang identik.
+- JANGAN buat file type/interface tersendiri — definisikan inline jika diperlukan.
+- Simpan component di folder yang sama dengan page jika component tersebut spesifik untuk page itu.
+
+```vue
+<!-- ✅ BENAR — page yang self-contained -->
+<script setup>
+const form = useForm({ nama: '', nik: '' })
+const submit = () => form.post(route('penduduk.store'))
+</script>
+```
+
+## Bahasa Proyek
+
+- **Komentar kode**: gunakan Bahasa Indonesia.
+- **Nama class, method, variable, route, file**: tetap Bahasa Inggris (konvensi teknis IT).
+- **Pesan ke user (flash message, label, placeholder, teks UI)**: gunakan Bahasa Indonesia.
+
+```php
+// ✅ BENAR
+// Ambil semua data penduduk berdasarkan desa
+$data = Penduduk::where('desa_id', $desaId)->paginate(10);
+
+// ❌ SALAH — komentar dalam bahasa Inggris
+// Get all residents by village
+```
+
+## General
+
+- Utamakan **yang mudah dibaca** daripada **yang pintar tapi rumit**.
+- Jika memahami satu fitur membutuhkan membuka lebih dari 2 file, berarti terlalu kompleks.
+- Kalau ragu: taruh saja di satu file.
