@@ -40,6 +40,34 @@ class FormPengajuanSurat extends Component
     /** Nomor pengajuan setelah submit berhasil; null = form masih aktif. */
     public ?string $submittedNomor = null;
 
+    /** ID pengajuan ditolak yang menjadi referensi ajukan ulang (US-3.4). */
+    public ?int $resubmitFromId = null;
+
+    /** Catatan admin dari pengajuan sebelumnya untuk referensi perbaikan. */
+    public ?string $catatanAdminReferensi = null;
+
+    /** Nomor pengajuan sebelumnya (hanya tampilan referensi). */
+    public ?string $nomorPengajuanSebelumnya = null;
+
+    /**
+     * Muat data pra-isi saat ajukan ulang dari pengajuan ditolak.
+     */
+    public function mount(?PengajuanSurat $pengajuan = null): void
+    {
+        if ($pengajuan === null) {
+            return;
+        }
+
+        abort_unless($pengajuan->user_id === auth()->id(), 403);
+        abort_unless($pengajuan->status === PengajuanSurat::STATUS_DITOLAK, 404);
+
+        $this->resubmitFromId = $pengajuan->id;
+        $this->jenis_surat_id = $pengajuan->jenis_surat_id;
+        $this->keperluan = $pengajuan->keperluan;
+        $this->catatanAdminReferensi = $pengajuan->catatan_admin;
+        $this->nomorPengajuanSebelumnya = $pengajuan->nomor_pengajuan;
+    }
+
     /**
      * Reset unggahan saat jenis surat berubah.
      */
@@ -141,6 +169,9 @@ class FormPengajuanSurat extends Component
     public function createAnother(): void
     {
         $this->submittedNomor = null;
+        $this->resubmitFromId = null;
+        $this->catatanAdminReferensi = null;
+        $this->nomorPengajuanSebelumnya = null;
         $this->reset(['jenis_surat_id', 'keperluan', 'dokumenKtp', 'dokumenKk']);
         $this->resetValidation();
     }
@@ -219,17 +250,14 @@ class FormPengajuanSurat extends Component
         $prefix = 'PJ-'.$datePrefix.'-';
 
         return DB::transaction(function () use ($prefix): string {
-            $lastNumber = PengajuanSurat::query()
+            $maxSequence = PengajuanSurat::query()
                 ->where('nomor_pengajuan', 'like', $prefix.'%')
                 ->lockForUpdate()
-                ->orderByDesc('nomor_pengajuan')
-                ->value('nomor_pengajuan');
+                ->pluck('nomor_pengajuan')
+                ->map(fn (string $nomor): int => (int) substr($nomor, strlen($prefix)))
+                ->max();
 
-            $sequence = 1;
-
-            if ($lastNumber !== null) {
-                $sequence = (int) substr($lastNumber, -4) + 1;
-            }
+            $sequence = ($maxSequence ?? 0) + 1;
 
             return $prefix.str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
         });

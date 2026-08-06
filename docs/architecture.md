@@ -72,7 +72,7 @@ flowchart LR
 | US-3.1 Form Pengajuan Surat | Implemented |
 | US-3.2 Unggah Dokumen Persyaratan | Implemented |
 | US-3.3 Validasi Kelengkapan Pengajuan | Implemented |
-| US-3.4 Ajukan Ulang Setelah Ditolak | Not started |
+| US-3.4 Ajukan Ulang Setelah Ditolak | Done |
 
 Details: [dev-docs/features/pengajuan-surat-form.md](dev-docs/features/pengajuan-surat-form.md), [dev-docs/features/pengajuan-surat-dokumen.md](dev-docs/features/pengajuan-surat-dokumen.md), [dev-docs/features/pengajuan-surat-kelengkapan.md](dev-docs/features/pengajuan-surat-kelengkapan.md), ADR-009, ADR-010.
 

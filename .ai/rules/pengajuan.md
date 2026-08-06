@@ -10,3 +10,6 @@ Phase 03 uses table `pengajuan_surat` (singular). Model PengajuanSurat sets prot
 
 ## dokumen_persyaratan (US-3.2)
 Table `dokumen_persyaratan` (singular). Model DokumenPersyaratan. jenis_dokumen values: KTP, KK. Files stored on private `local` disk under `pengajuan-dokumen/{pengajuan_id}/`. Required upload slots detected from `jenis_surat.persyaratan_dokumen` text (KTP / KK / Kartu Keluarga keywords). US-3.3 blocks submit when required docs missing — `rules()` sets `required` on dokumenKtp/dokumenKk when detected in requiredDokumenTypes.
+
+## US-3.4 ajukan ulang + riwayat routes
+Riwayat at route pengajuan-surat.riwayat (/riwayat-pengajuan). Resubmit at pengajuan-surat.resubmit (/pengajuan-surat/ajukan-ulang/{pengajuan}) — mount pre-fills ditolak pengajuan; owner+status ditolak only. Nomor generator uses max numeric suffix (not string orderByDesc) to avoid collision after 9999.

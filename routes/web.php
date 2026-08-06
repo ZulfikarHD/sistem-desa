@@ -3,6 +3,7 @@
 use App\Livewire\JenisSurat\DataJenisSurat;
 use App\Livewire\JenisSurat\PersyaratanDokumen;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
+use App\Livewire\Pengajuan\RiwayatPengajuan;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -19,6 +20,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // US-3.1 — Form Pengajuan Surat Keterangan
         Route::livewire('pengajuan-surat', FormPengajuanSurat::class)
             ->name('pengajuan-surat.create');
+
+        // US-3.4 + US-5.3 — Riwayat pengajuan & ajukan ulang
+        Route::livewire('riwayat-pengajuan', RiwayatPengajuan::class)
+            ->name('pengajuan-surat.riwayat');
+
+        Route::livewire('pengajuan-surat/ajukan-ulang/{pengajuan}', FormPengajuanSurat::class)
+            ->name('pengajuan-surat.resubmit')
+            ->whereNumber('pengajuan');
     });
 
     // Dashboard Admin (role: admin) — US-1.2 + US-1.3

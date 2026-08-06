@@ -18,3 +18,4 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Pengajuan Surat](guides/pengajuan-surat-form.md) | Cara warga mengajukan surat keterangan online |
 | [Unggah Dokumen Persyaratan](guides/pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |
 | [Validasi Kelengkapan Pengajuan](guides/pengajuan-surat-kelengkapan.md) | Dokumen wajib dan pesan error sebelum kirim |
+| [Ajukan Ulang Pengajuan](guides/pengajuan-surat-ajukan-ulang.md) | Cara ajukan ulang pengajuan yang ditolak |

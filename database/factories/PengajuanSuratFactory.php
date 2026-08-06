@@ -33,4 +33,20 @@ class PengajuanSuratFactory extends Factory
             'tanggal_pengajuan' => $tanggal->format('Y-m-d'),
         ];
     }
+
+    public function ditolak(?string $catatan = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => PengajuanSurat::STATUS_DITOLAK,
+            'catatan_admin' => $catatan ?? fake()->sentence(),
+        ]);
+    }
+
+    public function disetujui(): static
+    {
+        return $this->state(fn () => [
+            'status' => PengajuanSurat::STATUS_DISETUJUI,
+            'catatan_admin' => null,
+        ]);
+    }
 }

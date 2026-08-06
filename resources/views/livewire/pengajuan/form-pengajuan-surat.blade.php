@@ -4,9 +4,27 @@
             {{ __('Pengajuan Surat Keterangan') }}
         </flux:heading>
         <flux:text class="mt-1">
-            {{ __('Isi formulir berikut untuk mengajukan surat keterangan ke kantor desa.') }}
+            @if ($resubmitFromId)
+                {{ __('Perbaiki pengajuan sebelumnya berdasarkan catatan admin, lalu kirim ulang.') }}
+            @else
+                {{ __('Isi formulir berikut untuk mengajukan surat keterangan ke kantor desa.') }}
+            @endif
         </flux:text>
     </div>
+
+    @if ($catatanAdminReferensi)
+        <flux:callout icon="exclamation-triangle" variant="warning" data-test="pengajuan-surat-catatan-admin-referensi">
+            <flux:callout.heading>{{ __('Catatan Admin dari Pengajuan Sebelumnya') }}</flux:callout.heading>
+            <flux:callout.text>
+                <span data-test="pengajuan-surat-nomor-sebelumnya">
+                    {{ __('Nomor pengajuan sebelumnya:') }}
+                    <strong>{{ $nomorPengajuanSebelumnya }}</strong>
+                </span>
+                <br />
+                {{ $catatanAdminReferensi }}
+            </flux:callout.text>
+        </flux:callout>
+    @endif
 
     @if ($submittedNomor)
         <flux:callout icon="check-circle" variant="success" data-test="pengajuan-surat-success">

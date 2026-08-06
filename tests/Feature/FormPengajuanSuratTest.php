@@ -116,6 +116,36 @@ test('nomor pengajuan increments sequentially for same day', function () {
         ->assertSet('submittedNomor', 'PJ-'.now()->format('Ymd').'-0002');
 });
 
+test('nomor pengajuan increments after four digit sequence overflow', function () {
+    $user = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => '- Surat pengantar RT/RW',
+    ]);
+    $prefix = 'PJ-'.now()->format('Ymd').'-';
+
+    PengajuanSurat::factory()->create([
+        'user_id' => $user->id,
+        'jenis_surat_id' => $jenisSurat->id,
+        'nomor_pengajuan' => $prefix.'9999',
+        'tanggal_pengajuan' => now()->toDateString(),
+    ]);
+
+    PengajuanSurat::factory()->create([
+        'user_id' => $user->id,
+        'jenis_surat_id' => $jenisSurat->id,
+        'nomor_pengajuan' => $prefix.'10000',
+        'tanggal_pengajuan' => now()->toDateString(),
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(FormPengajuanSurat::class)
+        ->set('jenis_surat_id', $jenisSurat->id)
+        ->set('keperluan', 'Pengajuan setelah overflow')
+        ->call('submit')
+        ->assertHasNoErrors()
+        ->assertSet('submittedNomor', $prefix.'10001');
+});
+
 test('create another resets success state', function () {
     $user = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create([

@@ -25,11 +25,21 @@
                         <flux:sidebar.item
                             icon="document-plus"
                             :href="route('pengajuan-surat.create')"
-                            :current="request()->routeIs('pengajuan-surat.*')"
+                            :current="request()->routeIs('pengajuan-surat.create', 'pengajuan-surat.resubmit')"
                             wire:navigate
                             data-test="sidebar-pengajuan-surat"
                         >
                             {{ __('Pengajuan Surat') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
+                            icon="clock"
+                            :href="route('pengajuan-surat.riwayat')"
+                            :current="request()->routeIs('pengajuan-surat.riwayat')"
+                            wire:navigate
+                            data-test="sidebar-riwayat-pengajuan"
+                        >
+                            {{ __('Riwayat Pengajuan') }}
                         </flux:sidebar.item>
 
                         <flux:sidebar.item

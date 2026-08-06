@@ -154,7 +154,7 @@ test.describe('US-3.1 Form Pengajuan Surat Keterangan', () => {
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toBeVisible();
         const nomor = page.locator('[data-test="pengajuan-surat-nomor"]');
         await expect(nomor).toBeVisible();
-        await expect(nomor).toHaveText(/^PJ-\d{8}-\d{4}$/);
+        await expect(nomor).toHaveText(/^PJ-\d{8}-\d+$/);
     });
 
     test('validasi gagal jika jenis surat tidak dipilih', async ({ page }) => {
@@ -366,6 +366,6 @@ test.describe('US-3.3 Validasi Kelengkapan Pengajuan', () => {
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
 
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toBeVisible();
-        await expect(page.locator('[data-test="pengajuan-surat-nomor"]')).toHaveText(/^PJ-\d{8}-\d{4}$/);
+        await expect(page.locator('[data-test="pengajuan-surat-nomor"]')).toHaveText(/^PJ-\d{8}-\d+$/);
     });
 });
