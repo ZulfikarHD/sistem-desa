@@ -6,6 +6,7 @@ use App\Models\DokumenPersyaratan;
 use App\Models\LogVerifikasi;
 use App\Models\Notifikasi;
 use App\Models\PengajuanSurat;
+use App\Models\SuratTerbit;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -179,12 +180,20 @@ class DetailPengajuanVerifikasi extends Component
     }
 
     /**
-     * Hook penerbitan surat setelah masuk diproses.
-     * Diisi penuh di US-7.2 (PDF, nomor surat, QR).
+     * Generate PDF surat, nomor resmi, dan QR sekali pakai setelah masuk diproses (US-7.2).
      */
     private function triggerGenerateSurat(PengajuanSurat $pengajuan): void
     {
-        // US-7.2: generate PDF surat, nomor resmi, dan QR sekali pakai.
+        $adminId = Auth::id();
+
+        if ($adminId === null) {
+            throw new \RuntimeException('Admin penerbit tidak ditemukan.');
+        }
+
+        SuratTerbit::terbitkanUntuk(
+            $pengajuan->fresh(['user', 'jenisSurat']),
+            $adminId,
+        );
     }
 
     /**

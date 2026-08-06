@@ -22,6 +22,7 @@ Technical documentation for contributors working on sistem-desa.
 | Ajukan Ulang Setelah Ditolak (US-3.4) | [features/pengajuan-surat-ajukan-ulang.md](features/pengajuan-surat-ajukan-ulang.md) |
 | Verifikasi Pengajuan (US-4.1 – US-4.3 + US-7.1) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
 | Migrasi Alur Status (US-7.1) | [features/migrasi-alur-status.md](features/migrasi-alur-status.md) |
+| Generate Surat PDF (US-7.2) | [features/generate-surat-pdf.md](features/generate-surat-pdf.md) |
 | Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3) | [features/notifikasi-pengajuan.md](features/notifikasi-pengajuan.md) |
 | Rekap Pengajuan & Reporting (US-6.1 – US-6.2) | [features/rekap-pengajuan.md](features/rekap-pengajuan.md) |
 
@@ -47,3 +48,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [012](decisions/012-verifikasi-log-and-concurrent-lock.md) | `log_verifikasi` audit table + pessimistic locking |
 | [013](decisions/013-rekap-summary-filters-and-csv-bom.md) | Rekap summary ignores status filter; CSV UTF-8 BOM |
 | [014](decisions/014-status-flow-migration-us-7-1.md) | Status flow migration: approve → disetujui → diproses |
+| [015](decisions/015-dompdf-surat-terbit-on-approve.md) | DomPDF + surat_terbit generated on approve |

@@ -9,4 +9,7 @@ paths:
 US-4.1 list defaults statusFilter to diajukan. US-4.2 detail shows preview via admin-only routes verifikasi.dokumen.show/download registered BEFORE verifikasi.show. US-4.3 setujui/tolak with log_verifikasi + diverifikasi_oleh; tolak requires catatanAdmin. US-4.4 mount auto-transitions diajukan→diproses on first detail open; notification hook deferred to Phase 05 US-5.1.
 
 ## US-7.1 status flow supersedes US-4.4 auto diproses
-Opening detail does NOT auto diajukan→diproses. canVerify only for diajukan. setujui: diajukan→disetujui (log+notif)→diproses (notif+triggerGenerateSurat stub US-7.2). tolak: diajukan→ditolak only. Legacy diproses with diverifikasi_oleh null reset to diajukan via migration.
+Opening detail does NOT auto diajukan→diproses. canVerify only for diajukan. setujui: diajukan→disetujui (log+notif)→diproses (notif+triggerGenerateSurat). tolak: diajukan→ditolak only. Legacy diproses with diverifikasi_oleh null reset to diajukan via migration.
+
+## US-7.2 triggerGenerateSurat generates PDF
+US-7.2 fills triggerGenerateSurat: creates surat_terbit + PDF inside the setujui transaction. ditolak path still skips generation.

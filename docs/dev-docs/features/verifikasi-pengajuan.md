@@ -82,7 +82,7 @@ Status values (Phase 07): `diajukan | disetujui | diproses | siap_diambil | sele
 3. **List** — paginate by `statusFilter` (default `diajukan`).
 4. **Detail mount (US-7.1)** — load relations only; **no** auto status change.
 5. **Preview (US-4.2)** — image/PDF via secure admin routes; missing file → callout + download.
-6. **Setujui (US-7.1)** — only when `diajukan`. Transaction + `lockForUpdate`. Write `disetujui` + log, notify, then `diproses` + notify, then `triggerGenerateSurat()` stub.
+6. **Setujui (US-7.1 / US-7.2)** — only when `diajukan`. Transaction + `lockForUpdate`. Write `disetujui` + log, notify, then `diproses` + notify, then `triggerGenerateSurat()` → `SuratTerbit` PDF.
 7. **Tolak** — catatan wajib; `ditolak` only (never `diproses`).
 8. **Response** — toast + redirect to list.
 

@@ -340,6 +340,8 @@ test.describe('US-6.1 + US-6.2 Rekap Pengajuan & Export CSV', () => {
 
         await loginAs(page, adminEmail);
         await page.goto('/admin/rekap-pengajuan');
+        // Isolasi baris uji lewat filter jenis (shared DB + pagination)
+        await page.locator('[data-test="rekap-pengajuan-jenis-filter"]').selectOption(String(jenisId));
         await expect(page.locator(`[data-test="rekap-pengajuan-row-${pengajuanId}"]`)).toBeVisible();
 
         await page.locator('[data-test="rekap-pengajuan-tanggal-dari"]').fill('2026-08-31');

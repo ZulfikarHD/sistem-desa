@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -154,5 +155,13 @@ class PengajuanSurat extends Model
     public function notifikasi(): HasMany
     {
         return $this->hasMany(Notifikasi::class, 'pengajuan_id');
+    }
+
+    /**
+     * Surat yang digenerate setelah pengajuan disetujui (US-7.2).
+     */
+    public function suratTerbit(): HasOne
+    {
+        return $this->hasOne(SuratTerbit::class, 'pengajuan_id');
     }
 }

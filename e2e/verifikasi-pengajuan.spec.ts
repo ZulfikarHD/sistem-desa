@@ -104,7 +104,10 @@ function ensurePengajuanDiajukan(options: {
         `'nomor_pengajuan' => ${JSON.stringify(options.nomorPengajuan)},`,
         `'keperluan' => ${JSON.stringify(options.keperluan)},`,
         `'status' => \\App\\Models\\PengajuanSurat::STATUS_DIAJUKAN,`,
-        `'tanggal_pengajuan' => now()->toDateString(),`,
+        // Tanggal jauh ke depan agar baris tetap di halaman 1 meski rekap e2e
+        // menyisipkan data diajukan bertanggal 2090 (shared DB, paginate 10).
+        // Hindari rentang 2099 yang dipakai filter empty-state di rekap e2e.
+        `'tanggal_pengajuan' => '2100-06-01',`,
         `]);`,
         `$dir = 'pengajuan-dokumen/' . $pengajuan->id;`,
         `$ktpPath = $dir . '/ktp_e2e.jpg';`,

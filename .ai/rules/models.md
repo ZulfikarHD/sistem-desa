@@ -3,6 +3,7 @@ paths:
   - app/Models/User.php
   - app/Models/JenisSurat.php
   - app/Models/PengajuanSurat.php
+  - app/Models/SuratTerbit.php
 ---
 
 # Models
@@ -15,3 +16,6 @@ Phase 02 data model uses table `jenis_surat` (singular). Model sets protected $t
 
 ## PengajuanSurat status labels and Phase 07 statuses
 Constants include siap_diambil and selesai. Use PengajuanSurat::statusLabel() and statusOptions() for filters/UI — do not ucfirst raw status (breaks siap_diambil).
+
+## surat_terbit table and PDF generate on approve
+US-7.2: table surat_terbit (singular). On setujui→diproses, DetailPengajuanVerifikasi::triggerGenerateSurat calls SuratTerbit::terbitkanUntuk (DomPDF + bacon QR via GD). PDF on local disk surat-terbit/{id}/surat.pdf. Nomor format 470/{urut}/DS-WDN/{romawi}/{tahun} via config/desa.php. Reject never generates. Scan QR UI is US-7.4; unduh warga is US-7.6.

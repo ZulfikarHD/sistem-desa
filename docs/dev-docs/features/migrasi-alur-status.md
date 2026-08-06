@@ -16,7 +16,7 @@ flowchart TD
     F -->|Setujui| G[lockForUpdate]
     G --> H[status = disetujui + log_verifikasi + notifikasi]
     H --> I[status = diproses + notifikasi]
-    I --> J[triggerGenerateSurat stub US-7.2]
+    I --> J[triggerGenerateSurat → SuratTerbit PDF]
     J --> K[Redirect list]
     F -->|Tolak| L[catatan wajib]
     L --> M[status = ditolak + log + notifikasi]
@@ -64,7 +64,7 @@ Legacy data migration resets `diproses` rows with `diverifikasi_oleh IS NULL` ba
 ## Flow Explanation
 
 1. **Admin opens detail** — relations load; status stays `diajukan`; no notification.
-2. **Setujui** — pessimistic lock; require `diajukan`; write `disetujui` + `log_verifikasi`; notify; immediately set `diproses`; notify; call `triggerGenerateSurat()` (empty until US-7.2).
+2. **Setujui** — pessimistic lock; require `diajukan`; write `disetujui` + `log_verifikasi`; notify; immediately set `diproses`; notify; call `triggerGenerateSurat()` which creates `surat_terbit` + PDF (US-7.2).
 3. **Tolak** — require catatan; set `ditolak`; never enters `diproses`.
 4. **Filters/ringkasan** — Phase 05 riwayat and Phase 06 rekap include `siap_diambil` / `selesai`.
 
@@ -74,7 +74,7 @@ No new HTTP API. Existing Livewire routes under `/admin/verifikasi` unchanged.
 
 ## Decisions & Trade-offs
 
-- PDF generation deferred to US-7.2 via explicit stub method (not silent omission).
+- PDF generation implemented in US-7.2 via `SuratTerbit::terbitkanUntuk()` (see [generate-surat-pdf.md](generate-surat-pdf.md)).
 - Transient `disetujui` is intentional: AC requires the step, then auto-advance so the stable post-approve state is `diproses`.
 - Legacy `diproses` without verifier reset to `diajukan` so admins can still decide them.
 

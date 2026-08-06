@@ -12,7 +12,7 @@ Phase 04 used `diproses` to mean “admin opened the review page.” Phase 07 ne
 
 1. Remove auto status change (and its notification) from `DetailPengajuanVerifikasi::mount`.
 2. Allow verify only from `diajukan`.
-3. On approve: `diajukan` → `disetujui` (log + notif) → `diproses` (notif + `triggerGenerateSurat` stub for US-7.2).
+3. On approve: `diajukan` → `disetujui` (log + notif) → `diproses` (notif + `triggerGenerateSurat` → PDF via US-7.2 / ADR-015).
 4. On reject: `diajukan` → `ditolak` only.
 5. Add `siap_diambil` / `selesai` to model constants and Phase 05/06 filters + rekap ringkasan.
 6. One-time data migration: `diproses` + `diverifikasi_oleh IS NULL` → `diajukan`.
@@ -32,4 +32,4 @@ Phase 04 used `diproses` to mean “admin opened the review page.” Phase 07 ne
 
 ### Neutral
 
-- Full PDF/QR generation remains in US-7.2–7.4; only the hook exists now.
+- Full PDF/QR generation is implemented in US-7.2 (ADR-015); scan/unduh remain later stories.
