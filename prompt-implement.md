@@ -1,4 +1,4 @@
-    # Task: Implement [US-7.5] From Scrum Plan "@scrum-planning/Phase 07 - Penerbitan Surat Keterangan.md " , Test, and Document
+    # Task: Implement [US-7.6 & US-7.6] From Scrum Plan "@scrum-planning/Phase 07 - Penerbitan Surat Keterangan.md " , Test, and Document
 
     ## ⚠️ COMPLIANCE RULES — READ BEFORE STARTING (apply to every step below)
 
@@ -21,7 +21,7 @@
 
     ## Step 1 — Read the source of truth
     1. Open and fully read the plan file for this feature (path to be provided).
-    2. Find the section for **[US-7.5]**. Quote or restate its full scope/requirements in your own words before continuing — including acceptance criteria, edge cases, and any explicitly out-of-scope items mentioned in the plan.
+    2. Find the section for **[US-7.6 & US-7.6]**. Quote or restate its full scope/requirements in your own words before continuing — including acceptance criteria, edge cases, and any explicitly out-of-scope items mentioned in the plan.
     3. Do not rely on memory or assumptions about what this feature is — read the file directly.
     4. If the plan references other features, files, or docs this feature depends on, open and read those too before continuing.
     5. Explicitly separate two categories when restating scope: (a) **stated** requirements/exclusions — directly supported by AC wording, and (b) **adjacent cases the AC is silent on** (e.g. an AC that mentions "edit page" but not "create page" for the same field). For every item in category (b), apply Compliance Rule 7: search the rest of the plan for ownership, and if none is found, list it explicitly as an **open scope question** in your Step 1 output — do not silently fold it into "out of scope" or silently implement it.
@@ -79,7 +79,7 @@
 
     ## Output format
     Structure your final response with these exact headers, in this order:
-    1. **[US-7.5] Plan Summary** (must include an "Open Scope Questions" subsection per Compliance Rule 7 — write "None found" if genuinely none)
+    1. **[US-7.6 & US-7.6] Plan Summary** (must include an "Open Scope Questions" subsection per Compliance Rule 7 — write "None found" if genuinely none)
     2. **Codebase Survey** (files touched + related features identified)
     3. **Implementation Summary** (what was built, any deviations from plan + why)
     4. **Self Bug-Check Findings** (edge cases checked, issues found and fixed)
