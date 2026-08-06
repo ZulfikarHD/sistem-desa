@@ -1,9 +1,9 @@
-<x-layouts::app :title="__('Dashboard Warga')">
+<x-layouts::app :title="__('Dashboard Admin')">
     <div class="flex h-full w-full flex-1 flex-col gap-6 p-4 md:p-6">
         <div>
-            <flux:heading size="xl" data-test="dashboard-warga-heading">{{ __('Dashboard Warga') }}</flux:heading>
+            <flux:heading size="xl" data-test="dashboard-admin-heading">{{ __('Dashboard Admin') }}</flux:heading>
             <flux:text class="mt-1">
-                {{ __('Selamat datang, :name. Anda masuk sebagai warga.', ['name' => auth()->user()->name]) }}
+                {{ __('Selamat datang, :name. Anda masuk sebagai admin/petugas desa.', ['name' => auth()->user()->name]) }}
             </flux:text>
         </div>
 

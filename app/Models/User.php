@@ -88,4 +88,12 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->role === 'admin';
     }
+
+    /**
+     * Nama route dashboard sesuai role (US-1.2).
+     */
+    public function homeRouteName(): string
+    {
+        return $this->isAdmin() ? 'dashboard.admin' : 'dashboard';
+    }
 }

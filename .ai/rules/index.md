@@ -6,3 +6,4 @@ Before planning or editing, find the row whose globs match the file's path and r
 | --- | --- |
 | app/Actions/Fortify/** | .ai/rules/fortify.md |
 | app/Models/User.php | .ai/rules/models.md |
+| app/Http/Responses/** | .ai/rules/responses.md |

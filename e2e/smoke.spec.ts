@@ -16,5 +16,6 @@ test.describe('Smoke — halaman inti', () => {
         await expect(page.locator('input[name="email"]')).toBeVisible();
         await expect(page.locator('input[name="password"]')).toBeVisible();
         await expect(page.locator('[data-test="login-button"]')).toBeVisible();
+        await expect(page.getByText('Masuk ke akun Anda')).toBeVisible();
     });
 });
