@@ -1,8 +1,8 @@
-# Verifikasi Pengajuan (US-4.1 & US-4.2)
+# Verifikasi Pengajuan (US-4.1 – US-4.4)
 
 ## Overview
 
-Admin/petugas desa review submitted letter requests (`pengajuan_surat`) with status `diajukan`. US-4.1 provides a filterable list (default `diajukan`) with nomor, warga name, jenis surat, and tanggal. US-4.2 provides a detail page with full submission data, inline KTP/KK preview (image/PDF), download fallback, and visible Setujui/Tolak buttons (action logic deferred to US-4.3).
+Admin/petugas desa review submitted letter requests (`pengajuan_surat`). US-4.1 provides a filterable list (default `diajukan`). US-4.2 provides detail with KTP/KK preview. US-4.3 implements approve/reject with mandatory rejection note, audit log, and `diverifikasi_oleh`. US-4.4 auto-transitions `diajukan` → `diproses` on first detail page open (in-app notification hook deferred to Phase 05 US-5.1).
 
 ## Architecture Diagram
 
@@ -15,13 +15,20 @@ flowchart TD
     E --> F[Filter status default diajukan]
     F --> G[Paginated table]
     G --> H[Click row]
-    H --> I[DetailPengajuanVerifikasi]
-    I --> J[Load user + jenisSurat + dokumenPersyaratan]
-    J --> K{File type?}
-    K -->|jpg/png| L[img preview via secure route]
-    K -->|pdf| M[iframe preview via secure route]
-    K -->|missing/other| N[Callout + download button]
-    I --> O[Setujui / Tolak buttons visible]
+    H --> I[DetailPengajuanVerifikasi mount]
+    I --> J{status = diajukan?}
+    J -->|yes| K[Update status → diproses US-4.4]
+    J -->|no| L[Keep current status]
+    K --> M[Render detail + preview]
+    L --> M
+    M --> N{status = diproses?}
+    N -->|yes| O[Show Setujui / Tolak]
+    N -->|no| P[Hide action buttons]
+    O --> Q{Admin action}
+    Q -->|Setujui| R[lockForUpdate + disetujui + log_verifikasi]
+    Q -->|Tolak| S[Modal catatan wajib + ditolak + log_verifikasi]
+    R --> T[Redirect /admin/verifikasi]
+    S --> T
 ```
 
 ## Data Model
@@ -29,16 +36,29 @@ flowchart TD
 ```mermaid
 erDiagram
     pengajuan_surat ||--o{ dokumen_persyaratan : has
+    pengajuan_surat ||--o{ log_verifikasi : has
     pengajuan_surat }o--|| users : "submitted by"
+    pengajuan_surat }o--o| users : "diverifikasi_oleh"
     pengajuan_surat }o--|| jenis_surat : references
+    log_verifikasi }o--|| users : "admin_id"
     pengajuan_surat {
         bigint id PK
         string nomor_pengajuan
         string keperluan
         string status
+        text catatan_admin
+        bigint diverifikasi_oleh FK
         date tanggal_pengajuan
         bigint user_id FK
         bigint jenis_surat_id FK
+    }
+    log_verifikasi {
+        bigint id PK
+        bigint pengajuan_id FK
+        bigint admin_id FK
+        string aksi "setujui|tolak"
+        text keterangan
+        timestamp created_at
     }
     dokumen_persyaratan {
         bigint id PK
@@ -54,20 +74,24 @@ erDiagram
 |-------|------|---------|
 | Livewire | `app/Livewire/Verifikasi/DaftarPengajuanVerifikasi.php` | List + status filter + row navigation |
 | Blade | `resources/views/livewire/verifikasi/daftar-pengajuan-verifikasi.blade.php` | Admin list UI |
-| Livewire | `app/Livewire/Verifikasi/DetailPengajuanVerifikasi.php` | Detail data + preview helpers |
-| Blade | `resources/views/livewire/verifikasi/detail-pengajuan-verifikasi.blade.php` | Detail UI + document preview |
+| Livewire | `app/Livewire/Verifikasi/DetailPengajuanVerifikasi.php` | Detail, auto diproses, setujui/tolak |
+| Blade | `resources/views/livewire/verifikasi/detail-pengajuan-verifikasi.blade.php` | Detail UI, preview, tolak modal |
+| Model | `app/Models/LogVerifikasi.php` | Audit log entity |
+| Migration | `database/migrations/2026_08_06_084551_create_log_verifikasis_table.php` | `log_verifikasi` table |
 | Routes | `routes/web.php` | `verifikasi.index`, `verifikasi.show`, dokumen show/download |
-| Nav | `resources/views/layouts/app/sidebar.blade.php` | Admin sidebar link |
-| Pest | `tests/Feature/VerifikasiPengajuanTest.php` | Feature coverage |
+| Pest | `tests/Feature/VerifikasiPengajuanTest.php` | Feature coverage US-4.1–4.4 |
 | Playwright | `e2e/verifikasi-pengajuan.spec.ts` | E2E AC + failure cases |
 
 ## Flow Explanation
 
 1. **User triggers** — admin opens **Verifikasi Pengajuan** from sidebar or `/admin/verifikasi`.
 2. **Request handling** — `auth` → `verified` → `role:admin`. Guests redirect to login; warga get 403.
-3. **Business logic (list)** — `DaftarPengajuanVerifikasi` paginates `pengajuan_surat` filtered by `statusFilter` (URL `?status=`, default `diajukan`), eager-loads `user` and `jenisSurat`. Row click redirects to detail via `openDetail()`.
-4. **Business logic (detail)** — `DetailPengajuanVerifikasi` receives route-model-bound `PengajuanSurat`, loads relations, renders preview for each `dokumen_persyaratan`. Images use `<img>`, PDFs use `<iframe>`, both point to `verifikasi.dokumen.show`. Missing/unpreviewable files show Flux callout + download link.
-5. **Response** — full-page Livewire render inside `layouts::app`. Document routes stream from `Storage::disk('local')` (private disk).
+3. **Business logic (list)** — `DaftarPengajuanVerifikasi` paginates `pengajuan_surat` filtered by `statusFilter` (URL `?status=`, default `diajukan`).
+4. **Business logic (detail mount, US-4.4)** — if `status === diajukan`, update to `diproses` before render. Re-opening an already `diproses` record does not re-transition.
+5. **Business logic (preview, US-4.2)** — images via `<img>`, PDFs via `<iframe>`, both use `verifikasi.dokumen.show`. Missing files show callout + download.
+6. **Business logic (setujui, US-4.3)** — only when `status === diproses`. `DB::transaction` + `lockForUpdate()` prevents concurrent double-action. Updates status to `disetujui`, sets `diverifikasi_oleh`, inserts `log_verifikasi` with `aksi = setujui`.
+7. **Business logic (tolak, US-4.3)** — modal requires `catatanAdmin` (min 5 chars). Same locking pattern. Updates status to `ditolak`, saves `catatan_admin`, sets `diverifikasi_oleh`, inserts `log_verifikasi` with `aksi = tolak` and `keterangan`.
+8. **Response** — after setujui/tolak, `Flux::toast` + redirect to list. Decided pengajuan no longer appears in default `diajukan` filter.
 
 ## API Endpoints (if applicable)
 
@@ -76,22 +100,22 @@ No JSON API. Session web routes only:
 | Method | URI | Purpose | Auth |
 |--------|-----|---------|------|
 | GET | `/admin/verifikasi` | List pengajuan menunggu verifikasi | auth + verified + role:admin |
-| GET | `/admin/verifikasi/{pengajuan}` | Detail pengajuan + preview | auth + verified + role:admin |
+| GET | `/admin/verifikasi/{pengajuan}` | Detail + auto diproses + actions | auth + verified + role:admin |
 | GET | `/admin/verifikasi/dokumen/{dokumen}` | Inline preview (stream) | auth + verified + role:admin |
 | GET | `/admin/verifikasi/dokumen/{dokumen}/unduh` | Force download | auth + verified + role:admin |
 
-Document routes are registered **before** `{pengajuan}` to avoid route collision.
-
 ## Decisions & Trade-offs
 
-- **Two Livewire pages** — follows architecture convention (1 route = 1 component); list and detail are separate routes.
-- **Secure document routes** — files stay on private `local` disk; admin-only middleware serves via `Storage::response()` / `download()`.
-- **Preview fallback** — if file missing or extension unsupported, show callout + download button (Phase 04 risk mitigation).
-- **Setujui/Tolak UI only** — buttons rendered on detail page (US-4.2 AC); approve/reject persistence, `log_verifikasi`, and `diverifikasi_oleh` belong to US-4.3.
-- **Status auto-transition to diproses** — explicitly owned by US-4.4; not implemented here.
+- **Two Livewire pages** — follows architecture convention (1 route = 1 component).
+- **Secure document routes** — files on private `local` disk; admin-only middleware.
+- **Preview fallback** — callout + download when file missing or unsupported.
+- **Pessimistic locking** — `lockForUpdate()` inside transaction mitigates two admins acting on the same pengajuan (Phase 04 risk).
+- **Notification deferred** — US-4.4 AC references Phase 05 US-5.1 for in-app notification on `diproses`; not implemented here.
+- **Optional note on approve** — `keterangan` in `log_verifikasi` is nullable for `setujui`; only `tolak` requires `catatan_admin`.
 
 ## Related
 
 - User guide: [../../user-docs/guides/verifikasi-pengajuan.md](../../user-docs/guides/verifikasi-pengajuan.md)
 - Phase 03 pengajuan: [pengajuan-surat-form.md](pengajuan-surat-form.md), [pengajuan-surat-dokumen.md](pengajuan-surat-dokumen.md)
 - ADR: [011-verifikasi-dokumen-secure-route.md](../decisions/011-verifikasi-dokumen-secure-route.md)
+- ADR: [012-verifikasi-log-and-concurrent-lock.md](../decisions/012-verifikasi-log-and-concurrent-lock.md)

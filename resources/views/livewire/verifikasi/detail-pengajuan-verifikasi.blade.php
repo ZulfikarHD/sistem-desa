@@ -121,24 +121,71 @@
         </div>
     </div>
 
-    <div
-        class="flex flex-wrap gap-3 border-t border-zinc-200 pt-4 dark:border-zinc-700"
-        data-test="verifikasi-detail-actions"
-    >
-        <flux:button
-            variant="primary"
-            icon="check"
-            data-test="verifikasi-detail-setujui-button"
+    @if ($this->canVerify())
+        <div
+            class="flex flex-wrap gap-3 border-t border-zinc-200 pt-4 dark:border-zinc-700"
+            data-test="verifikasi-detail-actions"
         >
-            {{ __('Setujui') }}
-        </flux:button>
+            <flux:button
+                variant="primary"
+                icon="check"
+                wire:click="setujui"
+                data-test="verifikasi-detail-setujui-button"
+            >
+                {{ __('Setujui') }}
+            </flux:button>
 
-        <flux:button
-            variant="danger"
-            icon="x-mark"
-            data-test="verifikasi-detail-tolak-button"
-        >
-            {{ __('Tolak') }}
-        </flux:button>
-    </div>
+            <flux:button
+                variant="danger"
+                icon="x-mark"
+                wire:click="openTolakModal"
+                data-test="verifikasi-detail-tolak-button"
+            >
+                {{ __('Tolak') }}
+            </flux:button>
+        </div>
+    @endif
+
+    <flux:modal
+        wire:model.self="showTolakModal"
+        wire:close="closeTolakModal"
+        class="md:w-[32rem]"
+        data-test="verifikasi-detail-tolak-modal"
+    >
+        <form wire:submit="tolak" class="space-y-6">
+            <div>
+                <flux:heading size="lg">{{ __('Tolak Pengajuan') }}</flux:heading>
+                <flux:text class="mt-2">
+                    {{ __('Berikan alasan penolakan agar warga memahami keputusan ini.') }}
+                </flux:text>
+            </div>
+
+            <flux:textarea
+                wire:model="catatanAdmin"
+                label="{{ __('Alasan Penolakan') }}"
+                placeholder="{{ __('Contoh: Dokumen KTP tidak terbaca dengan jelas.') }}"
+                rows="4"
+                data-test="verifikasi-detail-catatan-admin"
+            />
+
+            <div class="flex gap-2">
+                <flux:spacer />
+                <flux:button
+                    type="button"
+                    variant="ghost"
+                    wire:click="closeTolakModal"
+                    data-test="verifikasi-detail-tolak-cancel"
+                >
+                    {{ __('Batal') }}
+                </flux:button>
+                <flux:button
+                    type="submit"
+                    variant="danger"
+                    data-test="verifikasi-detail-tolak-confirm"
+                >
+                    {{ __('Tolak Pengajuan') }}
+                </flux:button>
+            </div>
+        </form>
+    </flux:modal>
 </div>

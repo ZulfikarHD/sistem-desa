@@ -49,4 +49,12 @@ class PengajuanSuratFactory extends Factory
             'catatan_admin' => null,
         ]);
     }
+
+    public function diproses(): static
+    {
+        return $this->state(fn () => [
+            'status' => PengajuanSurat::STATUS_DIPROSES,
+            'catatan_admin' => null,
+        ]);
+    }
 }

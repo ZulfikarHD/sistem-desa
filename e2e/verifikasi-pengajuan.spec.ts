@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 /**
  * US-4.1 — Daftar Pengajuan Menunggu Verifikasi (Admin)
  * US-4.2 — Detail Pengajuan & Pratinjau Dokumen
- * Happy path: admin melihat daftar diajukan, buka detail, pratinjau dokumen, tombol setujui/tolak tersedia.
- * Edge/failure: guest redirect, warga 403, daftar kosong saat tidak ada pengajuan diajukan.
+ * US-4.3 — Setujui / Tolak Pengajuan
+ * US-4.4 — Transisi Status Otomatis ke "Diproses"
  */
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -139,6 +139,25 @@ function ensurePengajuanDiajukan(options: {
     } catch {
         throw new Error(`Failed to resolve pengajuan/dokumen ids: ${lookupOutput}`);
     }
+}
+
+function getPengajuanStatusByNomor(nomorPengajuan: string): string {
+    const output = runTinker([
+        `$p = \\App\\Models\\PengajuanSurat::where('nomor_pengajuan', ${JSON.stringify(nomorPengajuan)})->first();`,
+        `echo $p ? $p->status : '';`,
+    ].join('')).trim();
+
+    return output;
+}
+
+function countLogVerifikasi(pengajuanId: number, aksi: 'setujui' | 'tolak'): number {
+    const output = runTinker([
+        `echo \\App\\Models\\LogVerifikasi::where('pengajuan_id', ${pengajuanId})`,
+        `->where('aksi', ${JSON.stringify(aksi)})`,
+        `->count();`,
+    ].join('')).trim();
+
+    return Number(output);
 }
 
 async function loginAs(page: import('@playwright/test').Page, email: string, password = 'password'): Promise<void> {
@@ -375,5 +394,208 @@ test.describe('US-4.2 Detail Pengajuan & Pratinjau Dokumen', () => {
         await expect(page.locator('[data-test="verifikasi-detail-setujui-button"]')).toBeVisible();
         await expect(page.locator('[data-test="verifikasi-detail-tolak-button"]')).toBeVisible();
         await expect(page.locator(`[data-test="verifikasi-detail-dokumen-download-${ktpDokumenId}"]`)).toBeVisible();
+    });
+});
+
+test.describe('US-4.4 Transisi Status ke Diproses', () => {
+    test('status berubah dari diajukan ke diproses saat admin membuka detail pertama kali', async ({ page }) => {
+        const stamp = Date.now();
+        const adminEmail = `admin.verifikasi.diproses.${stamp}@example.com`;
+        const wargaEmail = `warga.verifikasi.diproses.${stamp}@example.com`;
+        const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 8);
+        const wargaNik = uniqueNik(Number(String(stamp).slice(-6)) + 9);
+        const namaSurat = `Surat Verifikasi Diproses ${stamp}`;
+        const nomorPengajuan = `PJ-${String(stamp).slice(-8)}-4406`;
+
+        ensureUser({
+            email: adminEmail,
+            name: 'Admin Verifikasi Diproses',
+            role: 'admin',
+            nik: adminNik,
+        });
+
+        ensureUser({
+            email: wargaEmail,
+            name: 'Warga Verifikasi Diproses',
+            role: 'warga',
+            nik: wargaNik,
+        });
+
+        const wargaId = getUserIdByEmail(wargaEmail);
+        ensureJenisSurat(namaSurat);
+        const jenisSuratId = getJenisSuratIdByName(namaSurat);
+
+        const { pengajuanId } = ensurePengajuanDiajukan({
+            userId: wargaId,
+            jenisSuratId,
+            keperluan: 'Keperluan transisi diproses',
+            nomorPengajuan,
+            ktpFixturePath: path.join(fixturesDir, 'ktp-sample.jpg'),
+            kkFixturePath: path.join(fixturesDir, 'kk-sample.png'),
+        });
+
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diajukan');
+
+        await loginAs(page, adminEmail);
+        await page.goto(`/admin/verifikasi/${pengajuanId}`);
+
+        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diproses');
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
+
+        await page.reload();
+        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diproses');
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
+    });
+});
+
+test.describe('US-4.3 Setujui / Tolak Pengajuan', () => {
+    test('admin dapat menyetujui pengajuan dan pengajuan hilang dari daftar diajukan', async ({ page }) => {
+        const stamp = Date.now();
+        const adminEmail = `admin.verifikasi.setujui.${stamp}@example.com`;
+        const wargaEmail = `warga.verifikasi.setujui.${stamp}@example.com`;
+        const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 10);
+        const wargaNik = uniqueNik(Number(String(stamp).slice(-6)) + 11);
+        const namaSurat = `Surat Verifikasi Setujui ${stamp}`;
+        const nomorPengajuan = `PJ-${String(stamp).slice(-8)}-4407`;
+
+        ensureUser({
+            email: adminEmail,
+            name: 'Admin Verifikasi Setujui',
+            role: 'admin',
+            nik: adminNik,
+        });
+
+        ensureUser({
+            email: wargaEmail,
+            name: 'Warga Verifikasi Setujui',
+            role: 'warga',
+            nik: wargaNik,
+        });
+
+        const wargaId = getUserIdByEmail(wargaEmail);
+        ensureJenisSurat(namaSurat);
+        const jenisSuratId = getJenisSuratIdByName(namaSurat);
+
+        const { pengajuanId } = ensurePengajuanDiajukan({
+            userId: wargaId,
+            jenisSuratId,
+            keperluan: 'Keperluan setujui e2e',
+            nomorPengajuan,
+            ktpFixturePath: path.join(fixturesDir, 'ktp-sample.jpg'),
+            kkFixturePath: path.join(fixturesDir, 'kk-sample.png'),
+        });
+
+        await loginAs(page, adminEmail);
+        await page.goto(`/admin/verifikasi/${pengajuanId}`);
+
+        await expect(page.locator('[data-test="verifikasi-detail-setujui-button"]')).toBeVisible();
+        await page.locator('[data-test="verifikasi-detail-setujui-button"]').click();
+
+        await expect(page).toHaveURL(/\/admin\/verifikasi$/);
+        await expect(page.locator(`[data-test="verifikasi-pengajuan-nomor-${pengajuanId}"]`)).toHaveCount(0);
+
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('disetujui');
+        expect(countLogVerifikasi(pengajuanId, 'setujui')).toBe(1);
+    });
+
+    test('admin wajib mengisi alasan saat menolak pengajuan', async ({ page }) => {
+        const stamp = Date.now();
+        const adminEmail = `admin.verifikasi.tolak.fail.${stamp}@example.com`;
+        const wargaEmail = `warga.verifikasi.tolak.fail.${stamp}@example.com`;
+        const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 12);
+        const wargaNik = uniqueNik(Number(String(stamp).slice(-6)) + 13);
+        const namaSurat = `Surat Verifikasi Tolak Fail ${stamp}`;
+        const nomorPengajuan = `PJ-${String(stamp).slice(-8)}-4408`;
+
+        ensureUser({
+            email: adminEmail,
+            name: 'Admin Verifikasi Tolak Fail',
+            role: 'admin',
+            nik: adminNik,
+        });
+
+        ensureUser({
+            email: wargaEmail,
+            name: 'Warga Verifikasi Tolak Fail',
+            role: 'warga',
+            nik: wargaNik,
+        });
+
+        const wargaId = getUserIdByEmail(wargaEmail);
+        ensureJenisSurat(namaSurat);
+        const jenisSuratId = getJenisSuratIdByName(namaSurat);
+
+        const { pengajuanId } = ensurePengajuanDiajukan({
+            userId: wargaId,
+            jenisSuratId,
+            keperluan: 'Keperluan tolak gagal e2e',
+            nomorPengajuan,
+            ktpFixturePath: path.join(fixturesDir, 'ktp-sample.jpg'),
+            kkFixturePath: path.join(fixturesDir, 'kk-sample.png'),
+        });
+
+        await loginAs(page, adminEmail);
+        await page.goto(`/admin/verifikasi/${pengajuanId}`);
+
+        await page.locator('[data-test="verifikasi-detail-tolak-button"]').click();
+        await expect(page.locator('[data-test="verifikasi-detail-catatan-admin"]')).toBeVisible();
+        await page.locator('[data-test="verifikasi-detail-tolak-confirm"]').click();
+
+        await expect(page.locator('[data-test="verifikasi-detail-catatan-admin"]')).toBeVisible();
+        await expect(page).toHaveURL(new RegExp(`/admin/verifikasi/${pengajuanId}$`));
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
+        expect(countLogVerifikasi(pengajuanId, 'tolak')).toBe(0);
+    });
+
+    test('admin dapat menolak pengajuan dengan catatan dan pengajuan hilang dari daftar diajukan', async ({ page }) => {
+        const stamp = Date.now();
+        const adminEmail = `admin.verifikasi.tolak.${stamp}@example.com`;
+        const wargaEmail = `warga.verifikasi.tolak.${stamp}@example.com`;
+        const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 14);
+        const wargaNik = uniqueNik(Number(String(stamp).slice(-6)) + 15);
+        const namaSurat = `Surat Verifikasi Tolak ${stamp}`;
+        const nomorPengajuan = `PJ-${String(stamp).slice(-8)}-4409`;
+        const alasan = 'Dokumen KTP tidak terbaca dengan jelas';
+
+        ensureUser({
+            email: adminEmail,
+            name: 'Admin Verifikasi Tolak',
+            role: 'admin',
+            nik: adminNik,
+        });
+
+        ensureUser({
+            email: wargaEmail,
+            name: 'Warga Verifikasi Tolak',
+            role: 'warga',
+            nik: wargaNik,
+        });
+
+        const wargaId = getUserIdByEmail(wargaEmail);
+        ensureJenisSurat(namaSurat);
+        const jenisSuratId = getJenisSuratIdByName(namaSurat);
+
+        const { pengajuanId } = ensurePengajuanDiajukan({
+            userId: wargaId,
+            jenisSuratId,
+            keperluan: 'Keperluan tolak e2e',
+            nomorPengajuan,
+            ktpFixturePath: path.join(fixturesDir, 'ktp-sample.jpg'),
+            kkFixturePath: path.join(fixturesDir, 'kk-sample.png'),
+        });
+
+        await loginAs(page, adminEmail);
+        await page.goto(`/admin/verifikasi/${pengajuanId}`);
+
+        await page.locator('[data-test="verifikasi-detail-tolak-button"]').click();
+        await expect(page.locator('[data-test="verifikasi-detail-catatan-admin"]')).toBeVisible();
+        await page.locator('[data-test="verifikasi-detail-catatan-admin"]').fill(alasan);
+        await page.locator('[data-test="verifikasi-detail-tolak-confirm"]').click();
+
+        await expect(page).toHaveURL(/\/admin\/verifikasi$/);
+        await expect(page.locator(`[data-test="verifikasi-pengajuan-nomor-${pengajuanId}"]`)).toHaveCount(0);
+
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('ditolak');
+        expect(countLogVerifikasi(pengajuanId, 'tolak')).toBe(1);
     });
 });

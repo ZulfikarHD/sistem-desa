@@ -4,6 +4,7 @@ use App\Livewire\Verifikasi\DaftarPengajuanVerifikasi;
 use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
 use App\Models\DokumenPersyaratan;
 use App\Models\JenisSurat;
+use App\Models\LogVerifikasi;
 use App\Models\PengajuanSurat;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -241,4 +242,151 @@ test('dokumen preview returns 404 when file missing', function () {
     $this->actingAs($admin)
         ->get(route('verifikasi.dokumen.show', $dokumen))
         ->assertNotFound();
+});
+
+test('opening detail transitions diajukan status to diproses', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+    $pengajuan = PengajuanSurat::factory()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->assertSet('pengajuan.status', PengajuanSurat::STATUS_DIPROSES);
+
+    expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
+});
+
+test('reopening detail does not change diproses status again', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->assertSet('pengajuan.status', PengajuanSurat::STATUS_DIPROSES);
+
+    expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
+});
+
+test('admin can approve diproses pengajuan and creates log', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->call('setujui')
+        ->assertRedirect(route('verifikasi.index'));
+
+    $pengajuan->refresh();
+
+    expect($pengajuan->status)->toBe(PengajuanSurat::STATUS_DISETUJUI)
+        ->and($pengajuan->diverifikasi_oleh)->toBe($admin->id)
+        ->and($pengajuan->catatan_admin)->toBeNull();
+
+    $this->assertDatabaseHas('log_verifikasi', [
+        'pengajuan_id' => $pengajuan->id,
+        'admin_id' => $admin->id,
+        'aksi' => LogVerifikasi::AKSI_SETUJUI,
+        'keterangan' => null,
+    ]);
+});
+
+test('admin can reject diproses pengajuan with required catatan', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+    ]);
+
+    $alasan = 'Dokumen KTP tidak terbaca dengan jelas';
+
+    Livewire::actingAs($admin)
+        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->set('catatanAdmin', $alasan)
+        ->call('tolak')
+        ->assertRedirect(route('verifikasi.index'));
+
+    $pengajuan->refresh();
+
+    expect($pengajuan->status)->toBe(PengajuanSurat::STATUS_DITOLAK)
+        ->and($pengajuan->diverifikasi_oleh)->toBe($admin->id)
+        ->and($pengajuan->catatan_admin)->toBe($alasan);
+
+    $this->assertDatabaseHas('log_verifikasi', [
+        'pengajuan_id' => $pengajuan->id,
+        'admin_id' => $admin->id,
+        'aksi' => LogVerifikasi::AKSI_TOLAK,
+        'keterangan' => $alasan,
+    ]);
+});
+
+test('reject requires catatan admin', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->set('catatanAdmin', '')
+        ->call('tolak')
+        ->assertHasErrors(['catatanAdmin' => 'required']);
+
+    expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
+    $this->assertDatabaseCount('log_verifikasi', 0);
+});
+
+test('approved pengajuan disappears from default diajukan list', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+    $pengajuan = PengajuanSurat::factory()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+        'nomor_pengajuan' => 'PJ-'.now()->format('Ymd').'-2001',
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->call('setujui');
+
+    Livewire::actingAs($admin)
+        ->test(DaftarPengajuanVerifikasi::class)
+        ->assertDontSee('PJ-'.now()->format('Ymd').'-2001');
+});
+
+test('action buttons hidden for already decided pengajuan', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+    $pengajuan = PengajuanSurat::factory()->disetujui()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+        'diverifikasi_oleh' => $admin->id,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->assertDontSeeHtml('verifikasi-detail-setujui-button')
+        ->assertDontSeeHtml('verifikasi-detail-tolak-button');
 });

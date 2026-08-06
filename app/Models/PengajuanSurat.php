@@ -97,4 +97,12 @@ class PengajuanSurat extends Model
     {
         return $this->hasMany(DokumenPersyaratan::class, 'pengajuan_id');
     }
+
+    /**
+     * Log audit keputusan verifikasi admin (US-4.3).
+     */
+    public function logVerifikasi(): HasMany
+    {
+        return $this->hasMany(LogVerifikasi::class, 'pengajuan_id');
+    }
 }

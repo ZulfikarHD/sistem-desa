@@ -20,7 +20,7 @@ Technical documentation for contributors working on sistem-desa.
 | Unggah Dokumen Persyaratan (US-3.2) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
 | Validasi Kelengkapan Pengajuan (US-3.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
 | Ajukan Ulang Setelah Ditolak (US-3.4) | [features/pengajuan-surat-ajukan-ulang.md](features/pengajuan-surat-ajukan-ulang.md) |
-| Verifikasi Pengajuan (US-4.1 & US-4.2) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
+| Verifikasi Pengajuan (US-4.1 – US-4.4) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
 
 ## API
 
@@ -41,3 +41,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [009](decisions/009-pengajuan-surat-table-and-nomor-format.md) | `pengajuan_surat` naming + PJ-YYYYMMDD-#### nomor generation |
 | [010](decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | KTP/KK text detection + private file storage |
 | [011](decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only secure routes for dokumen preview/download |
+| [012](decisions/012-verifikasi-log-and-concurrent-lock.md) | `log_verifikasi` audit table + pessimistic locking |
