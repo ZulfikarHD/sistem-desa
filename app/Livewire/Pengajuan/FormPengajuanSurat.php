@@ -253,12 +253,27 @@ class FormPengajuanSurat extends Component
      */
     protected function rules(): array
     {
-        $fileRules = [
+        $optionalFileRules = [
             'nullable',
             'file',
             'mimes:jpg,jpeg,png,pdf',
             'max:'.self::MAX_FILE_SIZE_KB,
         ];
+
+        $requiredFileRules = [
+            'required',
+            'file',
+            'mimes:jpg,jpeg,png,pdf',
+            'max:'.self::MAX_FILE_SIZE_KB,
+        ];
+
+        $dokumenKtpRules = in_array(DokumenPersyaratan::JENIS_KTP, $this->requiredDokumenTypes, true)
+            ? $requiredFileRules
+            : $optionalFileRules;
+
+        $dokumenKkRules = in_array(DokumenPersyaratan::JENIS_KK, $this->requiredDokumenTypes, true)
+            ? $requiredFileRules
+            : $optionalFileRules;
 
         return [
             'jenis_surat_id' => [
@@ -267,8 +282,8 @@ class FormPengajuanSurat extends Component
                 Rule::exists('jenis_surat', 'id')->whereNull('deleted_at'),
             ],
             'keperluan' => ['required', 'string', 'max:2000'],
-            'dokumenKtp' => $fileRules,
-            'dokumenKk' => $fileRules,
+            'dokumenKtp' => $dokumenKtpRules,
+            'dokumenKk' => $dokumenKkRules,
         ];
     }
 
@@ -284,9 +299,11 @@ class FormPengajuanSurat extends Component
             'jenis_surat_id.exists' => 'Jenis surat tidak valid atau sudah tidak tersedia.',
             'keperluan.required' => 'Keperluan wajib diisi.',
             'keperluan.max' => 'Keperluan maksimal 2000 karakter.',
+            'dokumenKtp.required' => 'Fotokopi KTP wajib diunggah.',
             'dokumenKtp.file' => 'File KTP harus berupa file yang valid.',
             'dokumenKtp.mimes' => 'Format KTP harus JPG, PNG, atau PDF.',
             'dokumenKtp.max' => 'Ukuran file KTP maksimal 2MB.',
+            'dokumenKk.required' => 'Fotokopi Kartu Keluarga (KK) wajib diunggah.',
             'dokumenKk.file' => 'File KK harus berupa file yang valid.',
             'dokumenKk.mimes' => 'Format KK harus JPG, PNG, atau PDF.',
             'dokumenKk.max' => 'Ukuran file KK maksimal 2MB.',

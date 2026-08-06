@@ -2,7 +2,7 @@
 
 ## Overview
 
-Warga (authenticated citizens) can submit a letter request by choosing a letter type from Phase 02 master data, describing the purpose, and uploading required KTP/KK documents when applicable. On successful submit, the system creates a `pengajuan_surat` record with auto-generated unique `nomor_pengajuan`, initial status `diajukan`, and `tanggal_pengajuan` set to the submit date. Uploaded files are stored in `dokumen_persyaratan` (US-3.2). Completeness validation (reject submit when required docs missing) is deferred to US-3.3.
+Warga (authenticated citizens) can submit a letter request by choosing a letter type from Phase 02 master data, describing the purpose, and uploading required KTP/KK documents when applicable. On successful submit, the system creates a `pengajuan_surat` record with auto-generated unique `nomor_pengajuan`, initial status `diajukan`, and `tanggal_pengajuan` set to the submit date. Uploaded files are stored in `dokumen_persyaratan` (US-3.2). Completeness validation rejects submit when required docs are missing (US-3.3).
 
 ## Architecture Diagram
 
@@ -10,7 +10,7 @@ Warga (authenticated citizens) can submit a letter request by choosing a letter 
 flowchart TD
     A[Warga opens /pengajuan-surat] --> B[auth + verified + role:warga]
     B --> C[FormPengajuanSurat Livewire]
-    C --> D[Validate jenis_surat_id + keperluan]
+    C --> D[Validate jenis_surat_id + keperluan + required docs]
     D --> E[DB transaction: generate nomor_pengajuan]
     E --> F[Insert pengajuan_surat]
     F --> G[Success callout + toast with nomor]
@@ -54,13 +54,13 @@ Table name is `pengajuan_surat` (singular), matching Phase 03 data model — not
 | Routes | `routes/web.php` | `pengajuan-surat.create` under `role:warga` |
 | Nav | `resources/views/layouts/app/sidebar.blade.php` | Warga sidebar item **Pengajuan Surat** |
 | Pest | `tests/Feature/FormPengajuanSuratTest.php` | Auth, validation, nomor sequence, soft-deleted jenis guard |
-| Playwright | `e2e/pengajuan-surat.spec.ts` | E2E US-3.1 + US-3.2 flows |
+| Playwright | `e2e/pengajuan-surat.spec.ts` | E2E US-3.1 + US-3.2 + US-3.3 flows |
 
 ## Flow Explanation
 
 1. **User triggers** — warga opens **Pengajuan Surat** from sidebar or `/pengajuan-surat`.
 2. **Request handling** — route requires `auth`, `verified`, and `role:warga`; admin/guest get redirect or 403.
-3. **Business logic** — dropdown loads active (non–soft-deleted) `jenis_surat` ordered by name. `submit()` validates required fields, then runs `generateNomorPengajuan()` inside a DB transaction with `lockForUpdate` on the day's last number. Format: `PJ-{Ymd}-{0001}`. Retries up to 3 times on unique constraint collision. Record saved with `status = diajukan`, `tanggal_pengajuan = today`, `user_id = auth id`.
+3. **Business logic** — dropdown loads active (non–soft-deleted) `jenis_surat` ordered by name. `submit()` validates required fields including mandatory KTP/KK when detected (US-3.3), then runs `generateNomorPengajuan()` inside a DB transaction with `lockForUpdate` on the day's last number. Format: `PJ-{Ymd}-{0001}`. Retries up to 3 times on unique constraint collision. Record saved with `status = diajukan`, `tanggal_pengajuan = today`, `user_id = auth id`.
 4. **Response** — success callout displays `nomor_pengajuan`; toast confirms. **Ajukan Surat Lain** resets form.
 
 ## API Endpoints (if applicable)
@@ -73,7 +73,7 @@ Table name is `pengajuan_surat` (singular), matching Phase 03 data model — not
 
 - **Nomor format `PJ-YYYYMMDD-####`** — human-readable, fits varchar(30), daily sequence resets; separate from official letter number (Phase 07). See ADR-009.
 - **Logic in Livewire component** — no service/repository layer per project architecture convention.
-- **No completeness blocking yet** — US-3.3 owns required-doc submit rejection; US-3.2 owns upload UI, format/size validation, storage. See [pengajuan-surat-dokumen.md](pengajuan-surat-dokumen.md).
+- **Completeness validation (US-3.3)** — required KTP/KK enforced at submit via dynamic `rules()`. See [pengajuan-surat-kelengkapan.md](pengajuan-surat-kelengkapan.md).
 - **Soft-deleted jenis surat rejected** — validation uses `exists` with `whereNull('deleted_at')`.
 - **FK restrict on jenis_surat** — prevents hard delete of referenced types; soft delete still allowed.
 
@@ -84,4 +84,5 @@ Table name is `pengajuan_surat` (singular), matching Phase 03 data model — not
 - Role middleware: [role-middleware.md](role-middleware.md)
 - User guide: [../../user-docs/guides/pengajuan-surat-form.md](../../user-docs/guides/pengajuan-surat-form.md)
 - Document upload (US-3.2): [pengajuan-surat-dokumen.md](pengajuan-surat-dokumen.md)
+- Completeness validation (US-3.3): [pengajuan-surat-kelengkapan.md](pengajuan-surat-kelengkapan.md)
 - ADR: [009-pengajuan-surat-table-and-nomor-format.md](../decisions/009-pengajuan-surat-table-and-nomor-format.md)

@@ -35,6 +35,7 @@ test('warga can submit pengajuan surat with auto generated nomor and defaults', 
     $user = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create([
         'nama_surat' => 'Surat Keterangan Domisili',
+        'persyaratan_dokumen' => '- Surat pengantar RT/RW',
     ]);
 
     Livewire::actingAs($user)
@@ -95,7 +96,9 @@ test('submit fails when jenis surat is soft deleted', function () {
 
 test('nomor pengajuan increments sequentially for same day', function () {
     $user = User::factory()->create(['role' => 'warga']);
-    $jenisSurat = JenisSurat::factory()->create();
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => '- Surat pengantar RT/RW',
+    ]);
 
     PengajuanSurat::factory()->create([
         'user_id' => $user->id,
@@ -115,7 +118,9 @@ test('nomor pengajuan increments sequentially for same day', function () {
 
 test('create another resets success state', function () {
     $user = User::factory()->create(['role' => 'warga']);
-    $jenisSurat = JenisSurat::factory()->create();
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => '- Surat pengantar RT/RW',
+    ]);
 
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
@@ -261,4 +266,81 @@ test('remove dokumen ktp clears preview state', function () {
         ->set('dokumenKtp', $ktpFile)
         ->call('removeDokumenKtp')
         ->assertSet('dokumenKtp', null);
+});
+
+test('submit fails when required KTP is not uploaded', function () {
+    $user = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => '- Fotokopi KTP',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(FormPengajuanSurat::class)
+        ->set('jenis_surat_id', $jenisSurat->id)
+        ->set('keperluan', 'Keperluan tanpa KTP')
+        ->call('submit')
+        ->assertHasErrors(['dokumenKtp' => 'required']);
+
+    expect(PengajuanSurat::query()->count())->toBe(0);
+});
+
+test('submit fails when required KK is not uploaded', function () {
+    $user = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => '- Fotokopi KK',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(FormPengajuanSurat::class)
+        ->set('jenis_surat_id', $jenisSurat->id)
+        ->set('keperluan', 'Keperluan tanpa KK')
+        ->call('submit')
+        ->assertHasErrors(['dokumenKk' => 'required']);
+
+    expect(PengajuanSurat::query()->count())->toBe(0);
+});
+
+test('submit fails when only one of two required dokumen is uploaded', function () {
+    Storage::fake();
+
+    $user = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
+    ]);
+    $ktpFile = UploadedFile::fake()->image('ktp.jpg');
+
+    Livewire::actingAs($user)
+        ->test(FormPengajuanSurat::class)
+        ->set('jenis_surat_id', $jenisSurat->id)
+        ->set('keperluan', 'Keperluan hanya KTP')
+        ->set('dokumenKtp', $ktpFile)
+        ->call('submit')
+        ->assertHasErrors(['dokumenKk' => 'required']);
+
+    expect(PengajuanSurat::query()->count())->toBe(0);
+});
+
+test('submit succeeds only when all required dokumen are uploaded', function () {
+    Storage::fake();
+
+    $user = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
+    ]);
+    $ktpFile = UploadedFile::fake()->image('ktp.jpg');
+    $kkFile = UploadedFile::fake()->image('kk.png');
+
+    Livewire::actingAs($user)
+        ->test(FormPengajuanSurat::class)
+        ->set('jenis_surat_id', $jenisSurat->id)
+        ->set('keperluan', 'Keperluan lengkap')
+        ->set('dokumenKtp', $ktpFile)
+        ->set('dokumenKk', $kkFile)
+        ->call('submit')
+        ->assertHasNoErrors()
+        ->assertSet('submittedNomor', fn (?string $nomor) => $nomor !== null);
+
+    $pengajuan = PengajuanSurat::query()->first();
+    expect($pengajuan?->status)->toBe(PengajuanSurat::STATUS_DIAJUKAN);
+    expect(DokumenPersyaratan::query()->where('pengajuan_id', $pengajuan?->id)->count())->toBe(2);
 });

@@ -33,7 +33,7 @@ A: Ya. Pengunjung tanpa akun akan diarahkan ke halaman masuk terlebih dahulu.
 A: Hubungi admin desa — master data jenis surat belum diisi.
 
 **Q: Apakah wajib mengunggah KTP/KK?**
-A: Disarankan mengunggah sesuai persyaratan. Validasi wajib ketat akan diterapkan pada pembaruan berikutnya.
+A: Ya, jika jenis surat yang dipilih mewajibkannya. Kolom unggah yang muncul menandakan dokumen wajib; pengajuan ditolak jika belum lengkap. Panduan: [Validasi Kelengkapan](pengajuan-surat-kelengkapan.md).
 
 ## Troubleshooting
 
@@ -41,6 +41,7 @@ A: Disarankan mengunggah sesuai persyaratan. Validasi wajib ketat akan diterapka
 |---------|--------|
 | Pesan "Jenis surat wajib dipilih" | Pilih salah satu jenis surat dari dropdown sebelum kirim. |
 | Pesan "Keperluan wajib diisi" | Isi kolom keperluan dengan penjelasan singkat. |
+| Pesan "Fotokopi KTP/KK wajib diunggah" | Unggah semua dokumen yang diminta. Lihat [validasi kelengkapan](pengajuan-surat-kelengkapan.md). |
 | Pesan format/ukuran file tidak valid | Lihat [panduan unggah dokumen](pengajuan-surat-dokumen.md). |
 | Jenis surat tidak muncul di dropdown | Jenis surat mungkin diarsipkan admin; hubungi kantor desa. |
 | Tombol Kirim tidak aktif | Belum ada jenis surat tersedia — tunggu admin menambahkan data. |

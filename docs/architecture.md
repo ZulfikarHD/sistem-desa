@@ -7,7 +7,7 @@ High-level overview of Sistem Informasi Pelayanan Surat Keterangan (**Pelayanan 
 - **Backend:** Laravel 13 + Fortify (authentication)
 - **Frontend:** Livewire 4 + Flux UI + Blade + Tailwind CSS v4
 - **Database:** SQLite (local/dev); schema via Eloquent migrations
-- **E2E:** Playwright (Chromium) — `e2e/` includes Phase 01 auth specs, `e2e/jenis-surat.spec.ts` (US-2.1), `e2e/persyaratan-dokumen.spec.ts` (US-2.2), and `e2e/persyaratan-dokumen-public.spec.ts` (US-2.3)
+- **E2E:** Playwright (Chromium) — `e2e/` includes Phase 01 auth specs, Phase 02 persyaratan specs, and `e2e/pengajuan-surat.spec.ts` (US-3.1–3.3)
 - **Test data:** `UserSeeder` via `php artisan db:seed` (admin + warga baku); covered by `tests/Feature/DatabaseSeederTest.php`
 
 ## Public UI Brand
@@ -55,6 +55,26 @@ flowchart LR
 | US-2.3 Akses Publik Persyaratan | Implemented |
 
 Details: [dev-docs/features/jenis-surat.md](dev-docs/features/jenis-surat.md), [dev-docs/features/persyaratan-dokumen.md](dev-docs/features/persyaratan-dokumen.md), [dev-docs/features/persyaratan-dokumen-publik.md](dev-docs/features/persyaratan-dokumen-publik.md), ADR-006, ADR-007, ADR-008.
+
+## Pengajuan Surat Keterangan (Phase 03)
+
+```mermaid
+flowchart LR
+    Warga[Warga] --> Form[/pengajuan-surat]
+    Form --> Validate[Validate fields + required docs]
+    Validate --> PS[(pengajuan_surat)]
+    Validate --> DP[(dokumen_persyaratan)]
+    Form --> JS[(jenis_surat)]
+```
+
+| Story | Status |
+|-------|--------|
+| US-3.1 Form Pengajuan Surat | Implemented |
+| US-3.2 Unggah Dokumen Persyaratan | Implemented |
+| US-3.3 Validasi Kelengkapan Pengajuan | Implemented |
+| US-3.4 Ajukan Ulang Setelah Ditolak | Not started |
+
+Details: [dev-docs/features/pengajuan-surat-form.md](dev-docs/features/pengajuan-surat-form.md), [dev-docs/features/pengajuan-surat-dokumen.md](dev-docs/features/pengajuan-surat-dokumen.md), [dev-docs/features/pengajuan-surat-kelengkapan.md](dev-docs/features/pengajuan-surat-kelengkapan.md), ADR-009, ADR-010.
 
 ## Local seed accounts
 

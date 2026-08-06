@@ -18,6 +18,7 @@ Technical documentation for contributors working on sistem-desa.
 | Akses Publik Persyaratan Dokumen (US-2.3) | [features/persyaratan-dokumen-publik.md](features/persyaratan-dokumen-publik.md) |
 | Form Pengajuan Surat (US-3.1) | [features/pengajuan-surat-form.md](features/pengajuan-surat-form.md) |
 | Unggah Dokumen Persyaratan (US-3.2) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
+| Validasi Kelengkapan Pengajuan (US-3.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
 
 ## API
 

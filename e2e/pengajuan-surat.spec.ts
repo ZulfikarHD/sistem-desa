@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 /**
  * US-3.1 — Form Pengajuan Surat Keterangan (Warga)
  * US-3.2 — Unggah Dokumen Persyaratan (KTP/KK)
+ * US-3.3 — Validasi Kelengkapan Pengajuan (dokumen wajib)
  * Happy path: isi form, upload dokumen, submit, nomor pengajuan otomatis.
  * Edge/failure: guest redirect, admin 403, validasi jenis surat & keperluan wajib,
  * validasi format/ukuran file upload.
@@ -286,5 +287,85 @@ test.describe('US-3.2 Unggah Dokumen Persyaratan', () => {
 
         await expect(page.getByText(/Format KTP harus JPG, PNG, atau PDF/i)).toBeVisible();
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
+    });
+});
+
+test.describe('US-3.3 Validasi Kelengkapan Pengajuan', () => {
+    test('validasi gagal jika dokumen KTP wajib belum diunggah', async ({ page }) => {
+        const stamp = Date.now();
+        const email = `warga.kelengkapan.ktp.${stamp}@example.com`;
+        const nik = uniqueNik(Number(String(stamp).slice(-6)) + 20);
+        const namaSurat = `Surat Kelengkapan KTP ${stamp}`;
+
+        ensureUser({
+            email,
+            name: 'Warga Kelengkapan KTP',
+            role: 'warga',
+            nik,
+        });
+        ensureJenisSurat(namaSurat, '- Fotokopi KTP');
+
+        await loginAs(page, email);
+        await page.goto('/pengajuan-surat');
+
+        await selectJenisSuratByName(page, namaSurat);
+        await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill('Keperluan tanpa unggah KTP');
+        await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
+
+        await expect(page.getByText(/Fotokopi KTP wajib diunggah/i)).toBeVisible();
+        await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
+    });
+
+    test('validasi gagal jika KK wajib belum diunggah meskipun KTP sudah diunggah', async ({ page }) => {
+        const stamp = Date.now();
+        const email = `warga.kelengkapan.kk.${stamp}@example.com`;
+        const nik = uniqueNik(Number(String(stamp).slice(-6)) + 21);
+        const namaSurat = `Surat Kelengkapan KK ${stamp}`;
+
+        ensureUser({
+            email,
+            name: 'Warga Kelengkapan KK',
+            role: 'warga',
+            nik,
+        });
+        ensureJenisSurat(namaSurat, '- Fotokopi KTP\n- Fotokopi KK');
+
+        await loginAs(page, email);
+        await page.goto('/pengajuan-surat');
+
+        await selectJenisSuratByName(page, namaSurat);
+        await uploadKtpFile(page, path.join(fixturesDir, 'ktp-sample.jpg'));
+        await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill('Keperluan hanya KTP, KK belum');
+        await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
+
+        await expect(page.getByText(/Fotokopi Kartu Keluarga \(KK\) wajib diunggah/i)).toBeVisible();
+        await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
+    });
+
+    test('pengajuan tersimpan dengan status diajukan hanya jika semua dokumen wajib lengkap', async ({ page }) => {
+        const stamp = Date.now();
+        const email = `warga.kelengkapan.lengkap.${stamp}@example.com`;
+        const nik = uniqueNik(Number(String(stamp).slice(-6)) + 22);
+        const namaSurat = `Surat Kelengkapan Lengkap ${stamp}`;
+
+        ensureUser({
+            email,
+            name: 'Warga Kelengkapan Lengkap',
+            role: 'warga',
+            nik,
+        });
+        ensureJenisSurat(namaSurat, '- Fotokopi KTP\n- Fotokopi KK');
+
+        await loginAs(page, email);
+        await page.goto('/pengajuan-surat');
+
+        await selectJenisSuratByName(page, namaSurat);
+        await uploadKtpFile(page, path.join(fixturesDir, 'ktp-sample.jpg'));
+        await uploadKkFile(page, path.join(fixturesDir, 'kk-sample.png'));
+        await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill(`Keperluan lengkap ${stamp}`);
+        await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
+
+        await expect(page.locator('[data-test="pengajuan-surat-success"]')).toBeVisible();
+        await expect(page.locator('[data-test="pengajuan-surat-nomor"]')).toHaveText(/^PJ-\d{8}-\d{4}$/);
     });
 });

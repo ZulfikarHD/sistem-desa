@@ -12,7 +12,7 @@ US-3.2 requires KTP/KK upload fields that match each `jenis_surat`'s document re
 1. **Detect required upload slots** by keyword scan on `persyaratan_dokumen`: `KTP` → KTP field; `KK` or `Kartu Keluarga` → KK field.
 2. **Store files** on Laravel's default `local` disk (`storage/app/private`) under `pengajuan-dokumen/{pengajuan_id}/`.
 3. **Persist metadata** in `dokumen_persyaratan` with `jenis_dokumen` enum values `KTP` / `KK` and unique `(pengajuan_id, jenis_dokumen)`.
-4. **Defer mandatory completeness** to US-3.3 — US-3.2 only validates format/size when a file is provided.
+4. **Mandatory completeness (US-3.3, implemented)** — `FormPengajuanSurat::rules()` applies `required` to `dokumenKtp` / `dokumenKk` when the corresponding type is detected; US-3.2 still owns upload UI, format/size validation, and storage.
 
 ## Consequences
 

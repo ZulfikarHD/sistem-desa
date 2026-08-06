@@ -30,7 +30,7 @@ Jika Anda mengubah pilihan **Jenis Surat**, file yang sudah dipilih akan dihapus
 A: Tidak. Kolom unggah hanya muncul untuk dokumen yang tercantum dalam persyaratan jenis surat tersebut.
 
 **Q: Bisakah saya mengajukan tanpa mengunggah dokumen?**
-A: Saat ini sistem masih menerima pengajuan tanpa file; validasi kelengkapan wajib akan diperketat pada pembaruan berikutnya (US-3.3).
+A: Tidak, jika jenis surat yang dipilih mewajibkan KTP dan/atau KK. Sistem akan menolak pengajuan dan menampilkan pesan dokumen mana yang belum diunggah. Lihat [Validasi Kelengkapan Pengajuan](pengajuan-surat-kelengkapan.md).
 
 **Q: Format apa yang didukung?**
 A: JPG, PNG, dan PDF. File lain (misalnya Word atau TXT) akan ditolak.
@@ -39,6 +39,7 @@ A: JPG, PNG, dan PDF. File lain (misalnya Word atau TXT) akan ditolak.
 
 | Masalah | Solusi |
 |---------|--------|
+| Pesan "Fotokopi KTP/KK wajib diunggah" | Unggah dokumen yang diminta sebelum kirim. Lihat [validasi kelengkapan](pengajuan-surat-kelengkapan.md). |
 | Pesan "Format KTP/KK harus JPG, PNG, atau PDF" | Konversi atau scan ulang dokumen ke format yang didukung. |
 | Pesan "Ukuran file maksimal 2MB" | Kompres gambar atau gunakan resolusi scan lebih rendah. |
 | Area unggah tidak muncul | Pilih jenis surat terlebih dahulu; jika tetap tidak muncul, jenis surat tersebut mungkin tidak memerlukan KTP/KK. |
