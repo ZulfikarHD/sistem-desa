@@ -134,16 +134,6 @@
 
             <flux:table.rows>
                 @foreach ($pengajuanList as $item)
-                    @php
-                        $statusVariant = match ($item->status) {
-                            \App\Models\PengajuanSurat::STATUS_DITOLAK => 'danger',
-                            \App\Models\PengajuanSurat::STATUS_SELESAI => 'success',
-                            \App\Models\PengajuanSurat::STATUS_DISETUJUI,
-                            \App\Models\PengajuanSurat::STATUS_DIPROSES,
-                            \App\Models\PengajuanSurat::STATUS_SIAP_DIAMBIL => 'warning',
-                            default => 'zinc',
-                        };
-                    @endphp
                     <flux:table.row
                         wire:key="rekap-pengajuan-{{ $item->id }}"
                         data-test="rekap-pengajuan-row-{{ $item->id }}"
@@ -163,7 +153,7 @@
                         <flux:table.cell>
                             <flux:badge
                                 size="sm"
-                                :variant="$statusVariant"
+                                :color="\App\Models\PengajuanSurat::statusBadgeColor($item->status)"
                                 data-test="rekap-pengajuan-status-{{ $item->id }}"
                             >
                                 {{ __($this->statusLabel($item->status)) }}

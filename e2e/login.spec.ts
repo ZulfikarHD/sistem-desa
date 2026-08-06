@@ -72,7 +72,7 @@ test.describe('US-1.2 Login Berbasis Role', () => {
 
         await expect(page).toHaveURL(/\/dashboard$/);
         await expect(page.locator('[data-test="dashboard-warga-heading"]')).toBeVisible();
-        await expect(page.getByText(/Dashboard Warga/i)).toBeVisible();
+        await expect(page.locator('[data-test="dashboard-warga-heading"]')).toHaveText(/Dashboard Warga/i);
     });
 
     test('admin berhasil login dan diarahkan ke Dashboard Admin', async ({ page }) => {
@@ -94,7 +94,7 @@ test.describe('US-1.2 Login Berbasis Role', () => {
 
         await expect(page).toHaveURL(/\/admin\/dashboard/);
         await expect(page.locator('[data-test="dashboard-admin-heading"]')).toBeVisible();
-        await expect(page.getByText(/Dashboard Admin/i)).toBeVisible();
+        await expect(page.locator('[data-test="dashboard-admin-heading"]')).toHaveText(/Dashboard Admin/i);
     });
 
     test('login gagal dengan kredensial salah menampilkan error generik', async ({ page }) => {

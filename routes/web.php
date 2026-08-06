@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Dashboard\AdminDashboard;
+use App\Livewire\Dashboard\WargaDashboard;
 use App\Livewire\JenisSurat\DataJenisSurat;
 use App\Livewire\JenisSurat\PersyaratanDokumen;
 use App\Livewire\Pengajuan\DetailPengajuanWarga;
@@ -23,9 +25,9 @@ Route::livewire('persyaratan-dokumen', PersyaratanDokumen::class)
     ->name('persyaratan-dokumen.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard Warga (role: warga) — US-1.2 + US-1.3
+    // Dashboard Warga (role: warga) — US-1.2 + US-1.3 + US-8.2
     Route::middleware('role:warga')->group(function () {
-        Route::view('dashboard', 'dashboard')->name('dashboard');
+        Route::livewire('dashboard', WargaDashboard::class)->name('dashboard');
 
         // US-3.1 — Form Pengajuan Surat Keterangan
         Route::livewire('pengajuan-surat', FormPengajuanSurat::class)
@@ -70,10 +72,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->whereNumber('pengajuan');
     });
 
-    // Dashboard Admin (role: admin) — US-1.2 + US-1.3
+    // Dashboard Admin (role: admin) — US-1.2 + US-1.3 + US-8.1
     // Route admin Phase 02/04/06 ditambah di grup `role:admin` yang sama.
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::view('dashboard', 'admin.dashboard')->name('dashboard.admin');
+        Route::livewire('dashboard', AdminDashboard::class)->name('dashboard.admin');
 
         // US-2.1 — Kelola Data Jenis Surat
         Route::livewire('jenis-surat', DataJenisSurat::class)->name('jenis-surat.index');

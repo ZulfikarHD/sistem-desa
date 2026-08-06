@@ -5,6 +5,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | Applies to | Rule file |
 | --- | --- |
 | resources/views/welcome.blade.php, resources/views/layouts/auth/**, resources/views/pages/auth/** | .ai/rules/auth.md |
+| app/Livewire/Dashboard/** | .ai/rules/dashboard.md |
 | app/Actions/Fortify/** | .ai/rules/fortify.md |
 | app/Livewire/JenisSurat/** | .ai/rules/jenis-surat.md |
 | resources/views/layouts/** | .ai/rules/layouts.md |

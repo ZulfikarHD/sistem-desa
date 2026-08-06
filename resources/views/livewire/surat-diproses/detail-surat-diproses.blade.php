@@ -46,7 +46,7 @@
                 <div class="grid gap-1">
                     <dt class="font-medium text-zinc-500 dark:text-zinc-400">{{ __('Status') }}</dt>
                     <dd>
-                        <flux:badge variant="warning" data-test="surat-diproses-detail-status">
+                        <flux:badge :color="\App\Models\PengajuanSurat::statusBadgeColor($pengajuan->status)" data-test="surat-diproses-detail-status">
                             {{ \App\Models\PengajuanSurat::statusLabel($pengajuan->status) }}
                         </flux:badge>
                     </dd>

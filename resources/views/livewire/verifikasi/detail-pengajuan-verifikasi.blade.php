@@ -47,16 +47,9 @@
                     <dt class="font-medium text-zinc-500 dark:text-zinc-400">{{ __('Status') }}</dt>
                     <dd>
                         @php
-                            $statusVariant = match ($pengajuan->status) {
-                                \App\Models\PengajuanSurat::STATUS_DITOLAK => 'danger',
-                                \App\Models\PengajuanSurat::STATUS_SELESAI => 'success',
-                                \App\Models\PengajuanSurat::STATUS_DISETUJUI,
-                                \App\Models\PengajuanSurat::STATUS_DIPROSES,
-                                \App\Models\PengajuanSurat::STATUS_SIAP_DIAMBIL => 'warning',
-                                default => 'neutral',
-                            };
+                            $statusColor = \App\Models\PengajuanSurat::statusBadgeColor($pengajuan->status);
                         @endphp
-                        <flux:badge :variant="$statusVariant" data-test="verifikasi-detail-status">
+                        <flux:badge :color="$statusColor" data-test="verifikasi-detail-status">
                             {{ \App\Models\PengajuanSurat::statusLabel($pengajuan->status) }}
                         </flux:badge>
                     </dd>

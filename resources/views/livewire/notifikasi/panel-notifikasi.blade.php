@@ -1,6 +1,7 @@
 <div
     wire:poll.30s="refreshNotifikasi"
     x-data="{ open: false }"
+    x-on:buka-panel-notifikasi.window="$el.querySelector('[data-test=panel-notifikasi-toggle]')?.click()"
     class="px-2"
     data-test="panel-notifikasi"
 >

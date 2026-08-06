@@ -13,3 +13,6 @@ Warga-only routes pengajuan-surat.unduh-surat and pengajuan-surat.cetak-surat un
 
 ## Surat Diproses admin routes
 Admin routes: surat-diproses.index, surat-diproses.pdf.show, surat-diproses.pdf.download, surat-diproses.show. PDF routes must stay before {pengajuan} show.
+
+## Dashboard routes are Livewire pages
+dashboard and dashboard.admin are Route::livewire to WargaDashboard / AdminDashboard (US-8.1/8.2), not Route::view stubs.

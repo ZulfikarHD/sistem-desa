@@ -76,18 +76,8 @@
                             {{ $item->tanggal_pengajuan?->translatedFormat('d M Y') }}
                         </flux:table.cell>
                         <flux:table.cell>
-                            @php
-                                $statusVariant = match ($item->status) {
-                                    \App\Models\PengajuanSurat::STATUS_DITOLAK => 'danger',
-                                    \App\Models\PengajuanSurat::STATUS_SELESAI => 'success',
-                                    \App\Models\PengajuanSurat::STATUS_DISETUJUI,
-                                    \App\Models\PengajuanSurat::STATUS_DIPROSES,
-                                    \App\Models\PengajuanSurat::STATUS_SIAP_DIAMBIL => 'warning',
-                                    default => 'neutral',
-                                };
-                            @endphp
                             <flux:badge
-                                :variant="$statusVariant"
+                                :color="\App\Models\PengajuanSurat::statusBadgeColor($item->status)"
                                 data-test="riwayat-pengajuan-status-{{ $item->id }}"
                             >
                                 {{ \App\Models\PengajuanSurat::statusLabel($item->status) }}

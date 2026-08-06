@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonInterface;
 use Database\Factories\PengajuanSuratFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -84,6 +85,84 @@ class PengajuanSurat extends Model
             self::STATUS_SELESAI => 'Selesai',
             default => $status,
         };
+    }
+
+    /**
+     * Warna badge Flux untuk status (UI Notes Phase 08 — konsisten di seluruh sistem).
+     */
+    public static function statusBadgeColor(string $status): string
+    {
+        return match ($status) {
+            self::STATUS_DIAJUKAN => 'amber',
+            self::STATUS_DISETUJUI,
+            self::STATUS_DIPROSES => 'blue',
+            self::STATUS_SIAP_DIAMBIL => 'green',
+            self::STATUS_SELESAI => 'zinc',
+            self::STATUS_DITOLAK => 'red',
+            default => 'zinc',
+        };
+    }
+
+    /**
+     * Status yang masih aktif (belum selesai / ditolak).
+     *
+     * @return list<string>
+     */
+    public static function statusAktif(): array
+    {
+        return [
+            self::STATUS_DIAJUKAN,
+            self::STATUS_DISETUJUI,
+            self::STATUS_DIPROSES,
+            self::STATUS_SIAP_DIAMBIL,
+        ];
+    }
+
+    /**
+     * Status yang dihitung sebagai "sedang diproses" di dashboard (termasuk historis disetujui).
+     *
+     * @return list<string>
+     */
+    public static function statusDiprosesDashboard(): array
+    {
+        return [
+            self::STATUS_DIPROSES,
+            self::STATUS_DISETUJUI,
+        ];
+    }
+
+    /**
+     * Waktu masuk ke status saat ini (untuk aging / elapsed time dashboard).
+     */
+    public function waktuMasukStatusSaatIni(): CarbonInterface
+    {
+        return match ($this->status) {
+            self::STATUS_DIAJUKAN => $this->created_at ?? now(),
+            self::STATUS_DISETUJUI,
+            self::STATUS_DIPROSES => $this->suratTerbit?->tanggal_terbit
+                ? Carbon::parse($this->suratTerbit->tanggal_terbit)->timezone('Asia/Jakarta')->startOfDay()
+                : ($this->updated_at ?? $this->created_at ?? now()),
+            self::STATUS_SIAP_DIAMBIL => $this->suratTerbit?->siap_diambil_at
+                ?? $this->suratTerbit?->updated_at
+                ?? $this->updated_at
+                ?? now(),
+            self::STATUS_SELESAI => $this->suratTerbit?->qr_digunakan_at
+                ?? $this->updated_at
+                ?? now(),
+            self::STATUS_DITOLAK => $this->updated_at ?? $this->created_at ?? now(),
+            default => $this->created_at ?? now(),
+        };
+    }
+
+    /**
+     * Jumlah hari kalender sejak masuk status saat ini (timezone Asia/Jakarta).
+     */
+    public function hariDiStatusSaatIni(?CarbonInterface $hariIni = null): int
+    {
+        $hariIni ??= now('Asia/Jakarta')->startOfDay();
+        $masuk = $this->waktuMasukStatusSaatIni()->timezone('Asia/Jakarta')->startOfDay();
+
+        return (int) $masuk->diffInDays($hariIni);
     }
 
     /**

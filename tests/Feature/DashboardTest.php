@@ -18,6 +18,7 @@ test('authenticated warga can visit the warga dashboard', function () {
 
     $response = $this->get(route('dashboard'));
     $response->assertOk();
+    $response->assertSee('Dashboard Warga', false);
 });
 
 test('authenticated admin can visit the admin dashboard', function () {
@@ -26,4 +27,5 @@ test('authenticated admin can visit the admin dashboard', function () {
 
     $response = $this->get(route('dashboard.admin'));
     $response->assertOk();
+    $response->assertSee('Dashboard Admin', false);
 });

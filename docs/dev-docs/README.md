@@ -29,6 +29,8 @@ Technical documentation for contributors working on sistem-desa.
 | QR Code Sekali Pakai (US-7.4) | [features/qr-sekali-pakai.md](features/qr-sekali-pakai.md) |
 | Dokumen Siap Diambil (US-7.5) | [features/dokumen-siap-diambil.md](features/dokumen-siap-diambil.md) |
 | Surat Diproses (US-8.5 & US-8.6) | [features/surat-diproses.md](features/surat-diproses.md) |
+| Dashboard Admin (US-8.1) | [features/dashboard-admin.md](features/dashboard-admin.md) |
+| Dashboard Warga (US-8.2) | [features/dashboard-warga.md](features/dashboard-warga.md) |
 | Unduh/Cetak Surat Warga (US-7.6) | [features/unduh-surat-warga.md](features/unduh-surat-warga.md) |
 | Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3) | [features/notifikasi-pengajuan.md](features/notifikasi-pengajuan.md) |
 | Rekap Pengajuan & Reporting (US-6.1 – US-6.2) | [features/rekap-pengajuan.md](features/rekap-pengajuan.md) |
@@ -62,3 +64,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [019](decisions/019-warga-unduh-cetak-existing-pdf.md) | Warga unduh/cetak existing PDF; no QR regeneration |
 | [020](decisions/020-setujui-langsung-diproses-us-8-4.md) | Setujui langsung diproses; keep disetujui historis |
 | [021](decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated Surat Diproses pages + siap_diambil_at |
+| [022](decisions/022-dashboard-aging-and-status-helpers.md) | Dashboard aging helpers + component thresholds |
