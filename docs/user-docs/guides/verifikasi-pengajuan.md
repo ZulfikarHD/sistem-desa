@@ -11,71 +11,60 @@ Fitur ini membantu **admin/petugas desa** memeriksa pengajuan surat keterangan y
 1. Masuk ke sistem sebagai **admin/petugas desa**.
 2. Di menu samping, klik **Verifikasi Pengajuan**.
 3. Halaman menampilkan pengajuan dengan status **Diajukan** secara default.
-4. Tabel menampilkan:
-   - **Nomor Pengajuan**
-   - **Nama Warga**
-   - **Jenis Surat**
-   - **Tanggal Pengajuan**
-5. Gunakan **Filter Status** jika ingin melihat pengajuan dengan status lain (Diproses, Disetujui, Ditolak).
+4. Tabel menampilkan nomor, nama warga, jenis surat, dan tanggal pengajuan.
+5. Gunakan **Filter Status** untuk status lain (Disetujui, Diproses, Siap Diambil, Selesai, Ditolak).
 
-> 💡 **Tips:** Fokuskan pemeriksaan pada filter **Diajukan** — itulah antrean yang perlu ditindaklanjuti terlebih dulu.
+> 💡 **Tips:** Fokuskan pemeriksaan pada filter **Diajukan** — itulah antrean yang perlu ditindaklanjuti.
 
 ### Membuka Detail Pengajuan
 
 1. Dari daftar verifikasi, **klik baris** pengajuan yang ingin diperiksa.
-2. Status pengajuan otomatis berubah dari **Diajukan** menjadi **Diproses** saat Anda membuka detail untuk pertama kali.
-3. Halaman detail menampilkan:
-   - Data warga (nama, NIK)
-   - Jenis surat dan tanggal pengajuan
-   - Status saat ini
-   - **Keperluan** pengajuan
-   - Dokumen persyaratan (KTP/KK)
+2. Status tetap **Diajukan** saat halaman detail dibuka (tidak berubah otomatis).
+3. Halaman detail menampilkan data warga, jenis surat, keperluan, dan dokumen persyaratan.
 
 ### Memeriksa Dokumen
 
-1. Di bagian **Dokumen Persyaratan**, pratinjau gambar (JPG/PNG) atau PDF ditampilkan langsung di halaman.
-2. Jika pratinjau tidak tersedia (file rusak atau format tidak didukung), klik **Unduh Dokumen** untuk membuka berkas di perangkat Anda.
+1. Di bagian **Dokumen Persyaratan**, pratinjau gambar atau PDF ditampilkan langsung.
+2. Jika pratinjau tidak tersedia, klik **Unduh Dokumen**.
 
 ### Menyetujui Pengajuan
 
-1. Setelah memeriksa dokumen, klik tombol **Setujui** di bagian bawah halaman detail.
-2. Konfirmasi dialog yang muncul.
-3. Pengajuan berstatus **Disetujui** dan hilang dari daftar filter **Diajukan**.
-4. Anda diarahkan kembali ke daftar verifikasi.
+1. Klik **Setujui**.
+2. Sistem mencatat **Disetujui**, lalu otomatis lanjut ke **Diproses** (persiapan surat).
+3. Pengajuan hilang dari daftar filter **Diajukan**.
+4. Warga menerima notifikasi status.
 
 ### Menolak Pengajuan
 
-1. Klik tombol **Tolak** di bagian bawah halaman detail.
-2. Isi **Alasan Penolakan** pada formulir yang muncul (wajib diisi).
-3. Klik **Tolak Pengajuan** untuk mengonfirmasi.
-4. Pengajuan berstatus **Ditolak** dan hilang dari daftar filter **Diajukan**.
-5. Warga dapat melihat alasan penolakan saat fitur riwayat pengajuan tersedia.
+1. Klik **Tolak**.
+2. Isi **Alasan Penolakan** (wajib).
+3. Klik **Tolak Pengajuan**.
+4. Status menjadi **Ditolak** (tidak masuk Diproses).
+5. Warga dapat melihat alasan di riwayat pengajuan.
 
-> 💡 **Tips:** Tulis alasan penolakan yang jelas dan spesifik agar warga dapat memperbaiki dokumen atau mengajukan ulang.
+> 💡 **Tips:** Tulis alasan yang jelas agar warga dapat memperbaiki dokumen atau mengajukan ulang.
 
 ## FAQ
 
-**Q: Mengapa daftar saya kosong?**
-A: Kemungkinan belum ada pengajuan dengan status **Diajukan**, atau filter status sedang diubah ke status lain yang tidak memiliki data.
+**Q: Mengapa daftar saya kosong?**  
+A: Belum ada pengajuan **Diajukan**, atau filter status sedang diubah.
 
-**Q: Apakah warga bisa melihat halaman verifikasi?**
-A: Tidak. Halaman ini khusus admin/petugas desa.
+**Q: Mengapa status tidak jadi Diproses saat saya buka detail?**  
+A: Diproses sekarang berarti surat sedang disiapkan setelah disetujui, bukan “sedang dibaca admin.”
 
-**Q: Dokumen tidak bisa dipratinjau, apa yang harus dilakukan?**
-A: Gunakan tombol **Unduh Dokumen** untuk memeriksa berkas secara manual.
+**Q: Setelah setujui, kenapa status akhirnya Diproses?**  
+A: Setelah verifikasi OK, sistem otomatis lanjut ke tahap persiapan surat.
 
-**Q: Mengapa status berubah menjadi Diproses saat saya buka detail?**
-A: Ini menandakan pengajuan sedang diperiksa petugas. Status selanjutnya adalah Disetujui atau Ditolak setelah Anda mengambil keputusan.
-
-**Q: Apakah saya bisa menolak tanpa alasan?**
-A: Tidak. Alasan penolakan wajib diisi agar warga memahami keputusan Anda.
+**Q: Apakah saya bisa menolak tanpa alasan?**  
+A: Tidak. Alasan penolakan wajib diisi.
 
 ## Troubleshooting
 
 | Masalah | Solusi |
 |---------|--------|
-| Halaman verifikasi tidak muncul di menu | Pastikan Anda login sebagai admin, bukan warga |
-| Pratinjau dokumen kosong | Unduh dokumen; file mungkin hilang atau format tidak didukung |
-| Pengajuan tidak muncul di daftar default | Cek filter status — ubah ke **Diajukan** |
-| Tombol Setujui/Tolak tidak muncul | Pengajuan mungkin sudah disetujui/ditolak; cek filter status |
-| Form penolakan menolak submit | Pastikan alasan penolakan diisi minimal 5 karakter |
+| Halaman verifikasi tidak muncul di menu | Login sebagai admin, bukan warga |
+| Pratinjau dokumen kosong | Unduh dokumen; file mungkin hilang |
+| Tombol Setujui/Tolak tidak muncul | Status bukan Diajukan lagi |
+| Pengajuan tidak muncul di daftar default | Set filter ke **Diajukan** |
+
+Lihat juga: [Migrasi Alur Status](migrasi-alur-status.md).

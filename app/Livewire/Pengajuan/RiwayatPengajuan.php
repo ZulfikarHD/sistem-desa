@@ -25,13 +25,7 @@ class RiwayatPengajuan extends Component
      */
     public function statusOptions(): array
     {
-        return [
-            '' => 'Semua status',
-            PengajuanSurat::STATUS_DIAJUKAN => 'Diajukan',
-            PengajuanSurat::STATUS_DIPROSES => 'Diproses',
-            PengajuanSurat::STATUS_DISETUJUI => 'Disetujui',
-            PengajuanSurat::STATUS_DITOLAK => 'Ditolak',
-        ];
+        return ['' => 'Semua status'] + PengajuanSurat::statusOptions();
     }
 
     /**

@@ -154,7 +154,49 @@ test('ringkasan ignores status filter but respects jenis and date filters', func
         ->and($ringkasan['diajukan'])->toBe(1)
         ->and($ringkasan['disetujui'])->toBe(1)
         ->and($ringkasan['diproses'])->toBe(0)
+        ->and($ringkasan['siap_diambil'])->toBe(0)
+        ->and($ringkasan['selesai'])->toBe(0)
         ->and($ringkasan['ditolak'])->toBe(0);
+});
+
+test('rekap status options and ringkasan include siap_diambil and selesai', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create();
+
+    PengajuanSurat::factory()->siapDiambil()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+        'nomor_pengajuan' => 'PJ-'.now()->format('Ymd').'-6401',
+        'diverifikasi_oleh' => $admin->id,
+        'tanggal_pengajuan' => '2026-08-10',
+    ]);
+
+    PengajuanSurat::factory()->selesai()->create([
+        'user_id' => $warga->id,
+        'jenis_surat_id' => $jenisSurat->id,
+        'nomor_pengajuan' => 'PJ-'.now()->format('Ymd').'-6402',
+        'diverifikasi_oleh' => $admin->id,
+        'tanggal_pengajuan' => '2026-08-11',
+    ]);
+
+    $component = Livewire::actingAs($admin)
+        ->test(RekapPengajuan::class)
+        ->assertSeeHtml('data-test="rekap-ringkasan-siap-diambil"')
+        ->assertSeeHtml('data-test="rekap-ringkasan-selesai"');
+
+    $options = $component->instance()->statusOptions();
+    expect($options)->toHaveKey(PengajuanSurat::STATUS_SIAP_DIAMBIL)
+        ->and($options)->toHaveKey(PengajuanSurat::STATUS_SELESAI);
+
+    $ringkasan = $component->viewData('ringkasan');
+    expect($ringkasan['siap_diambil'])->toBe(1)
+        ->and($ringkasan['selesai'])->toBe(1);
+
+    $component
+        ->set('statusFilter', PengajuanSurat::STATUS_SIAP_DIAMBIL)
+        ->assertSee('PJ-'.now()->format('Ymd').'-6401')
+        ->assertDontSee('PJ-'.now()->format('Ymd').'-6402');
 });
 
 test('invalid date range shows validation error and empty table', function () {

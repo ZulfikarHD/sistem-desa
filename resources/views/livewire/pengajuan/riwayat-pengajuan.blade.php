@@ -78,8 +78,10 @@
                             @php
                                 $statusVariant = match ($item->status) {
                                     \App\Models\PengajuanSurat::STATUS_DITOLAK => 'danger',
-                                    \App\Models\PengajuanSurat::STATUS_DISETUJUI => 'success',
-                                    \App\Models\PengajuanSurat::STATUS_DIPROSES => 'warning',
+                                    \App\Models\PengajuanSurat::STATUS_DISETUJUI,
+                                    \App\Models\PengajuanSurat::STATUS_SELESAI => 'success',
+                                    \App\Models\PengajuanSurat::STATUS_DIPROSES,
+                                    \App\Models\PengajuanSurat::STATUS_SIAP_DIAMBIL => 'warning',
                                     default => 'neutral',
                                 };
                             @endphp
@@ -87,7 +89,7 @@
                                 :variant="$statusVariant"
                                 data-test="riwayat-pengajuan-status-{{ $item->id }}"
                             >
-                                {{ ucfirst($item->status) }}
+                                {{ \App\Models\PengajuanSurat::statusLabel($item->status) }}
                             </flux:badge>
                         </flux:table.cell>
                         <flux:table.cell>

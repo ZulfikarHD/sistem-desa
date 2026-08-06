@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
  * US-4.1 — Daftar Pengajuan Menunggu Verifikasi (Admin)
  * US-4.2 — Detail Pengajuan & Pratinjau Dokumen
  * US-4.3 — Setujui / Tolak Pengajuan
- * US-4.4 — Transisi Status Otomatis ke "Diproses"
+ * US-7.1 — Migrasi Alur Status (hapus auto diajukan→diproses; setujui→disetujui→diproses)
  */
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -397,26 +397,26 @@ test.describe('US-4.2 Detail Pengajuan & Pratinjau Dokumen', () => {
     });
 });
 
-test.describe('US-4.4 Transisi Status ke Diproses', () => {
-    test('status berubah dari diajukan ke diproses saat admin membuka detail pertama kali', async ({ page }) => {
+test.describe('US-7.1 Migrasi Alur Status', () => {
+    test('membuka detail tidak mengubah status diajukan ke diproses', async ({ page }) => {
         const stamp = Date.now();
-        const adminEmail = `admin.verifikasi.diproses.${stamp}@example.com`;
-        const wargaEmail = `warga.verifikasi.diproses.${stamp}@example.com`;
+        const adminEmail = `admin.verifikasi.noauto.${stamp}@example.com`;
+        const wargaEmail = `warga.verifikasi.noauto.${stamp}@example.com`;
         const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 8);
         const wargaNik = uniqueNik(Number(String(stamp).slice(-6)) + 9);
-        const namaSurat = `Surat Verifikasi Diproses ${stamp}`;
+        const namaSurat = `Surat Verifikasi No Auto ${stamp}`;
         const nomorPengajuan = `PJ-${String(stamp).slice(-8)}-4406`;
 
         ensureUser({
             email: adminEmail,
-            name: 'Admin Verifikasi Diproses',
+            name: 'Admin Verifikasi No Auto',
             role: 'admin',
             nik: adminNik,
         });
 
         ensureUser({
             email: wargaEmail,
-            name: 'Warga Verifikasi Diproses',
+            name: 'Warga Verifikasi No Auto',
             role: 'warga',
             nik: wargaNik,
         });
@@ -428,7 +428,7 @@ test.describe('US-4.4 Transisi Status ke Diproses', () => {
         const { pengajuanId } = ensurePengajuanDiajukan({
             userId: wargaId,
             jenisSuratId,
-            keperluan: 'Keperluan transisi diproses',
+            keperluan: 'Keperluan tanpa auto diproses',
             nomorPengajuan,
             ktpFixturePath: path.join(fixturesDir, 'ktp-sample.jpg'),
             kkFixturePath: path.join(fixturesDir, 'kk-sample.png'),
@@ -439,17 +439,16 @@ test.describe('US-4.4 Transisi Status ke Diproses', () => {
         await loginAs(page, adminEmail);
         await page.goto(`/admin/verifikasi/${pengajuanId}`);
 
-        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diproses');
-        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
+        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diajukan');
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diajukan');
 
         await page.reload();
-        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diproses');
-        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
+        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diajukan');
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diajukan');
+        await expect(page.locator('[data-test="verifikasi-detail-setujui-button"]')).toBeVisible();
     });
-});
 
-test.describe('US-4.3 Setujui / Tolak Pengajuan', () => {
-    test('admin dapat menyetujui pengajuan dan pengajuan hilang dari daftar diajukan', async ({ page }) => {
+    test('setujui dari diajukan berakhir di diproses (melewati disetujui)', async ({ page }) => {
         const stamp = Date.now();
         const adminEmail = `admin.verifikasi.setujui.${stamp}@example.com`;
         const wargaEmail = `warga.verifikasi.setujui.${stamp}@example.com`;
@@ -488,16 +487,19 @@ test.describe('US-4.3 Setujui / Tolak Pengajuan', () => {
         await loginAs(page, adminEmail);
         await page.goto(`/admin/verifikasi/${pengajuanId}`);
 
+        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diajukan');
         await expect(page.locator('[data-test="verifikasi-detail-setujui-button"]')).toBeVisible();
         await page.locator('[data-test="verifikasi-detail-setujui-button"]').click();
 
         await expect(page).toHaveURL(/\/admin\/verifikasi$/);
         await expect(page.locator(`[data-test="verifikasi-pengajuan-nomor-${pengajuanId}"]`)).toHaveCount(0);
 
-        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('disetujui');
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
         expect(countLogVerifikasi(pengajuanId, 'setujui')).toBe(1);
     });
+});
 
+test.describe('US-4.3 Setujui / Tolak Pengajuan', () => {
     test('admin wajib mengisi alasan saat menolak pengajuan', async ({ page }) => {
         const stamp = Date.now();
         const adminEmail = `admin.verifikasi.tolak.fail.${stamp}@example.com`;
@@ -543,7 +545,7 @@ test.describe('US-4.3 Setujui / Tolak Pengajuan', () => {
 
         await expect(page.locator('[data-test="verifikasi-detail-catatan-admin"]')).toBeVisible();
         await expect(page).toHaveURL(new RegExp(`/admin/verifikasi/${pengajuanId}$`));
-        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diproses');
+        expect(getPengajuanStatusByNomor(nomorPengajuan)).toBe('diajukan');
         expect(countLogVerifikasi(pengajuanId, 'tolak')).toBe(0);
     });
 

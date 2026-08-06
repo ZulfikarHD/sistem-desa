@@ -190,20 +190,20 @@ test.describe('US-5.1 Notifikasi Otomatis Perubahan Status', () => {
         await page.locator('[data-test="verifikasi-detail-setujui-button"]').click();
         await expect(page).toHaveURL(/\/admin\/verifikasi$/);
 
-        expect(countUnreadNotifikasi(wargaId)).toBeGreaterThanOrEqual(1);
+        expect(countUnreadNotifikasi(wargaId)).toBe(2);
     });
 
-    test('admin buka detail diajukan memicu notifikasi diproses', async ({ page }) => {
+    test('admin buka detail diajukan tidak memicu notifikasi', async ({ page }) => {
         const stamp = Date.now();
-        const adminEmail = `admin.notif.diproses.${stamp}@example.com`;
-        const wargaEmail = `warga.notif.diproses.${stamp}@example.com`;
+        const adminEmail = `admin.notif.noauto.${stamp}@example.com`;
+        const wargaEmail = `warga.notif.noauto.${stamp}@example.com`;
         const adminNik = uniqueNik(Number(String(stamp).slice(-6)) + 2);
         const wargaNik = uniqueNik(Number(String(stamp).slice(-6)) + 3);
-        const namaSurat = `Surat Notif Diproses ${stamp}`;
+        const namaSurat = `Surat Notif No Auto ${stamp}`;
         const nomorPengajuan = `PJ-${String(stamp).slice(-8)}-5502`;
 
-        ensureUser({ email: adminEmail, name: 'Admin Notif Diproses', role: 'admin', nik: adminNik });
-        ensureUser({ email: wargaEmail, name: 'Warga Notif Diproses', role: 'warga', nik: wargaNik });
+        ensureUser({ email: adminEmail, name: 'Admin Notif No Auto', role: 'admin', nik: adminNik });
+        ensureUser({ email: wargaEmail, name: 'Warga Notif No Auto', role: 'warga', nik: wargaNik });
 
         const wargaId = getUserIdByEmail(wargaEmail);
         ensureJenisSurat(namaSurat);
@@ -212,7 +212,7 @@ test.describe('US-5.1 Notifikasi Otomatis Perubahan Status', () => {
         const { pengajuanId } = ensurePengajuanDiajukan({
             userId: wargaId,
             jenisSuratId,
-            keperluan: 'Keperluan notifikasi diproses',
+            keperluan: 'Keperluan tanpa notifikasi buka detail',
             nomorPengajuan,
             ktpFixturePath: path.join(fixturesDir, 'ktp-sample.jpg'),
             kkFixturePath: path.join(fixturesDir, 'kk-sample.png'),
@@ -220,8 +220,9 @@ test.describe('US-5.1 Notifikasi Otomatis Perubahan Status', () => {
 
         await loginAs(page, adminEmail);
         await page.goto(`/admin/verifikasi/${pengajuanId}`);
+        await expect(page.locator('[data-test="verifikasi-detail-status"]')).toContainText('Diajukan');
 
-        expect(countUnreadNotifikasi(wargaId)).toBe(1);
+        expect(countUnreadNotifikasi(wargaId)).toBe(0);
     });
 });
 

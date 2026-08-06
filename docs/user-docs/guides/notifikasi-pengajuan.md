@@ -30,14 +30,14 @@ Setelah Anda mengajukan surat keterangan, admin desa akan memeriksa berkas Anda.
 
 1. Buka menu **Riwayat Pengajuan** di sidebar.
 2. Tabel menampilkan: nomor pengajuan, jenis surat, tanggal, status, dan catatan admin (jika ditolak).
-3. Gunakan **Filter Status** untuk menampilkan hanya pengajuan dengan status tertentu (Diajukan, Diproses, Disetujui, Ditolak).
+3. Gunakan **Filter Status** untuk menampilkan hanya pengajuan dengan status tertentu (Diajukan, Disetujui, Diproses, Siap Diambil, Selesai, Ditolak).
 4. Klik tombol **Detail** pada baris untuk melihat informasi lengkap pengajuan tersebut.
 5. Jika status **Ditolak**, tombol **Ajukan Ulang** tersedia di tabel maupun halaman detail.
 
 ## FAQ
 
 **Q: Kapan saya menerima notifikasi?**
-A: Saat admin membuka pengajuan Anda (status menjadi *Diproses*), saat pengajuan *Disetujui*, atau saat *Ditolak* dengan catatan admin.
+A: Saat pengajuan *Disetujui* (lalu *sedang diproses*), atau saat *Ditolak* dengan catatan admin. Membuka detail oleh admin saja **tidak** memicu notifikasi.
 
 **Q: Apakah notifikasi dikirim lewat WhatsApp?**
 A: Tidak. Saat ini hanya notifikasi di dalam aplikasi (in-app).

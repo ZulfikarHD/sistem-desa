@@ -20,7 +20,7 @@
     </div>
 
     {{-- Ringkasan jumlah per status (mengikuti filter jenis + tanggal, mengabaikan status) --}}
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5" data-test="rekap-pengajuan-ringkasan">
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7" data-test="rekap-pengajuan-ringkasan">
         <div class="rounded-xl border border-zinc-200 p-4 dark:border-zinc-700" data-test="rekap-ringkasan-total">
             <flux:text class="text-sm">{{ __('Total') }}</flux:text>
             <flux:heading size="lg" class="mt-1">{{ number_format($ringkasan['total']) }}</flux:heading>
@@ -29,13 +29,21 @@
             <flux:text class="text-sm">{{ __('Diajukan') }}</flux:text>
             <flux:heading size="lg" class="mt-1">{{ number_format($ringkasan['diajukan']) }}</flux:heading>
         </div>
+        <div class="rounded-xl border border-zinc-200 p-4 dark:border-zinc-700" data-test="rekap-ringkasan-disetujui">
+            <flux:text class="text-sm">{{ __('Disetujui') }}</flux:text>
+            <flux:heading size="lg" class="mt-1">{{ number_format($ringkasan['disetujui']) }}</flux:heading>
+        </div>
         <div class="rounded-xl border border-zinc-200 p-4 dark:border-zinc-700" data-test="rekap-ringkasan-diproses">
             <flux:text class="text-sm">{{ __('Diproses') }}</flux:text>
             <flux:heading size="lg" class="mt-1">{{ number_format($ringkasan['diproses']) }}</flux:heading>
         </div>
-        <div class="rounded-xl border border-zinc-200 p-4 dark:border-zinc-700" data-test="rekap-ringkasan-disetujui">
-            <flux:text class="text-sm">{{ __('Disetujui') }}</flux:text>
-            <flux:heading size="lg" class="mt-1">{{ number_format($ringkasan['disetujui']) }}</flux:heading>
+        <div class="rounded-xl border border-zinc-200 p-4 dark:border-zinc-700" data-test="rekap-ringkasan-siap-diambil">
+            <flux:text class="text-sm">{{ __('Siap Diambil') }}</flux:text>
+            <flux:heading size="lg" class="mt-1">{{ number_format($ringkasan['siap_diambil']) }}</flux:heading>
+        </div>
+        <div class="rounded-xl border border-zinc-200 p-4 dark:border-zinc-700" data-test="rekap-ringkasan-selesai">
+            <flux:text class="text-sm">{{ __('Selesai') }}</flux:text>
+            <flux:heading size="lg" class="mt-1">{{ number_format($ringkasan['selesai']) }}</flux:heading>
         </div>
         <div class="rounded-xl border border-zinc-200 p-4 dark:border-zinc-700" data-test="rekap-ringkasan-ditolak">
             <flux:text class="text-sm">{{ __('Ditolak') }}</flux:text>
@@ -129,8 +137,10 @@
                     @php
                         $statusVariant = match ($item->status) {
                             \App\Models\PengajuanSurat::STATUS_DITOLAK => 'danger',
-                            \App\Models\PengajuanSurat::STATUS_DISETUJUI => 'success',
-                            \App\Models\PengajuanSurat::STATUS_DIPROSES => 'warning',
+                            \App\Models\PengajuanSurat::STATUS_DISETUJUI,
+                            \App\Models\PengajuanSurat::STATUS_SELESAI => 'success',
+                            \App\Models\PengajuanSurat::STATUS_DIPROSES,
+                            \App\Models\PengajuanSurat::STATUS_SIAP_DIAMBIL => 'warning',
                             default => 'zinc',
                         };
                     @endphp

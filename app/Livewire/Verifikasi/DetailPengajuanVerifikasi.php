@@ -26,7 +26,7 @@ class DetailPengajuanVerifikasi extends Component
     public string $catatanAdmin = '';
 
     /**
-     * Muat relasi pengajuan dan transisi status diajukan → diproses (US-4.4).
+     * Muat relasi pengajuan tanpa mengubah status (US-7.1 — hapus auto diajukan→diproses).
      */
     public function mount(PengajuanSurat $pengajuan): void
     {
@@ -36,22 +36,16 @@ class DetailPengajuanVerifikasi extends Component
             'dokumenPersyaratan',
         ]);
 
-        if ($pengajuan->status === PengajuanSurat::STATUS_DIAJUKAN) {
-            $pengajuan->update(['status' => PengajuanSurat::STATUS_DIPROSES]);
-            $pengajuan->refresh();
-
-            $this->buatNotifikasiStatus($pengajuan, PengajuanSurat::STATUS_DIPROSES);
-        }
-
         $this->pengajuan = $pengajuan;
     }
 
     /**
      * Apakah pengajuan masih dapat diverifikasi (setujui/tolak).
+     * Menunggu verifikasi = status diajukan (US-7.1).
      */
     public function canVerify(): bool
     {
-        return $this->pengajuan->status === PengajuanSurat::STATUS_DIPROSES;
+        return $this->pengajuan->status === PengajuanSurat::STATUS_DIAJUKAN;
     }
 
     /**
@@ -79,7 +73,7 @@ class DetailPengajuanVerifikasi extends Component
     }
 
     /**
-     * Setujui pengajuan yang sedang diproses (US-4.3).
+     * Setujui pengajuan dari diajukan → disetujui → diproses (US-7.1).
      */
     public function setujui(): void
     {
@@ -97,7 +91,7 @@ class DetailPengajuanVerifikasi extends Component
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if ($pengajuan->status !== PengajuanSurat::STATUS_DIPROSES) {
+            if ($pengajuan->status !== PengajuanSurat::STATUS_DIAJUKAN) {
                 throw new \RuntimeException('Status pengajuan telah berubah.');
             }
 
@@ -115,7 +109,13 @@ class DetailPengajuanVerifikasi extends Component
                 'created_at' => now(),
             ]);
 
-            $this->buatNotifikasiStatus($pengajuan->fresh(['jenisSurat']), PengajuanSurat::STATUS_DISETUJUI);
+            $pengajuanFresh = $pengajuan->fresh(['jenisSurat']);
+            $this->buatNotifikasiStatus($pengajuanFresh, PengajuanSurat::STATUS_DISETUJUI);
+
+            // Lanjut otomatis ke diproses + hook generate surat (US-7.2)
+            $pengajuanFresh->update(['status' => PengajuanSurat::STATUS_DIPROSES]);
+            $this->buatNotifikasiStatus($pengajuanFresh->fresh(['jenisSurat']), PengajuanSurat::STATUS_DIPROSES);
+            $this->triggerGenerateSurat($pengajuanFresh->fresh(['jenisSurat']));
         });
 
         Flux::toast(variant: 'success', text: 'Pengajuan berhasil disetujui.');
@@ -124,7 +124,7 @@ class DetailPengajuanVerifikasi extends Component
     }
 
     /**
-     * Tolak pengajuan dengan catatan admin wajib (US-4.3).
+     * Tolak pengajuan dengan catatan admin wajib (US-7.1 — terminal, tidak masuk diproses).
      */
     public function tolak(): void
     {
@@ -150,7 +150,7 @@ class DetailPengajuanVerifikasi extends Component
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if ($pengajuan->status !== PengajuanSurat::STATUS_DIPROSES) {
+            if ($pengajuan->status !== PengajuanSurat::STATUS_DIAJUKAN) {
                 throw new \RuntimeException('Status pengajuan telah berubah.');
             }
 
@@ -179,7 +179,16 @@ class DetailPengajuanVerifikasi extends Component
     }
 
     /**
-     * Buat notifikasi in-app untuk warga pemohon (US-5.1).
+     * Hook penerbitan surat setelah masuk diproses.
+     * Diisi penuh di US-7.2 (PDF, nomor surat, QR).
+     */
+    private function triggerGenerateSurat(PengajuanSurat $pengajuan): void
+    {
+        // US-7.2: generate PDF surat, nomor resmi, dan QR sekali pakai.
+    }
+
+    /**
+     * Buat notifikasi in-app untuk warga pemohon (US-5.1 / US-7.1).
      */
     private function buatNotifikasiStatus(PengajuanSurat $pengajuan, string $statusBaru): void
     {
@@ -188,6 +197,8 @@ class DetailPengajuanVerifikasi extends Component
             PengajuanSurat::STATUS_DIPROSES => 'sedang diproses',
             PengajuanSurat::STATUS_DISETUJUI => 'disetujui',
             PengajuanSurat::STATUS_DITOLAK => 'ditolak',
+            PengajuanSurat::STATUS_SIAP_DIAMBIL => 'siap diambil',
+            PengajuanSurat::STATUS_SELESAI => 'selesai',
             default => $statusBaru,
         };
 

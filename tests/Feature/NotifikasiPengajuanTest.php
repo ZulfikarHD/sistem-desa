@@ -8,27 +8,30 @@ use App\Models\PengajuanSurat;
 use App\Models\User;
 use Livewire\Livewire;
 
-test('admin setujui pengajuan creates notifikasi for warga', function () {
+test('admin setujui pengajuan creates notifikasi disetujui and diproses for warga', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create(['nama_surat' => 'Surat Domisili']);
 
-    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+    $pengajuan = PengajuanSurat::factory()->create([
         'user_id' => $warga->id,
         'jenis_surat_id' => $jenisSurat->id,
         'nomor_pengajuan' => 'PJ-'.now()->format('Ymd').'-5001',
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
     ]);
 
     Livewire::actingAs($admin)
         ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
         ->call('setujui');
 
-    $notifikasi = Notifikasi::query()->where('pengajuan_id', $pengajuan->id)->sole();
+    $notifikasi = Notifikasi::query()->where('pengajuan_id', $pengajuan->id)->orderBy('id')->get();
 
-    expect($notifikasi->user_id)->toBe($warga->id)
-        ->and($notifikasi->status_baca)->toBe(Notifikasi::STATUS_BELUM)
-        ->and($notifikasi->pesan)->toContain('Surat Domisili')
-        ->and($notifikasi->pesan)->toContain('disetujui');
+    expect($notifikasi)->toHaveCount(2)
+        ->and($notifikasi[0]->user_id)->toBe($warga->id)
+        ->and($notifikasi[0]->status_baca)->toBe(Notifikasi::STATUS_BELUM)
+        ->and($notifikasi[0]->pesan)->toContain('Surat Domisili')
+        ->and($notifikasi[0]->pesan)->toContain('disetujui')
+        ->and($notifikasi[1]->pesan)->toContain('sedang diproses');
 });
 
 test('admin tolak pengajuan creates notifikasi for warga', function () {
@@ -36,10 +39,11 @@ test('admin tolak pengajuan creates notifikasi for warga', function () {
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create(['nama_surat' => 'Surat Usaha']);
 
-    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+    $pengajuan = PengajuanSurat::factory()->create([
         'user_id' => $warga->id,
         'jenis_surat_id' => $jenisSurat->id,
         'nomor_pengajuan' => 'PJ-'.now()->format('Ymd').'-5002',
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
     ]);
 
     Livewire::actingAs($admin)
@@ -54,7 +58,7 @@ test('admin tolak pengajuan creates notifikasi for warga', function () {
         ->and($notifikasi->pesan)->toContain('ditolak');
 });
 
-test('admin buka detail diajukan creates diproses notifikasi for warga', function () {
+test('admin buka detail diajukan does not create notifikasi', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create(['nama_surat' => 'Surat Nikah']);
@@ -68,10 +72,8 @@ test('admin buka detail diajukan creates diproses notifikasi for warga', functio
     Livewire::actingAs($admin)
         ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan]);
 
-    $notifikasi = Notifikasi::query()->where('pengajuan_id', $pengajuan->id)->sole();
-
-    expect($notifikasi->pesan)->toContain('sedang diproses')
-        ->and($notifikasi->status_baca)->toBe(Notifikasi::STATUS_BELUM);
+    expect(Notifikasi::query()->where('pengajuan_id', $pengajuan->id)->count())->toBe(0)
+        ->and($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIAJUKAN);
 });
 
 test('panel notifikasi shows unread badge count for warga', function () {

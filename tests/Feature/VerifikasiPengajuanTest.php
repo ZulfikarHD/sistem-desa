@@ -5,6 +5,7 @@ use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
 use App\Models\DokumenPersyaratan;
 use App\Models\JenisSurat;
 use App\Models\LogVerifikasi;
+use App\Models\Notifikasi;
 use App\Models\PengajuanSurat;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -244,7 +245,7 @@ test('dokumen preview returns 404 when file missing', function () {
         ->assertNotFound();
 });
 
-test('opening detail transitions diajukan status to diproses', function () {
+test('opening detail keeps diajukan status unchanged', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create();
@@ -256,18 +257,20 @@ test('opening detail transitions diajukan status to diproses', function () {
 
     Livewire::actingAs($admin)
         ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
-        ->assertSet('pengajuan.status', PengajuanSurat::STATUS_DIPROSES);
+        ->assertSet('pengajuan.status', PengajuanSurat::STATUS_DIAJUKAN);
 
-    expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
+    expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIAJUKAN);
+    expect(Notifikasi::query()->count())->toBe(0);
 });
 
-test('reopening detail does not change diproses status again', function () {
+test('reopening detail does not change diproses status', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create();
     $pengajuan = PengajuanSurat::factory()->diproses()->create([
         'user_id' => $warga->id,
         'jenis_surat_id' => $jenisSurat->id,
+        'diverifikasi_oleh' => $admin->id,
     ]);
 
     Livewire::actingAs($admin)
@@ -277,13 +280,14 @@ test('reopening detail does not change diproses status again', function () {
     expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
 });
 
-test('admin can approve diproses pengajuan and creates log', function () {
+test('admin can approve diajukan pengajuan then auto advances to diproses', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create();
-    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+    $pengajuan = PengajuanSurat::factory()->create([
         'user_id' => $warga->id,
         'jenis_surat_id' => $jenisSurat->id,
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
     ]);
 
     Livewire::actingAs($admin)
@@ -293,7 +297,7 @@ test('admin can approve diproses pengajuan and creates log', function () {
 
     $pengajuan->refresh();
 
-    expect($pengajuan->status)->toBe(PengajuanSurat::STATUS_DISETUJUI)
+    expect($pengajuan->status)->toBe(PengajuanSurat::STATUS_DIPROSES)
         ->and($pengajuan->diverifikasi_oleh)->toBe($admin->id)
         ->and($pengajuan->catatan_admin)->toBeNull();
 
@@ -305,13 +309,14 @@ test('admin can approve diproses pengajuan and creates log', function () {
     ]);
 });
 
-test('admin can reject diproses pengajuan with required catatan', function () {
+test('admin can reject diajukan pengajuan with required catatan without entering diproses', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create();
-    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+    $pengajuan = PengajuanSurat::factory()->create([
         'user_id' => $warga->id,
         'jenis_surat_id' => $jenisSurat->id,
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
     ]);
 
     $alasan = 'Dokumen KTP tidak terbaca dengan jelas';
@@ -340,9 +345,10 @@ test('reject requires catatan admin', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create();
-    $pengajuan = PengajuanSurat::factory()->diproses()->create([
+    $pengajuan = PengajuanSurat::factory()->create([
         'user_id' => $warga->id,
         'jenis_surat_id' => $jenisSurat->id,
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
     ]);
 
     Livewire::actingAs($admin)
@@ -351,7 +357,7 @@ test('reject requires catatan admin', function () {
         ->call('tolak')
         ->assertHasErrors(['catatanAdmin' => 'required']);
 
-    expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
+    expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIAJUKAN);
     $this->assertDatabaseCount('log_verifikasi', 0);
 });
 
@@ -379,7 +385,7 @@ test('action buttons hidden for already decided pengajuan', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create();
-    $pengajuan = PengajuanSurat::factory()->disetujui()->create([
+    $pengajuan = PengajuanSurat::factory()->diproses()->create([
         'user_id' => $warga->id,
         'jenis_surat_id' => $jenisSurat->id,
         'diverifikasi_oleh' => $admin->id,
@@ -389,4 +395,18 @@ test('action buttons hidden for already decided pengajuan', function () {
         ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
         ->assertDontSeeHtml('verifikasi-detail-setujui-button')
         ->assertDontSeeHtml('verifikasi-detail-tolak-button');
+});
+
+test('verifikasi list status options include siap_diambil and selesai', function () {
+    $admin = User::factory()->admin()->create();
+
+    $component = Livewire::actingAs($admin)
+        ->test(DaftarPengajuanVerifikasi::class);
+
+    $options = $component->instance()->statusOptions();
+
+    expect($options)->toHaveKey(PengajuanSurat::STATUS_SIAP_DIAMBIL)
+        ->and($options)->toHaveKey(PengajuanSurat::STATUS_SELESAI)
+        ->and($options[PengajuanSurat::STATUS_SIAP_DIAMBIL])->toBe('Siap Diambil')
+        ->and($options[PengajuanSurat::STATUS_SELESAI])->toBe('Selesai');
 });

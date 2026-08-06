@@ -20,7 +20,8 @@ Technical documentation for contributors working on sistem-desa.
 | Unggah Dokumen Persyaratan (US-3.2) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
 | Validasi Kelengkapan Pengajuan (US-3.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
 | Ajukan Ulang Setelah Ditolak (US-3.4) | [features/pengajuan-surat-ajukan-ulang.md](features/pengajuan-surat-ajukan-ulang.md) |
-| Verifikasi Pengajuan (US-4.1 – US-4.4) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
+| Verifikasi Pengajuan (US-4.1 – US-4.3 + US-7.1) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
+| Migrasi Alur Status (US-7.1) | [features/migrasi-alur-status.md](features/migrasi-alur-status.md) |
 | Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3) | [features/notifikasi-pengajuan.md](features/notifikasi-pengajuan.md) |
 | Rekap Pengajuan & Reporting (US-6.1 – US-6.2) | [features/rekap-pengajuan.md](features/rekap-pengajuan.md) |
 
@@ -45,3 +46,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [011](decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only secure routes for dokumen preview/download |
 | [012](decisions/012-verifikasi-log-and-concurrent-lock.md) | `log_verifikasi` audit table + pessimistic locking |
 | [013](decisions/013-rekap-summary-filters-and-csv-bom.md) | Rekap summary ignores status filter; CSV UTF-8 BOM |
+| [014](decisions/014-status-flow-migration-us-7-1.md) | Status flow migration: approve → disetujui → diproses |

@@ -55,6 +55,25 @@ class PengajuanSuratFactory extends Factory
         return $this->state(fn () => [
             'status' => PengajuanSurat::STATUS_DIPROSES,
             'catatan_admin' => null,
+            'diverifikasi_oleh' => User::factory()->admin(),
+        ]);
+    }
+
+    public function siapDiambil(): static
+    {
+        return $this->state(fn () => [
+            'status' => PengajuanSurat::STATUS_SIAP_DIAMBIL,
+            'catatan_admin' => null,
+            'diverifikasi_oleh' => User::factory()->admin(),
+        ]);
+    }
+
+    public function selesai(): static
+    {
+        return $this->state(fn () => [
+            'status' => PengajuanSurat::STATUS_SELESAI,
+            'catatan_admin' => null,
+            'diverifikasi_oleh' => User::factory()->admin(),
         ]);
     }
 }

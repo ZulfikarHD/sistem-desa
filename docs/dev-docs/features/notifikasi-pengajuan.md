@@ -56,8 +56,8 @@ erDiagram
 
 ## Flow Explanation
 
-1. **User triggers** — admin opens verification detail (auto `diajukan` → `diproses`), clicks Setujui, or confirms Tolak with catatan.
-2. **Request handling** — `DetailPengajuanVerifikasi` runs inside existing transaction/lock for approve/reject; `buatNotifikasiStatus()` inserts a row with `status_baca = belum`.
+1. **User triggers** — admin clicks Setujui (creates `disetujui` then `diproses` notifications) or confirms Tolak with catatan. Opening detail alone does **not** create a notification (US-7.1).
+2. **Request handling** — `DetailPengajuanVerifikasi` runs inside existing transaction/lock for approve/reject; `buatNotifikasiStatus()` inserts rows with `status_baca = belum`.
 3. **Business logic** — message format: `Pengajuan {jenis surat} ({nomor}) {status label}.` Warga panel polls every 30s; unread count drives badge. Clicking a notification marks it `dibaca` and navigates to detail.
 4. **Response** — warga sees updated badge/dropdown without full page reload; detail page shows status, keperluan, catatan_admin (if ditolak), uploaded doc list, and Ajukan Ulang when applicable.
 
@@ -75,11 +75,12 @@ Notification panel actions are Livewire methods (`bukaNotifikasi`, `refreshNotif
 - **Custom `notifikasi` table** — not Laravel's built-in `notifications` channel; matches scrum data model and keeps messages Indonesian/plain-text.
 - **Polling (30s) over WebSockets** — per plan risk mitigation; sufficient for research scale.
 - **Single panel instance in sidebar** — avoids duplicate Livewire components on mobile/desktop; warga open sidebar on mobile to reach bell.
-- **Diproses notifications included** — Phase 04 US-4.4 explicitly deferred this hook to Phase 05; implemented alongside disetujui/ditolak.
+- **Diproses notifications** — created when approve auto-advances to `diproses` (US-7.1), not when admin merely opens detail.
 - **Detail as dedicated route** — supports both notification deep-link and riwayat row Detail button; owner-only 403.
 
 ## Related
 
-- [Verifikasi Pengajuan (US-4.1 – US-4.4)](verifikasi-pengajuan.md)
+- [Verifikasi Pengajuan](verifikasi-pengajuan.md)
+- [Migrasi Alur Status (US-7.1)](migrasi-alur-status.md)
 - [Ajukan Ulang (US-3.4)](pengajuan-surat-ajukan-ulang.md)
 - Phase 06 Rekap (downstream reporting — separate scope)

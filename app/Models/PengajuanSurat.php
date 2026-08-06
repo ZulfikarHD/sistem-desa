@@ -40,14 +40,23 @@ class PengajuanSurat extends Model
     /** @use HasFactory<PengajuanSuratFactory> */
     use HasFactory;
 
-    /** Status awal saat warga mengajukan. */
+    /** Status awal saat warga mengajukan / menunggu verifikasi. */
     public const STATUS_DIAJUKAN = 'diajukan';
 
+    /** Pasca-disetujui: PDF + nomor + QR digenerate (Phase 07). */
     public const STATUS_DIPROSES = 'diproses';
 
+    /** Verifikasi data OK — belum berarti surat siap. */
     public const STATUS_DISETUJUI = 'disetujui';
 
+    /** Verifikasi gagal — alur berhenti. */
     public const STATUS_DITOLAK = 'ditolak';
+
+    /** Admin set tanggal pengambilan; warga dapat notifikasi. */
+    public const STATUS_SIAP_DIAMBIL = 'siap_diambil';
+
+    /** Admin scan QR sukses sekali; QR invalid. */
+    public const STATUS_SELESAI = 'selesai';
 
     /**
      * Nama tabel sesuai data model Phase 03 (bukan pluralisasi default).
@@ -55,6 +64,39 @@ class PengajuanSurat extends Model
      * @var string
      */
     protected $table = 'pengajuan_surat';
+
+    /**
+     * Label tampilan untuk status pengajuan.
+     */
+    public static function statusLabel(string $status): string
+    {
+        return match ($status) {
+            self::STATUS_DIAJUKAN => 'Diajukan',
+            self::STATUS_DIPROSES => 'Diproses',
+            self::STATUS_DISETUJUI => 'Disetujui',
+            self::STATUS_DITOLAK => 'Ditolak',
+            self::STATUS_SIAP_DIAMBIL => 'Siap Diambil',
+            self::STATUS_SELESAI => 'Selesai',
+            default => $status,
+        };
+    }
+
+    /**
+     * Opsi filter status lengkap (Phase 07), tanpa opsi "semua".
+     *
+     * @return array<string, string>
+     */
+    public static function statusOptions(): array
+    {
+        return [
+            self::STATUS_DIAJUKAN => self::statusLabel(self::STATUS_DIAJUKAN),
+            self::STATUS_DISETUJUI => self::statusLabel(self::STATUS_DISETUJUI),
+            self::STATUS_DIPROSES => self::statusLabel(self::STATUS_DIPROSES),
+            self::STATUS_SIAP_DIAMBIL => self::statusLabel(self::STATUS_SIAP_DIAMBIL),
+            self::STATUS_SELESAI => self::statusLabel(self::STATUS_SELESAI),
+            self::STATUS_DITOLAK => self::statusLabel(self::STATUS_DITOLAK),
+        ];
+    }
 
     /**
      * @return array<string, mixed>

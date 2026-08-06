@@ -2,7 +2,9 @@
 
 ## Overview
 
-Admin/petugas desa view a filterable recap of all letter submissions (`pengajuan_surat`) as a digital replacement for the manual register book. US-6.1 provides summary counts, filters (jenis surat, status, date range), paginated table, and columns including the verifying admin. US-6.2 exports the currently filtered rows as CSV (UTF-8 with BOM) for sharing with the Kepala Desa outside the system.
+Admin/petugas desa view a filterable recap of all letter submissions (`pengajuan_surat`) as a digital replacement for the manual register book. US-6.1 provides summary counts, filters (jenis surat, status, date range), paginated table, and columns including the verifying admin. US-6.2 exports the currently filtered rows as CSV (UTF-8 with BOM).
+
+US-7.1 extended status filters and ringkasan cards with `siap_diambil` and `selesai`. Columns `nomor_surat` / `tanggal_terbit` / QR remain for US-7.7.
 
 ## Architecture Diagram
 
@@ -71,12 +73,15 @@ No public JSON API.
 ## Decisions & Trade-offs
 
 - Ringkasan ignores status filter so changing status still shows volume by jenis/date — see [ADR-013](../decisions/013-rekap-summary-filters-and-csv-bom.md).
+- Ringkasan cards include `siap_diambil` and `selesai` (US-7.1).
 - CSV via Livewire `streamDownload` (no separate controller) to keep 1 route = 1 component.
-- `nomor_surat` / `tanggal_terbit` columns deferred to Phase 07 US-7.4.
+- `nomor_surat` / `tanggal_terbit` columns deferred to Phase 07 US-7.7.
 
 ## Related
 
 - [Verifikasi Pengajuan](verifikasi-pengajuan.md) — source of status + `diverifikasi_oleh`
+- [Migrasi Alur Status (US-7.1)](migrasi-alur-status.md)
 - [Form Pengajuan Surat](pengajuan-surat-form.md) — data source
 - [ADR-013](../decisions/013-rekap-summary-filters-and-csv-bom.md)
+- [ADR-014](../decisions/014-status-flow-migration-us-7-1.md)
 - Phase 07 — penerbitan surat columns on this page

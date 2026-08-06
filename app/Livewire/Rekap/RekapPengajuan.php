@@ -41,13 +41,7 @@ class RekapPengajuan extends Component
      */
     public function statusOptions(): array
     {
-        return [
-            '' => 'Semua status',
-            PengajuanSurat::STATUS_DIAJUKAN => 'Diajukan',
-            PengajuanSurat::STATUS_DIPROSES => 'Diproses',
-            PengajuanSurat::STATUS_DISETUJUI => 'Disetujui',
-            PengajuanSurat::STATUS_DITOLAK => 'Ditolak',
-        ];
+        return ['' => 'Semua status'] + PengajuanSurat::statusOptions();
     }
 
     /**
@@ -55,13 +49,7 @@ class RekapPengajuan extends Component
      */
     public function statusLabel(string $status): string
     {
-        return match ($status) {
-            PengajuanSurat::STATUS_DIAJUKAN => 'Diajukan',
-            PengajuanSurat::STATUS_DIPROSES => 'Diproses',
-            PengajuanSurat::STATUS_DISETUJUI => 'Disetujui',
-            PengajuanSurat::STATUS_DITOLAK => 'Ditolak',
-            default => $status,
-        };
+        return PengajuanSurat::statusLabel($status);
     }
 
     public function updatedJenisSuratFilter(): void
@@ -206,7 +194,7 @@ class RekapPengajuan extends Component
     /**
      * Hitung ringkasan per status (mengabaikan filter status tabel).
      *
-     * @return array{total: int, diajukan: int, diproses: int, disetujui: int, ditolak: int}
+     * @return array{total: int, diajukan: int, disetujui: int, diproses: int, siap_diambil: int, selesai: int, ditolak: int}
      */
     protected function ringkasanCounts(): array
     {
@@ -216,15 +204,19 @@ class RekapPengajuan extends Component
             ->pluck('total', 'status');
 
         $diajukan = (int) ($counts[PengajuanSurat::STATUS_DIAJUKAN] ?? 0);
-        $diproses = (int) ($counts[PengajuanSurat::STATUS_DIPROSES] ?? 0);
         $disetujui = (int) ($counts[PengajuanSurat::STATUS_DISETUJUI] ?? 0);
+        $diproses = (int) ($counts[PengajuanSurat::STATUS_DIPROSES] ?? 0);
+        $siapDiambil = (int) ($counts[PengajuanSurat::STATUS_SIAP_DIAMBIL] ?? 0);
+        $selesai = (int) ($counts[PengajuanSurat::STATUS_SELESAI] ?? 0);
         $ditolak = (int) ($counts[PengajuanSurat::STATUS_DITOLAK] ?? 0);
 
         return [
-            'total' => $diajukan + $diproses + $disetujui + $ditolak,
+            'total' => $diajukan + $disetujui + $diproses + $siapDiambil + $selesai + $ditolak,
             'diajukan' => $diajukan,
-            'diproses' => $diproses,
             'disetujui' => $disetujui,
+            'diproses' => $diproses,
+            'siap_diambil' => $siapDiambil,
+            'selesai' => $selesai,
             'ditolak' => $ditolak,
         ];
     }
@@ -255,8 +247,10 @@ class RekapPengajuan extends Component
             ? [
                 'total' => 0,
                 'diajukan' => 0,
-                'diproses' => 0,
                 'disetujui' => 0,
+                'diproses' => 0,
+                'siap_diambil' => 0,
+                'selesai' => 0,
                 'ditolak' => 0,
             ]
             : $this->ringkasanCounts();

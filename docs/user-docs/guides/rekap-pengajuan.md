@@ -10,7 +10,7 @@ Halaman untuk petugas/admin desa melihat seluruh pengajuan surat dalam satu tabe
 1. Masuk sebagai **admin/petugas desa**
 2. Di menu samping, klik **Rekap Pengajuan**
 3. Anda akan melihat:
-   - **Ringkasan** di atas (Total, Diajukan, Diproses, Disetujui, Ditolak)
+   - **Ringkasan** di atas (Total, Diajukan, Disetujui, Diproses, Siap Diambil, Selesai, Ditolak)
    - **Filter** jenis surat, status, dan rentang tanggal
    - **Tabel** pengajuan (nomor, nama warga, jenis surat, tanggal, status, admin verifikator)
 
