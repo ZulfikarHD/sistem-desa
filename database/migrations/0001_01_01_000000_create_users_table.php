@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            // Field warga (US-1.1) — nama di plan = kolom `name` bawaan Laravel
+            $table->string('nik', 16)->unique();
+            $table->string('name', 100);
+            $table->string('email', 100)->unique();
+            $table->string('no_telepon', 20);
+            $table->text('alamat');
+            $table->string('role', 20)->default('warga');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

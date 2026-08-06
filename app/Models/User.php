@@ -17,11 +17,11 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 
 /**
  * @property int $id
- * @property string|null $nik
+ * @property string $nik
  * @property string $name
  * @property string $email
- * @property string|null $no_telepon
- * @property string|null $alamat
+ * @property string $no_telepon
+ * @property string $alamat
  * @property string $role
  * @property Carbon|null $email_verified_at
  * @property string $password

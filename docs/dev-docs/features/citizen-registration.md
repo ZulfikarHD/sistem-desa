@@ -26,7 +26,7 @@ flowchart TD
 erDiagram
     users {
         bigint id PK
-        string nik UK "16 digits, nullable for legacy rows"
+        string nik UK "16 digits"
         string name "maps to plan field nama"
         string email UK
         string no_telepon
@@ -46,7 +46,7 @@ erDiagram
 | Provider | `app/Providers/FortifyServiceProvider.php` | Binds RegisterResponse + register view |
 | Model | `app/Models/User.php` | Fillable fields, default role, helpers |
 | Validation | `app/Concerns/ProfileValidationRules.php` | NIK/email/phone/address rules |
-| Migration | `database/migrations/2026_08_06_040909_add_warga_fields_to_users_table.php` | Adds nik, no_telepon, alamat, role |
+| Migration | `database/migrations/0001_01_01_000000_create_users_table.php` | users schema termasuk nik, no_telepon, alamat, role |
 | View | `resources/views/pages/auth/register.blade.php` | Registration form (Indonesian UI) |
 | Feature tests | `tests/Feature/Auth/RegistrationTest.php` | Pest coverage |
 | E2E | `e2e/registration.spec.ts` | Playwright coverage |
