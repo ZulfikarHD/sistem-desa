@@ -10,6 +10,7 @@ use App\Livewire\Verifikasi\DaftarPengajuanVerifikasi;
 use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
 use App\Livewire\Verifikasi\ScanQrPengambilan;
 use App\Models\DokumenPersyaratan;
+use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,6 +37,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('pengajuan-surat/detail/{pengajuan}', DetailPengajuanWarga::class)
             ->name('pengajuan-surat.show')
             ->whereNumber('pengajuan');
+
+        // US-7.6 — Unduh/cetak PDF surat terbit (pemilik + status diproses/siap_diambil/selesai)
+        Route::get('pengajuan-surat/{pengajuan}/unduh-surat', function (PengajuanSurat $pengajuan) {
+            abort_unless($pengajuan->user_id === auth()->id(), 403);
+            abort_unless($pengajuan->dapatUnduhSurat(), 403);
+
+            $surat = $pengajuan->suratTerbit;
+            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+
+            $filename = 'surat-'.str_replace('/', '-', $surat->nomor_surat).'.pdf';
+
+            return Storage::disk('local')->download($surat->file_path, $filename);
+        })->name('pengajuan-surat.unduh-surat')->whereNumber('pengajuan');
+
+        Route::get('pengajuan-surat/{pengajuan}/cetak-surat', function (PengajuanSurat $pengajuan) {
+            abort_unless($pengajuan->user_id === auth()->id(), 403);
+            abort_unless($pengajuan->dapatUnduhSurat(), 403);
+
+            $surat = $pengajuan->suratTerbit;
+            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+
+            return Storage::disk('local')->response($surat->file_path, basename($surat->file_path), [
+                'Content-Type' => 'application/pdf',
+            ]);
+        })->name('pengajuan-surat.cetak-surat')->whereNumber('pengajuan');
 
         Route::livewire('pengajuan-surat/ajukan-ulang/{pengajuan}', FormPengajuanSurat::class)
             ->name('pengajuan-surat.resubmit')

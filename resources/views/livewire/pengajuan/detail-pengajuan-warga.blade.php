@@ -69,19 +69,58 @@
                         </dd>
                     </div>
                 @endif
+
+                @if ($pengajuan->suratTerbit?->tanggal_pengambilan)
+                    <div class="grid gap-1">
+                        <dt class="font-medium text-zinc-500 dark:text-zinc-400">{{ __('Tanggal Pengambilan') }}</dt>
+                        <dd data-test="detail-pengajuan-warga-tanggal-pengambilan">
+                            {{ $pengajuan->suratTerbit->tanggal_pengambilan->timezone('Asia/Jakarta')->translatedFormat('d M Y') }}
+                        </dd>
+                    </div>
+                    @if ($pengajuan->suratTerbit->jam_kerja_label)
+                        <div class="grid gap-1">
+                            <dt class="font-medium text-zinc-500 dark:text-zinc-400">{{ __('Jam Kerja') }}</dt>
+                            <dd data-test="detail-pengajuan-warga-jam-kerja">
+                                {{ $pengajuan->suratTerbit->jam_kerja_label }}
+                            </dd>
+                        </div>
+                    @endif
+                @endif
             </dl>
 
-            @if ($pengajuan->status === \App\Models\PengajuanSurat::STATUS_DITOLAK)
-                <flux:button
-                    variant="primary"
-                    icon="arrow-path"
-                    :href="route('pengajuan-surat.resubmit', $pengajuan)"
-                    wire:navigate
-                    data-test="detail-pengajuan-warga-ajukan-ulang"
-                >
-                    {{ __('Ajukan Ulang') }}
-                </flux:button>
-            @endif
+            <div class="flex flex-wrap items-center gap-2">
+                @if ($pengajuan->dapatUnduhSurat())
+                    <flux:button
+                        variant="primary"
+                        icon="arrow-down-tray"
+                        :href="route('pengajuan-surat.unduh-surat', $pengajuan)"
+                        data-test="detail-pengajuan-warga-unduh-surat"
+                    >
+                        {{ __('Unduh Surat') }}
+                    </flux:button>
+                    <flux:button
+                        variant="ghost"
+                        icon="printer"
+                        :href="route('pengajuan-surat.cetak-surat', $pengajuan)"
+                        target="_blank"
+                        data-test="detail-pengajuan-warga-cetak-surat"
+                    >
+                        {{ __('Cetak Surat') }}
+                    </flux:button>
+                @endif
+
+                @if ($pengajuan->status === \App\Models\PengajuanSurat::STATUS_DITOLAK)
+                    <flux:button
+                        variant="primary"
+                        icon="arrow-path"
+                        :href="route('pengajuan-surat.resubmit', $pengajuan)"
+                        wire:navigate
+                        data-test="detail-pengajuan-warga-ajukan-ulang"
+                    >
+                        {{ __('Ajukan Ulang') }}
+                    </flux:button>
+                @endif
+            </div>
         </div>
 
         <div class="flex flex-col gap-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">

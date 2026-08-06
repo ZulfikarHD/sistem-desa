@@ -164,4 +164,27 @@ class PengajuanSurat extends Model
     {
         return $this->hasOne(SuratTerbit::class, 'pengajuan_id');
     }
+
+    /**
+     * Status yang mengizinkan warga mengunduh/mencetak PDF surat (US-7.6).
+     *
+     * @return list<string>
+     */
+    public static function statusBolehUnduhSurat(): array
+    {
+        return [
+            self::STATUS_DIPROSES,
+            self::STATUS_SIAP_DIAMBIL,
+            self::STATUS_SELESAI,
+        ];
+    }
+
+    /**
+     * Apakah warga boleh mengunduh PDF surat terbit untuk pengajuan ini.
+     */
+    public function dapatUnduhSurat(): bool
+    {
+        return in_array($this->status, self::statusBolehUnduhSurat(), true)
+            && $this->suratTerbit !== null;
+    }
 }

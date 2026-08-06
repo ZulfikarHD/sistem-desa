@@ -76,7 +76,7 @@ Marking ready is a Livewire action (`tandaiDokumenSiapDiambil`), not a separate 
 - Weekend / national holiday → **reject** (not warn-only), so the button stays disabled until a valid date.
 - National holidays live in `config/desa.libur_nasional` (maintain yearly) — no third-party holiday package.
 - Date comparisons use **Asia/Jakarta** even though `app.timezone` is UTC.
-- Detail warga display of tanggal/jam remains **US-7.6**; rekap columns remain **US-7.7**.
+- Detail warga display of tanggal/jam is implemented in **US-7.6** (`DetailPengajuanWarga`); rekap columns remain **US-7.7**.
 - UI placed on existing verifikasi detail (no new route) — natural continuation of admin workflow.
 
 ## Related

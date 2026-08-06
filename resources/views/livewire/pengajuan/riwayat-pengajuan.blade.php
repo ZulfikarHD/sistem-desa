@@ -125,29 +125,43 @@
                             @endif
                         </flux:table.cell>
                         <flux:table.cell>
-                            <flux:button
-                                variant="ghost"
-                                size="sm"
-                                icon="eye"
-                                :href="route('pengajuan-surat.show', $item)"
-                                wire:navigate
-                                data-test="riwayat-pengajuan-detail-{{ $item->id }}"
-                            >
-                                {{ __('Detail') }}
-                            </flux:button>
-
-                            @if ($item->status === \App\Models\PengajuanSurat::STATUS_DITOLAK)
+                            <div class="flex flex-wrap items-center gap-1">
                                 <flux:button
-                                    variant="primary"
+                                    variant="ghost"
                                     size="sm"
-                                    icon="arrow-path"
-                                    :href="route('pengajuan-surat.resubmit', $item)"
+                                    icon="eye"
+                                    :href="route('pengajuan-surat.show', $item)"
                                     wire:navigate
-                                    data-test="riwayat-pengajuan-ajukan-ulang-{{ $item->id }}"
+                                    data-test="riwayat-pengajuan-detail-{{ $item->id }}"
                                 >
-                                    {{ __('Ajukan Ulang') }}
+                                    {{ __('Detail') }}
                                 </flux:button>
-                            @endif
+
+                                @if ($item->dapatUnduhSurat())
+                                    <flux:button
+                                        variant="primary"
+                                        size="sm"
+                                        icon="arrow-down-tray"
+                                        :href="route('pengajuan-surat.unduh-surat', $item)"
+                                        data-test="riwayat-pengajuan-unduh-surat-{{ $item->id }}"
+                                    >
+                                        {{ __('Unduh Surat') }}
+                                    </flux:button>
+                                @endif
+
+                                @if ($item->status === \App\Models\PengajuanSurat::STATUS_DITOLAK)
+                                    <flux:button
+                                        variant="primary"
+                                        size="sm"
+                                        icon="arrow-path"
+                                        :href="route('pengajuan-surat.resubmit', $item)"
+                                        wire:navigate
+                                        data-test="riwayat-pengajuan-ajukan-ulang-{{ $item->id }}"
+                                    >
+                                        {{ __('Ajukan Ulang') }}
+                                    </flux:button>
+                                @endif
+                            </div>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforeach

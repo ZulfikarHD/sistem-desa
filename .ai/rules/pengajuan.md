@@ -16,3 +16,6 @@ Riwayat at route pengajuan-surat.riwayat (/riwayat-pengajuan). Resubmit at penga
 
 ## US-7.5 riwayat shows pickup date and hours
 RiwayatPengajuan eager-loads suratTerbit tanggal_pengambilan + jam_kerja_label and shows a Pengambilan column for warga. Do not confuse with US-7.6 detail page display of the same fields.
+
+## US-7.6 unduh on riwayat and detail pickup display
+Riwayat shows Unduh Surat button when dapatUnduhSurat(). DetailPengajuanWarga loads suratTerbit and shows tanggal_pengambilan + jam_kerja_label when set, plus Unduh and Cetak buttons for allowed statuses.

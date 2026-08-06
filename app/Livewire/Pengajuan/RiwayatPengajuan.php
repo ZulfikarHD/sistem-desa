@@ -41,7 +41,7 @@ class RiwayatPengajuan extends Component
         $query = PengajuanSurat::query()
             ->with([
                 'jenisSurat:id,nama_surat',
-                'suratTerbit:id,pengajuan_id,tanggal_pengambilan,jam_kerja_label',
+                'suratTerbit:id,pengajuan_id,file_path,tanggal_pengambilan,jam_kerja_label',
             ])
             ->where('user_id', auth()->id())
             ->latest('tanggal_pengajuan')

@@ -28,3 +28,6 @@ Scan QR pengambilan is ScanQrPengambilan at /admin/scan-qr-pengambilan. SuratTer
 
 ## US-7.5 tandai siap diambil + jam kerja WIB
 SuratTerbit::tandaiSiapDiambil moves diproses→siap_diambil, saves tanggal_pengambilan + jam_kerja_label, notifies warga. Validate dates via validasiTanggalPengambilan using Asia/Jakarta: reject past, Sat/Sun, and config desa.libur_nasional (tolak not warn). Jam labels from config desa.jam_kerja (Senin–Kamis 08–16, Jumat 08–16.30). UI lives on DetailPengajuanVerifikasi when status diproses + PDF exists. Detail warga tanggal display remains US-7.6; rekap columns US-7.7.
+
+## US-7.6 dapatUnduhSurat helper
+PengajuanSurat::dapatUnduhSurat() / statusBolehUnduhSurat() gate warga PDF download for diproses, siap_diambil, selesai when suratTerbit exists. Do not allow diajukan/disetujui/ditolak.

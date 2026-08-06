@@ -29,12 +29,12 @@ Jika pengajuan **ditolak**, surat PDF **tidak** dibuat.
 
 1. Setelah pengajuan disetujui, status di riwayat menjadi **Diproses**
 2. Notifikasi in-app memberi tahu bahwa pengajuan disetujui dan sedang diproses
-3. Unduh PDF untuk warga akan tersedia pada tahap berikutnya (fitur unduh surat)
+3. Unduh PDF lewat tombol **Unduh Surat** di riwayat atau detail (lihat [Panduan Unduh/Cetak Surat](unduh-surat-warga.md))
 
 ## FAQ
 
 **Q: Apakah saya bisa mengunduh surat segera setelah disetujui?**  
-A: File PDF sudah digenerate saat status Diproses. Tombol unduh untuk warga akan ditambahkan di fitur berikutnya.
+A: Ya, setelah status **Diproses**. Gunakan **Unduh Surat** di riwayat atau halaman detail.
 
 **Q: Apa isi kode QR di surat?**  
 A: Kode QR dipakai saat pengambilan surat di kantor desa. Setelah discan sekali, QR tidak bisa dipakai ulang.
