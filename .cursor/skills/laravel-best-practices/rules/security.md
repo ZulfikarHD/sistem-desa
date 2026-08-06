@@ -90,7 +90,7 @@ Correct:
 
 ## CSRF Protection
 
-Include `@csrf` in all POST/PUT/DELETE Blade forms. Di Livewire, CSRF sudah otomatis ditangani oleh framework.
+Include `@csrf` in all POST/PUT/DELETE Blade forms. In Inertia apps, the `@csrf` directive is automatically applied.
 
 Incorrect:
 ```blade

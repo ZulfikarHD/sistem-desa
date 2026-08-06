@@ -13,11 +13,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
- * Surat keterangan yang digenerate setelah pengajuan disetujui (US-7.2).
+ * Surat keterangan yang digenerate setelah pengajuan disetujui (US-7.2 / US-7.3).
  *
  * @property int $id
  * @property int $pengajuan_id
@@ -107,8 +108,12 @@ class SuratTerbit extends Model
     }
 
     /**
-     * Generate nomor surat resmi berurutan per tahun.
-     * Format: {kode}/{urut}/DS-WDN/{bulan romawi}/{tahun}
+     * Generate nomor surat resmi berurutan per tahun (US-7.3).
+     * Format: {kode_klasifikasi}/{urut}/{kode_desa}/{bulan romawi}/{tahun}
+     * Contoh: 470/12/DS-WDN/VIII/2026
+     *
+     * Harus dipanggil di dalam transaksi DB agar lockForUpdate efektif.
+     * Terpisah dari nomor_pengajuan (PJ-YYYYMMDD-####).
      */
     public static function generateNomorSurat(?CarbonInterface $tanggal = null): string
     {
@@ -136,6 +141,20 @@ class SuratTerbit extends Model
         $urut = $maxUrut + 1;
 
         return $kodeKlasifikasi.'/'.$urut.$suffix;
+    }
+
+    /**
+     * Pola regex nomor surat resmi sesuai config desa (untuk validasi/tes).
+     */
+    public static function nomorSuratPattern(?CarbonInterface $tanggal = null): string
+    {
+        $tanggal ??= now();
+        $tahun = $tanggal->format('Y');
+        $bulanRomawi = preg_quote(self::bulanRomawi((int) $tanggal->format('n')), '/');
+        $kodeKlasifikasi = preg_quote((string) config('desa.kode_klasifikasi', '470'), '/');
+        $kodeDesa = preg_quote((string) config('desa.kode_desa', 'DS-WDN'), '/');
+
+        return '/^'.$kodeKlasifikasi.'\/\d+\/'.$kodeDesa.'\/'.$bulanRomawi.'\/'.$tahun.'$/';
     }
 
     /**
@@ -167,35 +186,37 @@ class SuratTerbit extends Model
         $tanggalTerbit = now();
         $tahun = $tanggalTerbit->format('Y');
 
-        // Kunci nomor per tahun agar urutan unik saat approve bersamaan.
+        // Cache lock + transaksi DB: urutan nomor unik saat approve bersamaan (US-7.3).
         return Cache::lock('surat-terbit-nomor-'.$tahun, 10)->block(5, function () use ($pengajuan, $adminId, $tanggalTerbit) {
-            $existing = static::query()->where('pengajuan_id', $pengajuan->id)->first();
+            return DB::transaction(function () use ($pengajuan, $adminId, $tanggalTerbit) {
+                $existing = static::query()->where('pengajuan_id', $pengajuan->id)->first();
 
-            if ($existing !== null) {
-                return $existing;
-            }
+                if ($existing !== null) {
+                    return $existing;
+                }
 
-            $nomorSurat = static::generateNomorSurat($tanggalTerbit);
-            $qrToken = static::generateQrToken();
-            $filePath = 'surat-terbit/'.$pengajuan->id.'/surat.pdf';
+                $nomorSurat = static::generateNomorSurat($tanggalTerbit);
+                $qrToken = static::generateQrToken();
+                $filePath = 'surat-terbit/'.$pengajuan->id.'/surat.pdf';
 
-            $pdfBinary = static::renderPdfBinary($pengajuan, $nomorSurat, $qrToken, $tanggalTerbit);
+                $pdfBinary = static::renderPdfBinary($pengajuan, $nomorSurat, $qrToken, $tanggalTerbit);
 
-            Storage::disk('local')->put($filePath, $pdfBinary);
+                Storage::disk('local')->put($filePath, $pdfBinary);
 
-            return static::query()->create([
-                'pengajuan_id' => $pengajuan->id,
-                'nomor_surat' => $nomorSurat,
-                'file_path' => $filePath,
-                'tanggal_terbit' => $tanggalTerbit->toDateString(),
-                'tanggal_pengambilan' => null,
-                'jam_kerja_label' => null,
-                'qr_token' => $qrToken,
-                'qr_status' => self::QR_STATUS_VALID,
-                'qr_digunakan_at' => null,
-                'qr_digunakan_oleh' => null,
-                'diterbitkan_oleh' => $adminId,
-            ]);
+                return static::query()->create([
+                    'pengajuan_id' => $pengajuan->id,
+                    'nomor_surat' => $nomorSurat,
+                    'file_path' => $filePath,
+                    'tanggal_terbit' => $tanggalTerbit->toDateString(),
+                    'tanggal_pengambilan' => null,
+                    'jam_kerja_label' => null,
+                    'qr_token' => $qrToken,
+                    'qr_status' => self::QR_STATUS_VALID,
+                    'qr_digunakan_at' => null,
+                    'qr_digunakan_oleh' => null,
+                    'diterbitkan_oleh' => $adminId,
+                ]);
+            });
         });
     }
 

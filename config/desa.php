@@ -31,11 +31,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Kode Administrasi Nomor Surat
+    | Kode Administrasi Nomor Surat (US-7.3)
     |--------------------------------------------------------------------------
     |
-    | Pola: {kode_klasifikasi}/{urut}/DS-WDN/{bulan romawi}/{tahun}
-    | Sesuai contoh US-7.3; diimplementasikan bersama US-7.2 karena wajib di PDF.
+    | Pola: {kode_klasifikasi}/{urut}/{kode_desa}/{bulan romawi}/{tahun}
+    | Contoh: 470/12/DS-WDN/VIII/2026
+    | Urutan reset per tahun kalender; terpisah dari nomor_pengajuan.
     |
     */
 

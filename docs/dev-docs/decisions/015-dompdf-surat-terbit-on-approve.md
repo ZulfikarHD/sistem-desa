@@ -34,3 +34,4 @@ After US-7.1, approve ends in `diproses` but no letter file existed. US-7.2 requ
 
 - QR is printable and valid, but unused until US-7.4/US-7.5 complete the pickup flow.
 - Unduh for warga remains US-7.6.
+- Nomor format/sequence ownership clarified in ADR-016 (US-7.3).

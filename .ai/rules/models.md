@@ -19,3 +19,6 @@ Constants include siap_diambil and selesai. Use PengajuanSurat::statusLabel() an
 
 ## surat_terbit table and PDF generate on approve
 US-7.2: table surat_terbit (singular). On setujui→diproses, DetailPengajuanVerifikasi::triggerGenerateSurat calls SuratTerbit::terbitkanUntuk (DomPDF + bacon QR via GD). PDF on local disk surat-terbit/{id}/surat.pdf. Nomor format 470/{urut}/DS-WDN/{romawi}/{tahun} via config/desa.php. Reject never generates. Scan QR UI is US-7.4; unduh warga is US-7.6.
+
+## US-7.3 nomor surat resmi format and year sequence
+US-7.3: nomor_surat format {kode_klasifikasi}/{urut}/{kode_desa}/{bulanRomawi}/{tahun} via config/desa.php (default 470/.../DS-WDN/...). Sequential per calendar year of tanggal_terbit under Cache::lock + DB::transaction + lockForUpdate; unique column. Separate from nomor_pengajuan. Printed on PDF templates. Rekap display remains US-7.7; no manual override UI.

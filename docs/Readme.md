@@ -29,6 +29,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Verifikasi Pengajuan (US-4.1 – US-4.3 + US-7.1)](dev-docs/features/verifikasi-pengajuan.md) | Admin list, detail preview, setujui/tolak, log audit |
 | [Migrasi Alur Status (US-7.1)](dev-docs/features/migrasi-alur-status.md) | Status flow: diajukan → disetujui → diproses; siap_diambil/selesai filters |
 | [Generate Surat PDF (US-7.2)](dev-docs/features/generate-surat-pdf.md) | Auto PDF + nomor + QR on approve into diproses |
+| [Nomor Surat Resmi Otomatis (US-7.3)](dev-docs/features/nomor-surat-resmi.md) | Official letter number format, year sequence, PDF print |
 | [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [Rekap Pengajuan & Reporting (US-6.1 – US-6.2)](dev-docs/features/rekap-pengajuan.md) | Admin filterable recap table, summary counts, CSV export |
 | [ADR-001: Keep `name` column + logout after register](dev-docs/decisions/001-registration-name-column-and-redirect.md) | Why `name` (not `nama`) and guest redirect after register |
@@ -46,6 +47,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-013: Rekap summary filters + CSV BOM](dev-docs/decisions/013-rekap-summary-filters-and-csv-bom.md) | Ringkasan ignores status filter; CSV UTF-8 BOM |
 | [ADR-014: Status flow migration US-7.1](dev-docs/decisions/014-status-flow-migration-us-7-1.md) | Remove auto diproses on open; approve → disetujui → diproses |
 | [ADR-015: DomPDF surat_terbit on approve](dev-docs/decisions/015-dompdf-surat-terbit-on-approve.md) | Generate PDF + nomor + QR into surat_terbit on setujui |
+| [ADR-016: Official nomor surat format](dev-docs/decisions/016-nomor-surat-resmi-format.md) | `470/{urut}/DS-WDN/{romawi}/{tahun}` + year sequence |
 
 ## User Docs
 
@@ -69,5 +71,6 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Verifikasi Pengajuan](user-docs/guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
 | [Panduan Migrasi Alur Status](user-docs/guides/migrasi-alur-status.md) | Arti status baru dan alur setujui → diproses |
 | [Panduan Generate Surat PDF](user-docs/guides/generate-surat-pdf.md) | Cara surat PDF otomatis dibuat saat admin setujui |
+| [Panduan Nomor Surat Resmi](user-docs/guides/nomor-surat-resmi.md) | Arti format nomor surat resmi otomatis |
 | [Panduan Notifikasi & Riwayat Pengajuan](user-docs/guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
 | [Panduan Rekap Pengajuan](user-docs/guides/rekap-pengajuan.md) | Cara admin memfilter dan ekspor laporan pengajuan |
