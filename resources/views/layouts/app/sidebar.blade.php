@@ -63,6 +63,16 @@
                         >
                             {{ __('Jenis Surat') }}
                         </flux:sidebar.item>
+
+                        <flux:sidebar.item
+                            icon="clipboard-document-check"
+                            :href="route('verifikasi.index')"
+                            :current="request()->routeIs('verifikasi.*')"
+                            wire:navigate
+                            data-test="sidebar-verifikasi-pengajuan"
+                        >
+                            {{ __('Verifikasi Pengajuan') }}
+                        </flux:sidebar.item>
                     @endif
                 </flux:sidebar.group>
             </flux:sidebar.nav>

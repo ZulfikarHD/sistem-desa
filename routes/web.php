@@ -4,7 +4,11 @@ use App\Livewire\JenisSurat\DataJenisSurat;
 use App\Livewire\JenisSurat\PersyaratanDokumen;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
 use App\Livewire\Pengajuan\RiwayatPengajuan;
+use App\Livewire\Verifikasi\DaftarPengajuanVerifikasi;
+use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
+use App\Models\DokumenPersyaratan;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -37,6 +41,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // US-2.1 — Kelola Data Jenis Surat
         Route::livewire('jenis-surat', DataJenisSurat::class)->name('jenis-surat.index');
+
+        // US-4.1 + US-4.2 — Verifikasi pengajuan (daftar & detail)
+        Route::livewire('verifikasi', DaftarPengajuanVerifikasi::class)->name('verifikasi.index');
+
+        // Pratinjau/unduh dokumen persyaratan (hanya admin, disk privat) — harus sebelum {pengajuan}
+        Route::get('verifikasi/dokumen/{dokumen}', function (DokumenPersyaratan $dokumen) {
+            abort_unless(Storage::disk('local')->exists($dokumen->file_path), 404);
+
+            return Storage::disk('local')->response($dokumen->file_path);
+        })->name('verifikasi.dokumen.show')->whereNumber('dokumen');
+
+        Route::get('verifikasi/dokumen/{dokumen}/unduh', function (DokumenPersyaratan $dokumen) {
+            abort_unless(Storage::disk('local')->exists($dokumen->file_path), 404);
+
+            $filename = basename($dokumen->file_path);
+
+            return Storage::disk('local')->download($dokumen->file_path, $filename);
+        })->name('verifikasi.dokumen.download')->whereNumber('dokumen');
+
+        Route::livewire('verifikasi/{pengajuan}', DetailPengajuanVerifikasi::class)
+            ->name('verifikasi.show')
+            ->whereNumber('pengajuan');
     });
 });
 
