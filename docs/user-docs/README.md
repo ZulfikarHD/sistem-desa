@@ -23,5 +23,6 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Migrasi Alur Status](guides/migrasi-alur-status.md) | Arti status baru dan alur setujui → diproses |
 | [Generate Surat PDF](guides/generate-surat-pdf.md) | Surat PDF otomatis dibuat saat admin menyetujui |
 | [Nomor Surat Resmi](guides/nomor-surat-resmi.md) | Format dan arti nomor surat resmi otomatis |
+| [Scan QR Pengambilan](guides/qr-sekali-pakai.md) | Cara admin scan QR sekali pakai saat pengambilan |
 | [Notifikasi & Riwayat Pengajuan](guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
 | [Rekap Pengajuan](guides/rekap-pengajuan.md) | Cara admin memfilter rekap dan ekspor CSV |

@@ -97,4 +97,5 @@ No new HTTP API. Generation is an internal side effect of Livewire approve.
 - [Verifikasi Pengajuan](verifikasi-pengajuan.md)
 - [ADR-015](../decisions/015-dompdf-surat-terbit-on-approve.md)
 - [ADR-016](../decisions/016-nomor-surat-resmi-format.md)
+- [QR Code Sekali Pakai (US-7.4)](qr-sekali-pakai.md)
 - Scrum: `scrum-planning/Phase 07 - Penerbitan Surat Keterangan.md` US-7.2

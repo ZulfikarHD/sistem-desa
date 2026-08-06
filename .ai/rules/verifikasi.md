@@ -13,3 +13,6 @@ Opening detail does NOT auto diajukan→diproses. canVerify only for diajukan. s
 
 ## US-7.2 triggerGenerateSurat generates PDF
 US-7.2 fills triggerGenerateSurat: creates surat_terbit + PDF inside the setujui transaction. ditolak path still skips generation.
+
+## Scan QR pengambilan admin page
+US-7.4 ScanQrPengambilan is admin Livewire page route scan-qr-pengambilan.index. Camera uses BarcodeDetector + getUserMedia; manual token always available. prosesScan calls SuratTerbit::scanUntukPengambilan.

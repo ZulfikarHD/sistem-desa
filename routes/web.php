@@ -8,6 +8,7 @@ use App\Livewire\Pengajuan\RiwayatPengajuan;
 use App\Livewire\Rekap\RekapPengajuan;
 use App\Livewire\Verifikasi\DaftarPengajuanVerifikasi;
 use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
+use App\Livewire\Verifikasi\ScanQrPengambilan;
 use App\Models\DokumenPersyaratan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -70,6 +71,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('verifikasi/{pengajuan}', DetailPengajuanVerifikasi::class)
             ->name('verifikasi.show')
             ->whereNumber('pengajuan');
+
+        // US-7.4 — Scan QR pengambilan sekali pakai
+        Route::livewire('scan-qr-pengambilan', ScanQrPengambilan::class)
+            ->name('scan-qr-pengambilan.index');
 
         // US-6.1 + US-6.2 — Rekap pengajuan & export CSV
         Route::livewire('rekap-pengajuan', RekapPengajuan::class)->name('rekap-pengajuan.index');

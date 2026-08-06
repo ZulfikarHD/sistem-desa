@@ -22,3 +22,6 @@ US-7.2: table surat_terbit (singular). On setujui→diproses, DetailPengajuanVer
 
 ## US-7.3 nomor surat resmi format and year sequence
 US-7.3: nomor_surat format {kode_klasifikasi}/{urut}/{kode_desa}/{bulanRomawi}/{tahun} via config/desa.php (default 470/.../DS-WDN/...). Sequential per calendar year of tanggal_terbit under Cache::lock + DB::transaction + lockForUpdate; unique column. Separate from nomor_pengajuan. Printed on PDF templates. Rekap display remains US-7.7; no manual override UI.
+
+## US-7.4 QR scan once via conditional update
+Scan QR pengambilan is ScanQrPengambilan at /admin/scan-qr-pengambilan. SuratTerbit::scanUntukPengambilan uses DB transaction + lockForUpdate + conditional UPDATE WHERE qr_status=valid; sets invalid + qr_digunakan_* + pengajuan selesai + notifikasi. No TTL. Re-download/terbitkanUntuk must not regenerate token. Marking siap_diambil stays US-7.5.

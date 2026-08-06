@@ -113,6 +113,16 @@
                         </flux:sidebar.item>
 
                         <flux:sidebar.item
+                            icon="qr-code"
+                            :href="route('scan-qr-pengambilan.index')"
+                            :current="request()->routeIs('scan-qr-pengambilan.*')"
+                            wire:navigate
+                            data-test="sidebar-scan-qr-pengambilan-mobile"
+                        >
+                            {{ __('Scan QR Pengambilan') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
                             icon="chart-bar"
                             :href="route('rekap-pengajuan.index')"
                             :current="request()->routeIs('rekap-pengajuan.*')"

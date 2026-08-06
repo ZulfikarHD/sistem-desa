@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
- * Surat keterangan yang digenerate setelah pengajuan disetujui (US-7.2 / US-7.3).
+ * Surat keterangan yang digenerate setelah pengajuan disetujui (US-7.2 / US-7.3 / US-7.4).
  *
  * @property int $id
  * @property int $pengajuan_id
@@ -278,6 +278,102 @@ class SuratTerbit extends Model
         $png = $writer->writeString($token);
 
         return 'data:image/png;base64,'.base64_encode($png);
+    }
+
+    /**
+     * Scan QR pengambilan sekali pakai (US-7.4).
+     * Sukses hanya jika pengajuan siap_diambil dan qr_status=valid;
+     * update kondisional WHERE qr_status=valid agar race dua admin aman.
+     *
+     * @return array{ok: bool, message: string}
+     */
+    public static function scanUntukPengambilan(string $token, int $adminId): array
+    {
+        $token = trim($token);
+
+        if ($token === '') {
+            return [
+                'ok' => false,
+                'message' => 'Token QR wajib diisi.',
+            ];
+        }
+
+        return DB::transaction(function () use ($token, $adminId): array {
+            $surat = static::query()
+                ->where('qr_token', $token)
+                ->lockForUpdate()
+                ->first();
+
+            if ($surat === null) {
+                return [
+                    'ok' => false,
+                    'message' => 'Token QR tidak dikenal.',
+                ];
+            }
+
+            if ($surat->qr_status === self::QR_STATUS_INVALID) {
+                return [
+                    'ok' => false,
+                    'message' => 'QR sudah digunakan / tidak valid.',
+                ];
+            }
+
+            $pengajuan = PengajuanSurat::query()
+                ->whereKey($surat->pengajuan_id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($pengajuan === null) {
+                return [
+                    'ok' => false,
+                    'message' => 'Token QR tidak dikenal.',
+                ];
+            }
+
+            if ($pengajuan->status !== PengajuanSurat::STATUS_SIAP_DIAMBIL) {
+                return [
+                    'ok' => false,
+                    'message' => 'Pengajuan belum siap diambil. QR ditolak.',
+                ];
+            }
+
+            // Enforcement server-side: hanya baris yang masih valid yang boleh diubah.
+            $affected = static::query()
+                ->whereKey($surat->id)
+                ->where('qr_status', self::QR_STATUS_VALID)
+                ->update([
+                    'qr_status' => self::QR_STATUS_INVALID,
+                    'qr_digunakan_at' => now(),
+                    'qr_digunakan_oleh' => $adminId,
+                ]);
+
+            if ($affected === 0) {
+                return [
+                    'ok' => false,
+                    'message' => 'QR sudah digunakan / tidak valid.',
+                ];
+            }
+
+            $pengajuan->update([
+                'status' => PengajuanSurat::STATUS_SELESAI,
+            ]);
+
+            $pengajuan->loadMissing('jenisSurat');
+            $namaSurat = $pengajuan->jenisSurat?->nama_surat ?? 'Surat';
+
+            Notifikasi::query()->create([
+                'user_id' => $pengajuan->user_id,
+                'pengajuan_id' => $pengajuan->id,
+                'pesan' => "Pengajuan {$namaSurat} ({$pengajuan->nomor_pengajuan}) selesai.",
+                'status_baca' => Notifikasi::STATUS_BELUM,
+                'created_at' => now(),
+            ]);
+
+            return [
+                'ok' => true,
+                'message' => 'Pengambilan berhasil dicatat. QR sekarang tidak valid.',
+            ];
+        });
     }
 
     /**
