@@ -75,6 +75,16 @@
                         </flux:sidebar.item>
 
                         <flux:sidebar.item
+                            icon="document-duplicate"
+                            :href="route('surat-diproses.index')"
+                            :current="request()->routeIs('surat-diproses.*')"
+                            wire:navigate
+                            data-test="sidebar-surat-diproses"
+                        >
+                            {{ __('Surat Diproses') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
                             icon="qr-code"
                             :href="route('scan-qr-pengambilan.index')"
                             :current="request()->routeIs('scan-qr-pengambilan.*')"

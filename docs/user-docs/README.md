@@ -26,6 +26,7 @@ Panduan untuk pengguna akhir Sistem Informasi Pelayanan Surat Keterangan.
 | [Nomor Surat Resmi](guides/nomor-surat-resmi.md) | Format dan arti nomor surat resmi otomatis |
 | [Scan QR Pengambilan](guides/qr-sekali-pakai.md) | Cara admin scan QR sekali pakai saat pengambilan |
 | [Dokumen Siap Diambil](guides/dokumen-siap-diambil.md) | Cara admin set tanggal pengambilan dan warga lihat notifikasi/riwayat |
+| [Surat Diproses & Siap Diambil](guides/surat-diproses.md) | Menu Surat Diproses + tandai siap diambil |
 | [Unduh/Cetak Surat](guides/unduh-surat-warga.md) | Cara warga mengunduh atau mencetak PDF surat |
 | [Notifikasi & Riwayat Pengajuan](guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
 | [Rekap Pengajuan](guides/rekap-pengajuan.md) | Cara admin memfilter rekap dan ekspor CSV |

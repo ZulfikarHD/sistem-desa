@@ -29,6 +29,7 @@ class SuratTerbitFactory extends Factory
             'file_path' => 'surat-terbit/'.fake()->numberBetween(1, 9999).'/surat.pdf',
             'tanggal_terbit' => $tanggal->toDateString(),
             'tanggal_pengambilan' => null,
+            'siap_diambil_at' => null,
             'jam_kerja_label' => null,
             'qr_token' => Str::random(64),
             'qr_status' => SuratTerbit::QR_STATUS_VALID,

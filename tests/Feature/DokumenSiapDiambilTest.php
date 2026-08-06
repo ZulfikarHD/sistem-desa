@@ -1,7 +1,7 @@
 <?php
 
 use App\Livewire\Pengajuan\RiwayatPengajuan;
-use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
+use App\Livewire\SuratDiproses\DetailSuratDiproses;
 use App\Models\Notifikasi;
 use App\Models\PengajuanSurat;
 use App\Models\SuratTerbit;
@@ -16,7 +16,7 @@ beforeEach(function () {
 });
 
 /**
- * Buat pengajuan diproses + surat_terbit (prasyarat UI US-7.5).
+ * Buat pengajuan diproses + surat_terbit (prasyarat UI US-7.5 / US-8.6).
  *
  * @return array{pengajuan: PengajuanSurat, surat: SuratTerbit, warga: User, admin: User}
  */
@@ -33,6 +33,7 @@ function buatPengajuanDiprosesDenganSurat(): array
         'diterbitkan_oleh' => $admin->id,
         'tanggal_pengambilan' => null,
         'jam_kerja_label' => null,
+        'siap_diambil_at' => null,
         'qr_token' => Str::random(64),
         'qr_status' => SuratTerbit::QR_STATUS_VALID,
     ]);
@@ -51,7 +52,6 @@ function nextHariKerja(?Carbon $from = null): Carbon
 
     for ($i = 0; $i < 60; $i++) {
         $candidate = $tanggal->copy()->addDays($i);
-        // Pastikan instance mutable (copy() bisa mengembalikan Immutable di beberapa jalur Carbon).
         $candidate = Carbon::parse($candidate->toDateString(), 'Asia/Jakarta');
 
         if (SuratTerbit::validasiTanggalPengambilan($candidate)['ok']) {
@@ -62,13 +62,13 @@ function nextHariKerja(?Carbon $from = null): Carbon
     throw new RuntimeException('Tidak menemukan hari kerja dalam 60 hari.');
 }
 
-test('admin melihat panel siap diambil pada pengajuan diproses dengan PDF', function () {
+test('admin melihat panel siap diambil pada detail surat diproses dengan PDF', function () {
     ['pengajuan' => $pengajuan, 'admin' => $admin] = buatPengajuanDiprosesDenganSurat();
 
     $component = Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
-        ->assertSee('Dokumen Siap Diambil')
-        ->assertSeeHtml('data-test="verifikasi-detail-siap-diambil-button"');
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan])
+        ->assertSee('Siap Diambil')
+        ->assertSeeHtml('data-test="surat-diproses-detail-siap-diambil-button"');
 
     expect($component->instance()->canMarkSiapDiambil())->toBeTrue();
 });
@@ -78,7 +78,7 @@ test('tombol siap diambil disabled tanpa tanggal lalu aktif setelah tanggal vali
     $hariKerja = nextHariKerja();
 
     $component = Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan]);
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan]);
 
     expect($component->instance()->isTanggalPengambilanSiap())->toBeFalse();
 
@@ -93,18 +93,19 @@ test('tandai siap diambil mengubah status menyimpan tanggal jam kerja dan notifi
     $hariKerja = nextHariKerja();
 
     Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan])
         ->set('tanggalPengambilan', $hariKerja->toDateString())
-        ->call('tandaiDokumenSiapDiambil')
+        ->call('tandaiSiapDiambil')
         ->assertHasNoErrors()
-        ->assertRedirect(route('verifikasi.index'));
+        ->assertRedirect(route('surat-diproses.index'));
 
     $pengajuan->refresh();
     $surat->refresh();
 
     expect($pengajuan->status)->toBe(PengajuanSurat::STATUS_SIAP_DIAMBIL)
         ->and($surat->tanggal_pengambilan?->toDateString())->toBe($hariKerja->toDateString())
-        ->and($surat->jam_kerja_label)->not->toBeNull();
+        ->and($surat->jam_kerja_label)->not->toBeNull()
+        ->and($surat->siap_diambil_at)->not->toBeNull();
 
     $notif = Notifikasi::query()
         ->where('user_id', $warga->id)
@@ -113,9 +114,8 @@ test('tandai siap diambil mengubah status menyimpan tanggal jam kerja dan notifi
         ->first();
 
     expect($notif)->not->toBeNull()
-        ->and($notif->pesan)->toContain('siap diambil')
-        ->and($notif->pesan)->toContain('Tanggal pengambilan')
-        ->and($notif->pesan)->toContain('Jam kerja');
+        ->and($notif->pesan)->toContain('sudah siap diambil pada')
+        ->and($notif->pesan)->toContain('#'.$pengajuan->nomor_pengajuan);
 });
 
 test('sabtu minggu ditolak sebagai tanggal pengambilan', function () {
@@ -124,9 +124,9 @@ test('sabtu minggu ditolak sebagai tanggal pengambilan', function () {
     $sabtu = now('Asia/Jakarta')->next(Carbon::SATURDAY)->startOfDay();
 
     Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan])
         ->set('tanggalPengambilan', $sabtu->toDateString())
-        ->call('tandaiDokumenSiapDiambil')
+        ->call('tandaiSiapDiambil')
         ->assertHasErrors('tanggalPengambilan');
 
     expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
@@ -135,15 +135,14 @@ test('sabtu minggu ditolak sebagai tanggal pengambilan', function () {
 test('libur nasional ditolak sebagai tanggal pengambilan', function () {
     ['pengajuan' => $pengajuan, 'admin' => $admin] = buatPengajuanDiprosesDenganSurat();
 
-    // 17 Agustus 2026 = Senin + libur nasional di config
     $libur = Carbon::parse('2026-08-17', 'Asia/Jakarta');
 
     expect(SuratTerbit::isLiburNasional($libur))->toBeTrue();
 
     Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan])
         ->set('tanggalPengambilan', $libur->toDateString())
-        ->call('tandaiDokumenSiapDiambil')
+        ->call('tandaiSiapDiambil')
         ->assertHasErrors('tanggalPengambilan');
 
     expect($pengajuan->fresh()->status)->toBe(PengajuanSurat::STATUS_DIPROSES);
@@ -155,9 +154,9 @@ test('tanggal masa lalu ditolak', function () {
     $kemarin = now('Asia/Jakarta')->subDay()->startOfDay();
 
     Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan])
         ->set('tanggalPengambilan', $kemarin->toDateString())
-        ->call('tandaiDokumenSiapDiambil')
+        ->call('tandaiSiapDiambil')
         ->assertHasErrors('tanggalPengambilan');
 });
 
@@ -169,9 +168,9 @@ test('tidak bisa tandai siap diambil jika status bukan diproses', function () {
     ]);
 
     $component = Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan])
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan])
         ->set('tanggalPengambilan', nextHariKerja()->toDateString())
-        ->call('tandaiDokumenSiapDiambil')
+        ->call('tandaiSiapDiambil')
         ->assertNoRedirect();
 
     expect($component->instance()->canMarkSiapDiambil())->toBeFalse()
@@ -187,15 +186,14 @@ test('tidak bisa tandai siap diambil jika PDF surat belum ada', function () {
     expect($pengajuan->suratTerbit)->toBeNull();
 
     $component = Livewire::actingAs($admin)
-        ->test(DetailPengajuanVerifikasi::class, ['pengajuan' => $pengajuan]);
+        ->test(DetailSuratDiproses::class, ['pengajuan' => $pengajuan]);
 
     expect($component->instance()->canMarkSiapDiambil())->toBeFalse();
 });
 
 test('jam kerja jumat berbeda dari senin kamis', function () {
-    // Gunakan tanggal tetap yang diketahui bukan libur (bukan 17 Agustus).
-    $jumat = Carbon::parse('2026-08-14', 'Asia/Jakarta'); // Jumat
-    $senin = Carbon::parse('2026-08-10', 'Asia/Jakarta'); // Senin
+    $jumat = Carbon::parse('2026-08-14', 'Asia/Jakarta');
+    $senin = Carbon::parse('2026-08-10', 'Asia/Jakarta');
 
     expect(SuratTerbit::isLiburNasional($jumat))->toBeFalse()
         ->and(SuratTerbit::isLiburNasional($senin))->toBeFalse();
@@ -216,6 +214,7 @@ test('riwayat warga menampilkan tanggal pengambilan dan jam kerja', function () 
     $surat->update([
         'tanggal_pengambilan' => $hariKerja->toDateString(),
         'jam_kerja_label' => SuratTerbit::jamKerjaLabelUntuk($hariKerja),
+        'siap_diambil_at' => now(),
     ]);
 
     Livewire::actingAs($warga)

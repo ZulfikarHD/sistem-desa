@@ -27,10 +27,13 @@ US-7.3: nomor_surat format {kode_klasifikasi}/{urut}/{kode_desa}/{bulanRomawi}/{
 Scan QR pengambilan is ScanQrPengambilan at /admin/scan-qr-pengambilan. SuratTerbit::scanUntukPengambilan uses DB transaction + lockForUpdate + conditional UPDATE WHERE qr_status=valid; sets invalid + qr_digunakan_* + pengajuan selesai + notifikasi. No TTL. Re-download/terbitkanUntuk must not regenerate token.
 
 ## US-7.5 tandai siap diambil + jam kerja WIB
-SuratTerbit::tandaiSiapDiambil moves diproses→siap_diambil, saves tanggal_pengambilan + jam_kerja_label, notifies warga. Validate dates via validasiTanggalPengambilan using Asia/Jakarta: reject past, Sat/Sun, and config desa.libur_nasional (tolak not warn). Jam labels from config desa.jam_kerja (Senin–Kamis 08–16, Jumat 08–16.30). UI lives on DetailPengajuanVerifikasi when status diproses + PDF exists. Detail warga tanggal display remains US-7.6; rekap columns US-7.7.
+SuratTerbit::tandaiSiapDiambil moves diproses→siap_diambil, saves tanggal_pengambilan + jam_kerja_label + siap_diambil_at, notifies warga. Validate dates via validasiTanggalPengambilan using Asia/Jakarta: reject past, Sat/Sun, and config desa.libur_nasional (tolak not warn). Jam labels from config desa.jam_kerja (Senin–Kamis 08–16, Jumat 08–16.30). UI is on DetailSuratDiproses (US-8.6), not verifikasi detail. Detail warga tanggal display remains US-7.6; rekap columns US-7.7.
 
 ## US-7.6 dapatUnduhSurat helper
 PengajuanSurat::dapatUnduhSurat() / statusBolehUnduhSurat() gate warga PDF download for diproses, siap_diambil, selesai when suratTerbit exists. Do not allow diajukan/disetujui/ditolak.
 
 ## Historical disetujui displays as Diproses
 STATUS_DISETUJUI remains for DB historis. statusLabel(disetujui)=Diproses. statusOptions uses Disetujui (historis) so admin filters stay distinguishable. New approve path never sets disetujui (US-8.4).
+
+## siap_diambil_at on tandaiSiapDiambil
+SuratTerbit::tandaiSiapDiambil sets siap_diambil_at=now() and notifikasi AC US-8.6: "Surat [jenis] Anda (#[nomor]) sudah siap diambil pada [tanggal] ([jam])." Column is for US-8.7 timeline; keep nullable for legacy rows.

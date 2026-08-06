@@ -6,6 +6,8 @@ use App\Livewire\Pengajuan\DetailPengajuanWarga;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
 use App\Livewire\Pengajuan\RiwayatPengajuan;
 use App\Livewire\Rekap\RekapPengajuan;
+use App\Livewire\SuratDiproses\DaftarSuratDiproses;
+use App\Livewire\SuratDiproses\DetailSuratDiproses;
 use App\Livewire\Verifikasi\DaftarPengajuanVerifikasi;
 use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
 use App\Livewire\Verifikasi\ScanQrPengambilan;
@@ -96,6 +98,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::livewire('verifikasi/{pengajuan}', DetailPengajuanVerifikasi::class)
             ->name('verifikasi.show')
+            ->whereNumber('pengajuan');
+
+        // US-8.5 + US-8.6 — Surat Diproses (daftar & detail tanggal pengambilan)
+        Route::livewire('surat-diproses', DaftarSuratDiproses::class)->name('surat-diproses.index');
+
+        // Pratinjau/unduh PDF surat terbit (admin) — harus sebelum {pengajuan}
+        Route::get('surat-diproses/{pengajuan}/pdf', function (PengajuanSurat $pengajuan) {
+            $surat = $pengajuan->suratTerbit;
+            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+
+            return Storage::disk('local')->response($surat->file_path, basename($surat->file_path), [
+                'Content-Type' => 'application/pdf',
+            ]);
+        })->name('surat-diproses.pdf.show')->whereNumber('pengajuan');
+
+        Route::get('surat-diproses/{pengajuan}/pdf/unduh', function (PengajuanSurat $pengajuan) {
+            $surat = $pengajuan->suratTerbit;
+            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+
+            $filename = 'surat-'.str_replace('/', '-', $surat->nomor_surat).'.pdf';
+
+            return Storage::disk('local')->download($surat->file_path, $filename);
+        })->name('surat-diproses.pdf.download')->whereNumber('pengajuan');
+
+        Route::livewire('surat-diproses/{pengajuan}', DetailSuratDiproses::class)
+            ->name('surat-diproses.show')
             ->whereNumber('pengajuan');
 
         // US-7.4 — Scan QR pengambilan sekali pakai

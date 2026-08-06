@@ -9,7 +9,6 @@ use App\Models\PengajuanSurat;
 use App\Models\SuratTerbit;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -26,9 +25,6 @@ class DetailPengajuanVerifikasi extends Component
 
     /** Alasan penolakan yang wajib diisi admin. */
     public string $catatanAdmin = '';
-
-    /** Tanggal pengambilan (Y-m-d) untuk tandai siap diambil (US-7.5). */
-    public string $tanggalPengambilan = '';
 
     /**
      * Muat relasi pengajuan tanpa mengubah status (US-7.1 — hapus auto diajukan→diproses).
@@ -52,87 +48,6 @@ class DetailPengajuanVerifikasi extends Component
     public function canVerify(): bool
     {
         return $this->pengajuan->status === PengajuanSurat::STATUS_DIAJUKAN;
-    }
-
-    /**
-     * Apakah admin dapat menandai dokumen siap diambil (US-7.5).
-     * Syarat: status diproses dan PDF surat_terbit sudah ada.
-     */
-    public function canMarkSiapDiambil(): bool
-    {
-        return $this->pengajuan->status === PengajuanSurat::STATUS_DIPROSES
-            && $this->pengajuan->suratTerbit !== null;
-    }
-
-    /**
-     * Preview jam kerja berdasarkan tanggal yang dipilih (kosong jika tutup/invalid).
-     */
-    public function jamKerjaPreview(): ?string
-    {
-        if ($this->tanggalPengambilan === '') {
-            return null;
-        }
-
-        try {
-            $tanggal = Carbon::parse($this->tanggalPengambilan, 'Asia/Jakarta');
-        } catch (\Throwable) {
-            return null;
-        }
-
-        $validasi = SuratTerbit::validasiTanggalPengambilan($tanggal);
-
-        return $validasi['ok'] ? $validasi['jam_kerja_label'] : null;
-    }
-
-    /**
-     * Tombol "Dokumen Siap Diambil" aktif hanya jika tanggal valid (US-7.5).
-     */
-    public function isTanggalPengambilanSiap(): bool
-    {
-        if ($this->tanggalPengambilan === '') {
-            return false;
-        }
-
-        try {
-            $tanggal = Carbon::parse($this->tanggalPengambilan, 'Asia/Jakarta');
-        } catch (\Throwable) {
-            return false;
-        }
-
-        return SuratTerbit::validasiTanggalPengambilan($tanggal)['ok'];
-    }
-
-    /**
-     * Tandai dokumen siap diambil: diproses → siap_diambil + notifikasi warga (US-7.5).
-     */
-    public function tandaiDokumenSiapDiambil(): void
-    {
-        if (! $this->canMarkSiapDiambil()) {
-            Flux::toast(variant: 'danger', text: 'Pengajuan tidak dapat ditandai siap diambil pada status saat ini.');
-
-            return;
-        }
-
-        $this->validate([
-            'tanggalPengambilan' => ['required', 'date'],
-        ], [
-            'tanggalPengambilan.required' => 'Tanggal pengambilan wajib dipilih.',
-            'tanggalPengambilan.date' => 'Format tanggal pengambilan tidak valid.',
-        ]);
-
-        $tanggal = Carbon::parse($this->tanggalPengambilan, 'Asia/Jakarta');
-        $hasil = SuratTerbit::tandaiSiapDiambil($this->pengajuan, $tanggal);
-
-        if (! $hasil['ok']) {
-            $this->addError('tanggalPengambilan', $hasil['message']);
-            Flux::toast(variant: 'danger', text: $hasil['message']);
-
-            return;
-        }
-
-        Flux::toast(variant: 'success', text: $hasil['message']);
-
-        $this->redirect(route('verifikasi.index'), navigate: true);
     }
 
     /**

@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
  * @property string $file_path
  * @property Carbon $tanggal_terbit
  * @property Carbon|null $tanggal_pengambilan
+ * @property Carbon|null $siap_diambil_at
  * @property string|null $jam_kerja_label
  * @property string $qr_token
  * @property string $qr_status
@@ -41,6 +42,7 @@ use Illuminate\Support\Str;
     'file_path',
     'tanggal_terbit',
     'tanggal_pengambilan',
+    'siap_diambil_at',
     'jam_kerja_label',
     'qr_token',
     'qr_status',
@@ -79,6 +81,7 @@ class SuratTerbit extends Model
         return [
             'tanggal_terbit' => 'date',
             'tanggal_pengambilan' => 'date',
+            'siap_diambil_at' => 'datetime',
             'qr_digunakan_at' => 'datetime',
         ];
     }
@@ -363,7 +366,7 @@ class SuratTerbit extends Model
     }
 
     /**
-     * Tandai dokumen siap diambil: diproses → siap_diambil + simpan tanggal & jam kerja (US-7.5).
+     * Tandai dokumen siap diambil: diproses → siap_diambil + simpan tanggal & jam kerja (US-7.5 / US-8.6).
      *
      * @return array{ok: bool, message: string}
      */
@@ -411,10 +414,12 @@ class SuratTerbit extends Model
             }
 
             $tanggal = $tanggalPengambilan->copy()->timezone('Asia/Jakarta')->startOfDay();
+            $siapDiambilAt = now();
 
             $surat->update([
                 'tanggal_pengambilan' => $tanggal->toDateString(),
                 'jam_kerja_label' => $validasi['jam_kerja_label'],
+                'siap_diambil_at' => $siapDiambilAt,
             ]);
 
             $pengajuanLocked->update([
@@ -426,10 +431,11 @@ class SuratTerbit extends Model
             $tanggalLabel = $tanggal->translatedFormat('d M Y');
             $jamLabel = $validasi['jam_kerja_label'] ?? '';
 
+            // Pesan mengikuti AC US-8.6.
             Notifikasi::query()->create([
                 'user_id' => $pengajuanLocked->user_id,
                 'pengajuan_id' => $pengajuanLocked->id,
-                'pesan' => "Pengajuan {$namaSurat} ({$pengajuanLocked->nomor_pengajuan}) siap diambil. Tanggal pengambilan: {$tanggalLabel}. Jam kerja: {$jamLabel}.",
+                'pesan' => "Surat {$namaSurat} Anda (#{$pengajuanLocked->nomor_pengajuan}) sudah siap diambil pada {$tanggalLabel} ({$jamLabel}).",
                 'status_baca' => Notifikasi::STATUS_BELUM,
                 'created_at' => now(),
             ]);

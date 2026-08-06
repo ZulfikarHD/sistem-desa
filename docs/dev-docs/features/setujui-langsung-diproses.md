@@ -89,7 +89,7 @@ No new HTTP API. Same Livewire routes.
 
 - Intermediate `disetujui` write removed to match Phase 08 target flow and avoid double notifications.
 - Historical `disetujui` rows keep the DB value; UI label maps to Diproses (risk mitigation in Phase 08 plan).
-- Appearance in dedicated **Surat Diproses** list is deferred to US-8.5; this story only guarantees `status=diproses`.
+- Appearance in dedicated **Surat Diproses** page is owned by US-8.5/8.6 — see [surat-diproses.md](surat-diproses.md).
 
 ## Related
 

@@ -34,6 +34,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Nomor Surat Resmi Otomatis (US-7.3)](dev-docs/features/nomor-surat-resmi.md) | Official letter number format, year sequence, PDF print |
 | [QR Code Sekali Pakai (US-7.4)](dev-docs/features/qr-sekali-pakai.md) | One-time pickup QR scan → selesai + invalid |
 | [Dokumen Siap Diambil (US-7.5)](dev-docs/features/dokumen-siap-diambil.md) | Admin set pickup date + jam kerja + notifikasi warga |
+| [Surat Diproses (US-8.5 & US-8.6)](dev-docs/features/surat-diproses.md) | Dedicated list/detail + Siap Diambil + siap_diambil_at |
 | [Unduh/Cetak Surat Warga (US-7.6)](dev-docs/features/unduh-surat-warga.md) | Warga download/print issued PDF; detail shows pickup hours |
 | [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [Rekap Pengajuan & Reporting (US-6.1 – US-6.2)](dev-docs/features/rekap-pengajuan.md) | Admin filterable recap table, summary counts, CSV export |
@@ -57,6 +58,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-018: Jam kerja + libur nasional config](dev-docs/decisions/018-jam-kerja-dan-libur-nasional-config.md) | Reject invalid pickup dates; labels from config |
 | [ADR-019: Warga unduh/cetak existing PDF](dev-docs/decisions/019-warga-unduh-cetak-existing-pdf.md) | Serve stored PDF only; never regenerate QR on download |
 | [ADR-020: Setujui langsung diproses US-8.4](dev-docs/decisions/020-setujui-langsung-diproses-us-8-4.md) | Approve → diproses in one step; keep disetujui for historis |
+| [ADR-021: Surat Diproses page + siap_diambil_at](dev-docs/decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated list/detail; relocate Siap Diambil UI; timestamp for timeline |
 
 ## User Docs
 
@@ -84,6 +86,7 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Nomor Surat Resmi](user-docs/guides/nomor-surat-resmi.md) | Arti format nomor surat resmi otomatis |
 | [Panduan Scan QR Pengambilan](user-docs/guides/qr-sekali-pakai.md) | Cara admin scan QR sekali pakai saat pengambilan |
 | [Panduan Dokumen Siap Diambil](user-docs/guides/dokumen-siap-diambil.md) | Cara admin set tanggal pengambilan + notifikasi warga |
+| [Panduan Surat Diproses & Siap Diambil](user-docs/guides/surat-diproses.md) | Menu Surat Diproses + tandai siap diambil (US-8.5/8.6) |
 | [Panduan Unduh/Cetak Surat](user-docs/guides/unduh-surat-warga.md) | Cara warga mengunduh atau mencetak PDF surat |
 | [Panduan Notifikasi & Riwayat Pengajuan](user-docs/guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
 | [Panduan Rekap Pengajuan](user-docs/guides/rekap-pengajuan.md) | Cara admin memfilter dan ekspor laporan pengajuan |
