@@ -79,8 +79,8 @@ Each item gives the fork, then a hint (a grep or dir to spot which side the app 
 
 This app ships a frontend stack, so the items below apply.
 
-28. Frontend stack: Blade+Livewire vs Inertia (Vue/React/Svelte) vs Blade-only / API + separate SPA.
-    - Hint: `composer.json` + `package.json`; `ls resources/js/pages`, `resources/views`.
+28. Frontend stack: Blade+Livewire (proyek ini) — bukan Inertia/Vue/React/Svelte.
+    - Hint: `composer.json` + `package.json`; `ls app/Livewire`, `resources/views`.
 29. Blade composition: class `<x-*>` components vs anonymous components (`@props`) vs `@include` partials.
     - Hint: `ls app/View/Components`; grep `<x-`, `@include` in `resources/views`.
 30. Livewire component format: Volt functional/class components, native Livewire 4 single-file (SFC), multi-file (MFC), view-based, or class-based components. Evaluate full-page vs nested separately because it is an independent usage choice.

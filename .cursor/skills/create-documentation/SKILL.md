@@ -64,8 +64,8 @@ erDiagram
 |-------|------|---------|
 | Controller | `app/Http/Controllers/XController.php` | Handles requests |
 | Model | `app/Models/X.php` | Eloquent model |
-| Page | `resources/js/pages/X/Index.vue` | Vue page component |
-| Request | `app/Http/Requests/XRequest.php` | Validation |
+| Livewire Component | `app/Livewire/X/DataX.php` | Logic & state |
+| Blade View | `resources/views/livewire/x/data-x.blade.php` | Tampilan halaman |
 
 ## Flow Explanation
 
@@ -215,7 +215,7 @@ A: [Jawaban singkat dan jelas]
 When creating documentation:
 
 1. **Identify scope** — Which feature/module to document?
-2. **Explore the code** — Read controllers, models, routes, Vue pages
+2. **Explore the code** — Read Livewire components, models, routes, Blade views
 3. **Create dev-docs** — Technical explanation with diagrams
 4. **Create user-docs** — End-user guide in Indonesian
 5. **Update indexes** — Add entry to README files

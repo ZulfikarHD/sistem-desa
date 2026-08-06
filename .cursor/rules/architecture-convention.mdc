@@ -1,69 +1,87 @@
 ---
-description: Flat, beginner-friendly architecture convention — no service classes, no abstraction layers, no enum files. One controller per route group, one Vue file per page. Project language is Indonesian.
+description: Flat, beginner-friendly architecture convention for Laravel Livewire — no service classes, no abstraction layers, no enum files. One route = one Livewire component covering all logic for that page. Project language is Indonesian.
 alwaysApply: true
 ---
 
 # Architecture Convention (Pragmatic, No Over-Engineering)
 
-Proyek ini sengaja dibuat sederhana dan flat. Jangan tambahkan abstraction layer.
+Proyek ini menggunakan **Laravel Livewire v4 + Flux + Blade**. Sengaja dibuat sederhana dan flat. Jangan tambahkan abstraction layer.
 
-## Backend (Laravel)
+## Backend — Livewire Component
 
-- **1 route group = 1 controller** — semua logic untuk fitur tersebut ditulis langsung di controller.
-- JANGAN buat service class, repository, action class, atau form request class.
-- JANGAN buat file enum atau constants tersendiri — definisikan inline atau sebagai array biasa.
-- JANGAN buat trait kecuali benar-benar dipakai di 3+ controller dengan logic yang identik.
-- Gunakan Eloquent langsung di dalam method controller. Jangan bungkus dengan query builder wrapper.
+- **1 route = 1 Livewire component** — semua logic untuk halaman tersebut ditulis langsung di class component-nya.
+- JANGAN buat service class, repository, action class, atau form object tersendiri.
+- JANGAN buat file enum atau constants tersendiri — definisikan sebagai array atau const biasa di dalam component.
+- JANGAN buat trait kecuali benar-benar dipakai di 3+ component dengan logic yang identik.
+- Gunakan Eloquent langsung di dalam method component. Jangan bungkus dengan wrapper apapun.
 
 ```php
-// ✅ BENAR — semua ada di controller
-class PendudukController extends Controller
+// ✅ BENAR — semua ada di Livewire component
+class DataPenduduk extends Component
 {
-    public function index()
+    public string $nama = '';
+    public string $nik = '';
+
+    public function simpan(): void
     {
-        $data = Penduduk::latest()->paginate(10);
-        return Inertia::render('Penduduk/Index', compact('data'));
+        $this->validate(['nama' => 'required', 'nik' => 'required']);
+        Penduduk::create(['nama' => $this->nama, 'nik' => $this->nik]);
+        $this->reset();
+        session()->flash('success', 'Data berhasil disimpan.');
     }
 
-    public function store(Request $request)
+    public function render(): View
     {
-        $request->validate([...]);
-        Penduduk::create($request->all());
-        return back()->with('success', 'Data berhasil disimpan.');
+        return view('livewire.penduduk.data-penduduk', [
+            'data' => Penduduk::latest()->paginate(10),
+        ]);
     }
 }
 
-// ❌ SALAH — jangan buat PendudukService, PendudukRepository, StorePendudukAction, dll.
+// ❌ SALAH — jangan buat PendudukService, PendudukRepository, SimpanPendudukAction, dll.
 ```
 
-## Frontend (Vue + Inertia)
+## Frontend — Blade + Flux
 
-- **1 halaman = 1 file Vue** — semua logic (form state, handler, computed) ada di file tersebut.
-- JANGAN buat composable kecuali dipakai di 3+ halaman dengan logic yang identik.
-- JANGAN buat file type/interface tersendiri — definisikan inline jika diperlukan.
-- Simpan component di folder yang sama dengan page jika component tersebut spesifik untuk page itu.
+- **1 halaman = 1 file Blade view** yang dipasangkan dengan 1 Livewire component.
+- JANGAN pisah bagian kecil ke component tersendiri kecuali dipakai di 3+ halaman berbeda.
+- Gunakan Flux UI component (`<flux:input>`, `<flux:button>`, dll.) langsung di Blade view.
+- Logic tetap di PHP class, bukan di Alpine.js — gunakan Alpine hanya untuk interaksi UI murni (toggle, dropdown, dsb.).
 
-```vue
-<!-- ✅ BENAR — page yang self-contained -->
-<script setup>
-const form = useForm({ nama: '', nik: '' })
-const submit = () => form.post(route('penduduk.store'))
-</script>
+```blade
+{{-- ✅ BENAR — view sederhana, logic ada di class --}}
+<div>
+    <flux:input wire:model="nama" label="Nama" />
+    <flux:input wire:model="nik" label="NIK" />
+    <flux:button wire:click="simpan">Simpan</flux:button>
+</div>
+```
+
+## Struktur File
+
+```
+app/Livewire/
+  Penduduk/
+    DataPenduduk.php      ← semua logic di sini
+
+resources/views/livewire/
+  penduduk/
+    data-penduduk.blade.php  ← semua tampilan di sini
 ```
 
 ## Bahasa Proyek
 
 - **Komentar kode**: gunakan Bahasa Indonesia.
-- **Nama class, method, variable, route, file**: tetap Bahasa Inggris (konvensi teknis IT).
-- **Pesan ke user (flash message, label, placeholder, teks UI)**: gunakan Bahasa Indonesia.
+- **Nama class, method, property, variable, route, file**: tetap Bahasa Inggris (konvensi teknis IT).
+- **Teks UI, flash message, label, placeholder**: gunakan Bahasa Indonesia.
 
 ```php
 // ✅ BENAR
-// Ambil semua data penduduk berdasarkan desa
-$data = Penduduk::where('desa_id', $desaId)->paginate(10);
+// Ambil semua data penduduk, urutkan dari terbaru
+$data = Penduduk::latest()->paginate(10);
 
-// ❌ SALAH — komentar dalam bahasa Inggris
-// Get all residents by village
+// ❌ SALAH
+// Get all residents ordered by latest
 ```
 
 ## General

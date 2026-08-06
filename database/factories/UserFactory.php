@@ -25,10 +25,14 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'nik' => fake()->unique()->numerify('################'),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'no_telepon' => fake()->numerify('08##########'),
+            'alamat' => fake()->address(),
+            'role' => 'warga',
             'remember_token' => Str::random(10),
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
@@ -55,6 +59,16 @@ class UserFactory extends Factory
             'two_factor_secret' => encrypt('secret'),
             'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1'])),
             'two_factor_confirmed_at' => now(),
+        ]);
+    }
+
+    /**
+     * User dengan role admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
         ]);
     }
 }
