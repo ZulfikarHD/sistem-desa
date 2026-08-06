@@ -13,7 +13,7 @@ use Laravel\Passkeys\Actions\DeletePasskey;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 
-new #[Title('Security settings')] class extends Component {
+new #[Title('Pengaturan Keamanan')] class extends Component {
     use PasswordValidationRules;
 
     public string $current_password = '';
@@ -85,7 +85,7 @@ new #[Title('Security settings')] class extends Component {
 
         $this->reset('current_password', 'password', 'password_confirmation');
 
-        Flux::toast(variant: 'success', text: __('Password updated.'));
+        Flux::toast(variant: 'success', text: __('Password berhasil diperbarui.'));
     }
 
     /**
@@ -166,43 +166,46 @@ new #[Title('Security settings')] class extends Component {
     }
 }; ?>
 
-<section class="w-full">
+<section class="w-full" data-test="security-page">
     @include('partials.settings-heading')
 
-    <flux:heading class="sr-only">{{ __('Security settings') }}</flux:heading>
+    <flux:heading class="sr-only">{{ __('Pengaturan Keamanan') }}</flux:heading>
 
-    <x-pages::settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
-        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
+    <x-pages::settings.layout :heading="__('Ganti Password')" :subheading="__('Gunakan password yang kuat agar akun tetap aman')">
+        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6" data-test="update-password-form">
             <flux:input
                 wire:model="current_password"
-                :label="__('Current password')"
+                :label="__('Password Saat Ini')"
                 type="password"
                 required
                 autocomplete="current-password"
                 viewable
+                data-test="current-password"
             />
             <flux:input
                 wire:model="password"
-                :label="__('New password')"
+                :label="__('Password Baru')"
                 type="password"
                 required
                 autocomplete="new-password"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable
+                data-test="new-password"
             />
             <flux:input
                 wire:model="password_confirmation"
-                :label="__('Confirm password')"
+                :label="__('Konfirmasi Password Baru')"
                 type="password"
                 required
                 autocomplete="new-password"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable
+                data-test="new-password-confirmation"
             />
 
             <div class="flex items-center gap-4">
                 <flux:button variant="primary" type="submit" data-test="update-password-button">
-                    {{ __('Save') }}
+                    {{ __('Simpan') }}
                 </flux:button>
             </div>
         </form>

@@ -9,7 +9,8 @@ use Illuminate\Validation\Rule;
 trait ProfileValidationRules
 {
     /**
-     * Get the validation rules used to validate user profiles.
+     * Aturan validasi untuk edit profil (US-1.4).
+     * NIK dan role sengaja tidak disertakan — tidak boleh diubah sendiri.
      *
      * @return array<string, array<int, ValidationRule|array<mixed>|string>>
      */
@@ -17,6 +18,8 @@ trait ProfileValidationRules
     {
         return [
             'name' => $this->nameRules(),
+            'no_telepon' => $this->phoneRules(),
+            'alamat' => $this->addressRules(),
             'email' => $this->emailRules($userId),
         ];
     }
