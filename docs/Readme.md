@@ -99,6 +99,7 @@ See [user-docs/README.md](user-docs/README.md) — dikelompokkan per peran pengg
 | AD-10 | [Kelola Master Jenis Surat](user-docs/diagrams/activity/ad-10-kelola-jenis-surat.md) | Admin |
 | AD-11 | [Rekap & Ekspor CSV](user-docs/diagrams/activity/ad-11-rekap-ekspor-csv.md) | Admin |
 | AD-12 | [Alur Transisi Status Pengajuan](user-docs/diagrams/activity/ad-12-alur-status-pengajuan.md) | Sistem |
+| AD-13 | [Detail Rekap & Timeline Proses](user-docs/diagrams/activity/ad-13-detail-rekap-timeline.md) | Admin |
 
 ### Panduan Pengguna — Publik / Tamu
 
@@ -140,7 +141,8 @@ See [user-docs/README.md](user-docs/README.md) — dikelompokkan per peran pengg
 | 9 | Dokumen Siap Diambil | [guides/admin/09-dokumen-siap-diambil.md](user-docs/guides/admin/09-dokumen-siap-diambil.md) |
 | 10 | Scan QR Pengambilan | [guides/admin/10-qr-sekali-pakai.md](user-docs/guides/admin/10-qr-sekali-pakai.md) |
 | 11 | Rekap Pengajuan | [guides/admin/11-rekap-pengajuan.md](user-docs/guides/admin/11-rekap-pengajuan.md) |
-| 12 | Migrasi Alur Status | [guides/admin/12-migrasi-alur-status.md](user-docs/guides/admin/12-migrasi-alur-status.md) |
-| 13 | Proteksi Akses Role | [guides/admin/13-role-middleware.md](user-docs/guides/admin/13-role-middleware.md) |
-| 14 | Manajemen Profil | [guides/admin/14-profile-management.md](user-docs/guides/admin/14-profile-management.md) |
-| 15 | Lupa Password | [guides/admin/15-password-reset.md](user-docs/guides/admin/15-password-reset.md) |
+| 12 | Detail Rekap & Timeline | [guides/admin/12-rekap-timeline.md](user-docs/guides/admin/12-rekap-timeline.md) |
+| 13 | Migrasi Alur Status | [guides/admin/13-migrasi-alur-status.md](user-docs/guides/admin/13-migrasi-alur-status.md) |
+| 14 | Proteksi Akses Role | [guides/admin/14-role-middleware.md](user-docs/guides/admin/14-role-middleware.md) |
+| 15 | Manajemen Profil | [guides/admin/15-profile-management.md](user-docs/guides/admin/15-profile-management.md) |
+| 16 | Lupa Password | [guides/admin/16-password-reset.md](user-docs/guides/admin/16-password-reset.md) |

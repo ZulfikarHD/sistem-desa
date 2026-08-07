@@ -106,7 +106,8 @@ graph LR
 | 9 | Dokumen Siap Diambil | [09-dokumen-siap-diambil.md](../../guides/admin/09-dokumen-siap-diambil.md) |
 | 10 | Scan QR Pengambilan | [10-qr-sekali-pakai.md](../../guides/admin/10-qr-sekali-pakai.md) |
 | 11 | Rekap Pengajuan | [11-rekap-pengajuan.md](../../guides/admin/11-rekap-pengajuan.md) |
-| 12 | Migrasi Alur Status | [12-migrasi-alur-status.md](../../guides/admin/12-migrasi-alur-status.md) |
-| 13 | Proteksi Akses | [13-role-middleware.md](../../guides/admin/13-role-middleware.md) |
-| 14 | Manajemen Profil | [14-profile-management.md](../../guides/admin/14-profile-management.md) |
-| 15 | Lupa Password | [15-password-reset.md](../../guides/admin/15-password-reset.md) |
+| 12 | Detail Rekap & Timeline (US-8.7) | [12-rekap-timeline.md](../../guides/admin/12-rekap-timeline.md) |
+| 13 | Migrasi Alur Status | [13-migrasi-alur-status.md](../../guides/admin/13-migrasi-alur-status.md) |
+| 14 | Proteksi Akses | [14-role-middleware.md](../../guides/admin/14-role-middleware.md) |
+| 15 | Manajemen Profil | [15-profile-management.md](../../guides/admin/15-profile-management.md) |
+| 16 | Lupa Password | [16-password-reset.md](../../guides/admin/16-password-reset.md) |

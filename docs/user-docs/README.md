@@ -47,6 +47,7 @@ docs/user-docs/
 | AD-10 | [ad-10-kelola-jenis-surat.md](diagrams/activity/ad-10-kelola-jenis-surat.md) | Kelola Master Jenis Surat | Admin |
 | AD-11 | [ad-11-rekap-ekspor-csv.md](diagrams/activity/ad-11-rekap-ekspor-csv.md) | Rekap Pengajuan & Ekspor CSV | Admin |
 | AD-12 | [ad-12-alur-status-pengajuan.md](diagrams/activity/ad-12-alur-status-pengajuan.md) | Alur Transisi Status Pengajuan | Sistem |
+| AD-13 | [ad-13-detail-rekap-timeline.md](diagrams/activity/ad-13-detail-rekap-timeline.md) | Melihat Detail Rekap & Timeline Proses | Admin |
 
 ---
 
@@ -100,7 +101,8 @@ docs/user-docs/
 | 9 | [Dokumen Siap Diambil](guides/admin/09-dokumen-siap-diambil.md) | Menetapkan tanggal pengambilan dan notifikasi ke warga |
 | 10 | [Scan QR Pengambilan](guides/admin/10-qr-sekali-pakai.md) | Memindai QR code sekali pakai saat warga mengambil surat |
 | 11 | [Rekap Pengajuan](guides/admin/11-rekap-pengajuan.md) | Memfilter rekap pengajuan dan mengekspor laporan CSV |
-| 12 | [Migrasi Alur Status](guides/admin/12-migrasi-alur-status.md) | Referensi arti tiap status dan alur perubahan status surat |
-| 13 | [Proteksi Akses Berdasarkan Role](guides/admin/13-role-middleware.md) | Memahami batasan halaman admin dan arti 403 |
-| 14 | [Manajemen Profil](guides/admin/14-profile-management.md) | Melihat dan mengubah data profil serta ganti password |
-| 15 | [Lupa Password](guides/admin/15-password-reset.md) | Mereset password melalui email jika lupa |
+| 12 | [Detail Rekap & Timeline Proses](guides/admin/12-rekap-timeline.md) | Membaca riwayat proses kronologis tiap pengajuan (US-8.7) |
+| 13 | [Migrasi Alur Status](guides/admin/13-migrasi-alur-status.md) | Referensi arti tiap status dan alur perubahan status surat |
+| 14 | [Proteksi Akses Berdasarkan Role](guides/admin/14-role-middleware.md) | Memahami batasan halaman admin dan arti 403 |
+| 15 | [Manajemen Profil](guides/admin/15-profile-management.md) | Melihat dan mengubah data profil serta ganti password |
+| 16 | [Lupa Password](guides/admin/16-password-reset.md) | Mereset password melalui email jika lupa |
