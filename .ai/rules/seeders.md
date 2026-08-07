@@ -13,3 +13,6 @@ DatabaseSeeder calls UserSeeder then JenisSuratSeeder. JenisSuratSeeder uses upd
 
 ## Demo factory block must stay off production
 DatabaseSeeder::seedDemoFactoryData() creates sample pengajuan (mixed statuses) + dokumen/log/notifikasi/surat_terbit via factories, recycling admin@desa.test, warga@desa.test, and seeded jenis surat. Call is marked with comment to disable/comment out in production — local/testing only.
+
+## Demo surat_terbit uses terbitkanUntuk
+seedDemoFactoryData creates diproses/siap_diambil/selesai surat via SuratTerbit::terbitkanUntuk so real PDFs exist on local disk. Do not use SuratTerbit::factory alone for demo rows that need unduh.

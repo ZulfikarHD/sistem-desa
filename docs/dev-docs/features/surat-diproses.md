@@ -65,7 +65,7 @@ erDiagram
 
 1. **User triggers** — Admin opens **Surat Diproses** from sidebar (`role:admin`).
 2. **List** — Query `pengajuan_surat` where `status=diproses`, eager-load warga, jenis, `suratTerbit`; paginate 10.
-3. **Detail** — Shows warga/NIK/jenis/nomor surat/keperluan; iframe PDF via `surat-diproses.pdf.show`.
+3. **Detail** — Shows warga/NIK/jenis/nomor surat/keperluan; iframe PDF via `surat-diproses.pdf.show` (calls `pastikanFilePdf()` so missing files are regenerated without a new QR).
 4. **Date** — Client `min` = today Asia/Jakarta; server `after_or_equal` WIB today + `validasiTanggalPengambilan` (weekend/holiday/past).
 5. **Siap Diambil** — Atomic update status → `siap_diambil`, store pickup fields + `siap_diambil_at`, create notifikasi with AC US-8.6 message, redirect to list.
 6. **Post-status** — If already `siap_diambil`/`selesai`, form hidden; status info shown.
@@ -76,17 +76,20 @@ erDiagram
 |--------|-----|---------|------|
 | GET | `/admin/surat-diproses` | List Livewire page | admin |
 | GET | `/admin/surat-diproses/{id}` | Detail Livewire page | admin |
-| GET | `/admin/surat-diproses/{id}/pdf` | Inline PDF preview | admin |
-| GET | `/admin/surat-diproses/{id}/pdf/unduh` | PDF download | admin |
+| GET | `/admin/surat-diproses/{id}/pdf` | Inline PDF preview (hybrid) | admin |
+| GET | `/admin/surat-diproses/{id}/pdf/unduh` | PDF download (hybrid) | admin |
 
 ## Decisions & Trade-offs
 
 - Relocate siap-diambil UI from verifikasi detail so “review new” and “finish in-progress” stay separate (Phase 08 goal).
 - `after_or_equal` uses explicit WIB date string because `APP_TIMEZONE` is UTC.
 - `siap_diambil_at` added now for US-8.7 timeline accuracy.
+- PDF preview/download shares `SuratTerbit::pastikanFilePdf()` with warga unduh (ADR-024).
 
 ## Related
 
 - [Dokumen Siap Diambil (US-7.5)](dokumen-siap-diambil.md) — domain logic retained; UI relocated here
 - [Setujui Langsung Diproses (US-8.4)](setujui-langsung-diproses.md) — feeds this list
+- [Unduh/Cetak Surat Warga (US-7.6)](unduh-surat-warga.md)
 - [ADR-021](../decisions/021-surat-diproses-page-and-siap-diambil-at.md)
+- [ADR-024](../decisions/024-hybrid-pdf-lazy-regenerate.md)

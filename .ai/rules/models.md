@@ -37,3 +37,6 @@ STATUS_DISETUJUI remains for DB historis. statusLabel(disetujui)=Diproses. statu
 
 ## siap_diambil_at on tandaiSiapDiambil
 SuratTerbit::tandaiSiapDiambil sets siap_diambil_at=now() and notifikasi AC US-8.6: "Surat [jenis] Anda (#[nomor]) sudah siap diambil pada [tanggal] ([jam])." Column is for US-8.7 timeline; keep nullable for legacy rows.
+
+## Hybrid PDF pastikanFilePdf
+US-7.6/admin PDF: serve stored file via SuratTerbit::pastikanFilePdf(). If missing, regenerate once from frozen nomor_surat+qr_token+tanggal_terbit (never mint new QR), write surat-terbit/{pengajuan_id}/surat.pdf, update file_path. Demo seeder must use terbitkanUntuk (real PDF), not factory fake paths.

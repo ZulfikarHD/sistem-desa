@@ -40,7 +40,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Surat Diproses (US-8.5 & US-8.6)](dev-docs/features/surat-diproses.md) | Dedicated list/detail + Siap Diambil + siap_diambil_at |
 | [Dashboard Admin (US-8.1)](dev-docs/features/dashboard-admin.md) | Aging cards, urgent queue, active table |
 | [Dashboard Warga (US-8.2)](dev-docs/features/dashboard-warga.md) | Hero status, unduh, riwayat, notifikasi |
-| [Unduh/Cetak Surat Warga (US-7.6)](dev-docs/features/unduh-surat-warga.md) | Warga download/print issued PDF; detail shows pickup hours |
+| [Unduh/Cetak Surat Warga (US-7.6)](dev-docs/features/unduh-surat-warga.md) | Warga download/print issued PDF; hybrid lazy regen if file missing |
 | [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [Rekap Pengajuan & Reporting (US-6.1 – US-6.2)](dev-docs/features/rekap-pengajuan.md) | Admin filterable recap table, summary counts, CSV export |
 | [Rekap Timeline Detail (US-8.7)](dev-docs/features/rekap-timeline.md) | Admin detail page with chronological process timeline |
@@ -62,7 +62,8 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-016: Official nomor surat format](dev-docs/decisions/016-nomor-surat-resmi-format.md) | `470/{urut}/DS-WDN/{romawi}/{tahun}` + year sequence |
 | [ADR-017: QR sekali pakai conditional update](dev-docs/decisions/017-qr-sekali-pakai-conditional-update.md) | Scan once; concurrent-safe invalidation |
 | [ADR-018: Jam kerja + libur nasional config](dev-docs/decisions/018-jam-kerja-dan-libur-nasional-config.md) | Reject invalid pickup dates; labels from config |
-| [ADR-019: Warga unduh/cetak existing PDF](dev-docs/decisions/019-warga-unduh-cetak-existing-pdf.md) | Serve stored PDF only; never regenerate QR on download |
+| [ADR-019: Warga unduh/cetak existing PDF](dev-docs/decisions/019-warga-unduh-cetak-existing-pdf.md) | Superseded by ADR-024 |
+| [ADR-024: Hybrid PDF lazy regenerate](dev-docs/decisions/024-hybrid-pdf-lazy-regenerate.md) | Store on issue; lazy regen if missing; never mint new QR |
 | [ADR-020: Setujui langsung diproses US-8.4](dev-docs/decisions/020-setujui-langsung-diproses-us-8-4.md) | Approve → diproses in one step; keep disetujui for historis |
 | [ADR-021: Surat Diproses page + siap_diambil_at](dev-docs/decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated list/detail; relocate Siap Diambil UI; timestamp for timeline |
 | [ADR-022: Dashboard aging helpers](dev-docs/decisions/022-dashboard-aging-and-status-helpers.md) | Component thresholds + PengajuanSurat status entered-at helpers |

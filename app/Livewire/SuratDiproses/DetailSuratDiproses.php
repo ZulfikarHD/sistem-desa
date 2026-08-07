@@ -7,7 +7,6 @@ use App\Models\SuratTerbit;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -101,7 +100,7 @@ class DetailSuratDiproses extends Component
     }
 
     /**
-     * Apakah file PDF surat terbit ada di disk.
+     * Apakah file PDF surat terbit siap ditampilkan (hybrid: regenerate jika hilang).
      */
     public function suratPdfExists(): bool
     {
@@ -111,7 +110,7 @@ class DetailSuratDiproses extends Component
             return false;
         }
 
-        return Storage::disk('local')->exists($surat->file_path);
+        return $surat->pastikanFilePdf() !== null;
     }
 
     /**

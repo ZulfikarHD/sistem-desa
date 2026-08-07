@@ -224,6 +224,76 @@ class SuratTerbit extends Model
     }
 
     /**
+     * Path kanonik PDF di disk lokal untuk pengajuan ini.
+     */
+    public function canonicalFilePath(): string
+    {
+        return 'surat-terbit/'.$this->pengajuan_id.'/surat.pdf';
+    }
+
+    /**
+     * Pastikan file PDF ada di disk (hybrid US-7.6).
+     * Jika hilang: regenerate sekali dari data frozen (nomor_surat, qr_token, tanggal_terbit)
+     * tanpa membuat token QR baru, lalu simpan ulang ke path kanonik.
+     *
+     * @return string|null file_path siap diserve, atau null jika pengajuan hilang
+     */
+    public function pastikanFilePdf(): ?string
+    {
+        if ($this->file_path !== '' && Storage::disk('local')->exists($this->file_path)) {
+            return $this->file_path;
+        }
+
+        $canonicalPath = $this->canonicalFilePath();
+
+        if (Storage::disk('local')->exists($canonicalPath)) {
+            if ($this->file_path !== $canonicalPath) {
+                $this->update(['file_path' => $canonicalPath]);
+            }
+
+            return $canonicalPath;
+        }
+
+        return Cache::lock('surat-terbit-pdf-'.$this->pengajuan_id, 10)->block(5, function () use ($canonicalPath): ?string {
+            $this->refresh();
+
+            if ($this->file_path !== '' && Storage::disk('local')->exists($this->file_path)) {
+                return $this->file_path;
+            }
+
+            if (Storage::disk('local')->exists($canonicalPath)) {
+                if ($this->file_path !== $canonicalPath) {
+                    $this->update(['file_path' => $canonicalPath]);
+                }
+
+                return $canonicalPath;
+            }
+
+            $this->loadMissing(['pengajuan.user', 'pengajuan.jenisSurat']);
+
+            $pengajuan = $this->pengajuan;
+
+            if ($pengajuan === null) {
+                return null;
+            }
+
+            // Pakai qr_token & nomor_surat yang sudah tersimpan — jangan mint token baru.
+            $pdfBinary = static::renderPdfBinary(
+                $pengajuan,
+                $this->nomor_surat,
+                $this->qr_token,
+                $this->tanggal_terbit,
+            );
+
+            Storage::disk('local')->put($canonicalPath, $pdfBinary);
+
+            $this->update(['file_path' => $canonicalPath]);
+
+            return $canonicalPath;
+        });
+    }
+
+    /**
      * Render PDF ke string binary sesuai template jenis surat.
      */
     public static function renderPdfBinary(

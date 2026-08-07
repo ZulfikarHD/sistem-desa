@@ -88,10 +88,8 @@ class DatabaseSeeder extends Seeder
 
         foreach ($diproses as $pengajuan) {
             $this->attachDokumenDanLogSetujui($pengajuan, $admin, $warga);
-            SuratTerbit::factory()->recycle([$admin])->create([
-                'pengajuan_id' => $pengajuan->id,
-                'diterbitkan_oleh' => $admin->id,
-            ]);
+            // Terbitkan PDF nyata (bukan path palsu factory) agar unduh demo tidak 404.
+            SuratTerbit::terbitkanUntuk($pengajuan->fresh(['user', 'jenisSurat']), $admin->id);
         }
 
         // Pengajuan siap diambil
@@ -107,9 +105,8 @@ class DatabaseSeeder extends Seeder
 
         foreach ($siapDiambil as $pengajuan) {
             $this->attachDokumenDanLogSetujui($pengajuan, $admin, $warga);
-            SuratTerbit::factory()->recycle([$admin])->create([
-                'pengajuan_id' => $pengajuan->id,
-                'diterbitkan_oleh' => $admin->id,
+            $surat = SuratTerbit::terbitkanUntuk($pengajuan->fresh(['user', 'jenisSurat']), $admin->id);
+            $surat->update([
                 'tanggal_pengambilan' => now()->addWeekdays(2)->toDateString(),
                 'siap_diambil_at' => now(),
                 'jam_kerja_label' => 'Senin–Kamis 08.00–16.00 WIB',
@@ -134,9 +131,10 @@ class DatabaseSeeder extends Seeder
 
         foreach ($selesai as $pengajuan) {
             $this->attachDokumenDanLogSetujui($pengajuan, $admin, $warga);
-            SuratTerbit::factory()->invalid()->recycle([$admin])->create([
-                'pengajuan_id' => $pengajuan->id,
-                'diterbitkan_oleh' => $admin->id,
+            $surat = SuratTerbit::terbitkanUntuk($pengajuan->fresh(['user', 'jenisSurat']), $admin->id);
+            $surat->update([
+                'qr_status' => SuratTerbit::QR_STATUS_INVALID,
+                'qr_digunakan_at' => now(),
                 'qr_digunakan_oleh' => $admin->id,
                 'tanggal_pengambilan' => now()->subDays(3)->toDateString(),
                 'siap_diambil_at' => now()->subDays(3),

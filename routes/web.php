@@ -44,16 +44,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->whereNumber('pengajuan');
 
         // US-7.6 — Unduh/cetak PDF surat terbit (pemilik + status diproses/siap_diambil/selesai)
+        // Hybrid: serve file tersimpan; jika hilang, pastikanFilePdf() regenerate tanpa mint QR baru.
         Route::get('pengajuan-surat/{pengajuan}/unduh-surat', function (PengajuanSurat $pengajuan) {
             abort_unless($pengajuan->user_id === auth()->id(), 403);
             abort_unless($pengajuan->dapatUnduhSurat(), 403);
 
             $surat = $pengajuan->suratTerbit;
-            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+            abort_unless($surat !== null, 404);
+
+            $path = $surat->pastikanFilePdf();
+            abort_unless($path !== null && Storage::disk('local')->exists($path), 404);
 
             $filename = 'surat-'.str_replace('/', '-', $surat->nomor_surat).'.pdf';
 
-            return Storage::disk('local')->download($surat->file_path, $filename);
+            return Storage::disk('local')->download($path, $filename);
         })->name('pengajuan-surat.unduh-surat')->whereNumber('pengajuan');
 
         Route::get('pengajuan-surat/{pengajuan}/cetak-surat', function (PengajuanSurat $pengajuan) {
@@ -61,9 +65,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             abort_unless($pengajuan->dapatUnduhSurat(), 403);
 
             $surat = $pengajuan->suratTerbit;
-            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+            abort_unless($surat !== null, 404);
 
-            return Storage::disk('local')->response($surat->file_path, basename($surat->file_path), [
+            $path = $surat->pastikanFilePdf();
+            abort_unless($path !== null && Storage::disk('local')->exists($path), 404);
+
+            return Storage::disk('local')->response($path, basename($path), [
                 'Content-Type' => 'application/pdf',
             ]);
         })->name('pengajuan-surat.cetak-surat')->whereNumber('pengajuan');
@@ -107,22 +114,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('surat-diproses', DaftarSuratDiproses::class)->name('surat-diproses.index');
 
         // Pratinjau/unduh PDF surat terbit (admin) — harus sebelum {pengajuan}
+        // Hybrid sama seperti warga: pastikanFilePdf() jika file hilang.
         Route::get('surat-diproses/{pengajuan}/pdf', function (PengajuanSurat $pengajuan) {
             $surat = $pengajuan->suratTerbit;
-            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+            abort_unless($surat !== null, 404);
 
-            return Storage::disk('local')->response($surat->file_path, basename($surat->file_path), [
+            $path = $surat->pastikanFilePdf();
+            abort_unless($path !== null && Storage::disk('local')->exists($path), 404);
+
+            return Storage::disk('local')->response($path, basename($path), [
                 'Content-Type' => 'application/pdf',
             ]);
         })->name('surat-diproses.pdf.show')->whereNumber('pengajuan');
 
         Route::get('surat-diproses/{pengajuan}/pdf/unduh', function (PengajuanSurat $pengajuan) {
             $surat = $pengajuan->suratTerbit;
-            abort_unless($surat !== null && Storage::disk('local')->exists($surat->file_path), 404);
+            abort_unless($surat !== null, 404);
+
+            $path = $surat->pastikanFilePdf();
+            abort_unless($path !== null && Storage::disk('local')->exists($path), 404);
 
             $filename = 'surat-'.str_replace('/', '-', $surat->nomor_surat).'.pdf';
 
-            return Storage::disk('local')->download($surat->file_path, $filename);
+            return Storage::disk('local')->download($path, $filename);
         })->name('surat-diproses.pdf.download')->whereNumber('pengajuan');
 
         Route::livewire('surat-diproses/{pengajuan}', DetailSuratDiproses::class)

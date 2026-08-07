@@ -166,7 +166,7 @@ flowchart LR
 | US-7.5 Dokumen Siap Diambil | Implemented |
 | US-7.6 Unduh/Cetak Surat Warga | Implemented |
 
-Details: [dev-docs/features/generate-surat-pdf.md](dev-docs/features/generate-surat-pdf.md), [dev-docs/features/nomor-surat-resmi.md](dev-docs/features/nomor-surat-resmi.md), [dev-docs/features/qr-sekali-pakai.md](dev-docs/features/qr-sekali-pakai.md), [dev-docs/features/dokumen-siap-diambil.md](dev-docs/features/dokumen-siap-diambil.md), [dev-docs/features/unduh-surat-warga.md](dev-docs/features/unduh-surat-warga.md), ADR-015, ADR-016, ADR-017, ADR-018, ADR-019.
+Details: [dev-docs/features/generate-surat-pdf.md](dev-docs/features/generate-surat-pdf.md), [dev-docs/features/nomor-surat-resmi.md](dev-docs/features/nomor-surat-resmi.md), [dev-docs/features/qr-sekali-pakai.md](dev-docs/features/qr-sekali-pakai.md), [dev-docs/features/dokumen-siap-diambil.md](dev-docs/features/dokumen-siap-diambil.md), [dev-docs/features/unduh-surat-warga.md](dev-docs/features/unduh-surat-warga.md), ADR-015, ADR-016, ADR-017, ADR-018, ADR-024 (supersedes ADR-019).
 
 ## Dashboard, Rekap Lanjut & UX Improvements (Phase 08)
 

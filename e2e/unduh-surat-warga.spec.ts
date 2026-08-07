@@ -265,6 +265,69 @@ test.describe('US-7.6 Unduh/Cetak Surat Warga', () => {
         expect(sesudah.qr_status).toBe('valid');
     });
 
+    test('edge: unduh tetap berhasil jika file PDF hilang tanpa regenerasi QR', async ({ page }) => {
+        const stamp = Date.now();
+        const adminEmail = `admin.unduh.miss.${stamp}@example.com`;
+        const wargaEmail = `warga.unduh.miss.${stamp}@example.com`;
+        const jenisSurat = `Surat Keterangan Domisili Missing ${stamp}`;
+
+        ensureUser({
+            email: adminEmail,
+            name: 'E2E Admin Unduh Missing',
+            role: 'admin',
+            nik: uniqueNik(Number(String(stamp).slice(-6))),
+        });
+        ensureUser({
+            email: wargaEmail,
+            name: 'E2E Warga Unduh Missing',
+            role: 'warga',
+            nik: uniqueNik(Number(String(stamp).slice(-6)) + 1),
+        });
+        ensureJenisSurat(jenisSurat);
+
+        const adminId = getUserIdByEmail(adminEmail);
+        const wargaId = getUserIdByEmail(wargaEmail);
+        const jenisId = getJenisSuratIdByName(jenisSurat);
+        const nomor = `PJ-E2E-UNDUH-${stamp}-miss`;
+        const pengajuanId = seedPengajuanDenganSurat({
+            wargaId,
+            adminId,
+            jenisSuratId: jenisId,
+            nomorPengajuan: nomor,
+            status: 'selesai',
+        });
+
+        const sebelum = getQrSnapshot(pengajuanId);
+
+        // Hapus file PDF di disk — hybrid harus regenerate tanpa mint QR baru.
+        runTinker([
+            `$s = \\App\\Models\\SuratTerbit::where('pengajuan_id', ${pengajuanId})->first();`,
+            `\\Illuminate\\Support\\Facades\\Storage::disk('local')->delete($s->file_path);`,
+            `echo \\Illuminate\\Support\\Facades\\Storage::disk('local')->exists($s->file_path) ? '1' : '0';`,
+        ].join(''));
+
+        await loginAs(page, wargaEmail);
+        await page.goto(`/pengajuan-surat/detail/${pengajuanId}`);
+
+        const unduh = page.locator('[data-test="detail-pengajuan-warga-unduh-surat"]');
+        await expect(unduh).toBeVisible();
+
+        const downloadPromise = page.waitForEvent('download');
+        await unduh.click();
+        const download = await downloadPromise;
+
+        expect(download.suggestedFilename()).toMatch(/\.pdf$/i);
+        const downloadPath = await download.path();
+        expect(downloadPath).toBeTruthy();
+        const content = fs.readFileSync(downloadPath!);
+        expect(content.toString('utf8', 0, 5)).toContain('%PDF');
+
+        const sesudah = getQrSnapshot(pengajuanId);
+        expect(sesudah.qr_token).toBe(sebelum.qr_token);
+        expect(sesudah.qr_status).toBe(sebelum.qr_status);
+        expect(sesudah.file_path).toBe(`surat-terbit/${pengajuanId}/surat.pdf`);
+    });
+
     test('edge: status diajukan tidak menampilkan unduh; warga lain mendapat 403', async ({ page, browser }) => {
         const stamp = Date.now();
         const adminEmail = `admin.unduh.edge.${stamp}@example.com`;

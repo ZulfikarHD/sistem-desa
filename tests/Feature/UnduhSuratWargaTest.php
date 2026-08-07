@@ -137,13 +137,38 @@ test('unduh forbidden when status not allowed', function (string $status) {
     PengajuanSurat::STATUS_DITOLAK,
 ]);
 
-test('unduh returns 404 when pdf file missing', function () {
+test('unduh lazy regenerates missing pdf without changing qr token', function () {
     [$warga, $pengajuan, $surat] = buatPengajuanDenganSurat();
+    $tokenSebelum = $surat->qr_token;
+    $pathLama = $surat->file_path;
+    Storage::disk('local')->delete($pathLama);
+
+    $response = $this->actingAs($warga)
+        ->get(route('pengajuan-surat.unduh-surat', $pengajuan));
+
+    $response->assertSuccessful();
+    $response->assertHeader('content-disposition');
+
+    $surat->refresh();
+    expect($surat->qr_token)->toBe($tokenSebelum)
+        ->and($surat->qr_status)->toBe(SuratTerbit::QR_STATUS_VALID)
+        ->and($surat->file_path)->toBe('surat-terbit/'.$pengajuan->id.'/surat.pdf');
+    Storage::disk('local')->assertExists($surat->file_path);
+});
+
+test('cetak lazy regenerates missing pdf without changing qr token', function () {
+    [$warga, $pengajuan, $surat] = buatPengajuanDenganSurat(PengajuanSurat::STATUS_SELESAI);
+    $tokenSebelum = $surat->qr_token;
     Storage::disk('local')->delete($surat->file_path);
 
     $this->actingAs($warga)
-        ->get(route('pengajuan-surat.unduh-surat', $pengajuan))
-        ->assertNotFound();
+        ->get(route('pengajuan-surat.cetak-surat', $pengajuan))
+        ->assertSuccessful()
+        ->assertHeader('content-type', 'application/pdf');
+
+    $surat->refresh();
+    expect($surat->qr_token)->toBe($tokenSebelum);
+    Storage::disk('local')->assertExists($surat->file_path);
 });
 
 test('riwayat shows unduh button only for allowed statuses', function () {

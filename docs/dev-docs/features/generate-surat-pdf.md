@@ -85,7 +85,7 @@ No new HTTP API. Generation is an internal side effect of Livewire approve.
 ## Decisions & Trade-offs
 
 - DomPDF (`barryvdh/laravel-dompdf`) chosen per Phase 07 risk mitigation note.
-- Generation logic lives on the `SuratTerbit` model (no service class) to stay flat and reuseable for later unduh (US-7.6).
+- Generation logic lives on the `SuratTerbit` model (no service class) to stay flat and reuseable for unduh (US-7.6) and lazy regen via `pastikanFilePdf()` (ADR-024).
 - Minimal nomor + QR generation implemented here because US-7.2 AC requires them on the PDF; scan UI remains US-7.4.
 - Official numbering rules (format, year sequence, uniqueness) are owned by [US-7.3](nomor-surat-resmi.md).
 - Village letterhead/signatory come from `config/desa.php` / `.env` (no settings UI story in backlog).
@@ -95,7 +95,9 @@ No new HTTP API. Generation is an internal side effect of Livewire approve.
 - [Nomor Surat Resmi (US-7.3)](nomor-surat-resmi.md)
 - [Migrasi Alur Status (US-7.1)](migrasi-alur-status.md)
 - [Verifikasi Pengajuan](verifikasi-pengajuan.md)
+- [Unduh/Cetak Surat Warga (US-7.6)](unduh-surat-warga.md)
 - [ADR-015](../decisions/015-dompdf-surat-terbit-on-approve.md)
 - [ADR-016](../decisions/016-nomor-surat-resmi-format.md)
+- [ADR-024](../decisions/024-hybrid-pdf-lazy-regenerate.md)
 - [QR Code Sekali Pakai (US-7.4)](qr-sekali-pakai.md)
 - Scrum: `scrum-planning/Phase 07 - Penerbitan Surat Keterangan.md` US-7.2

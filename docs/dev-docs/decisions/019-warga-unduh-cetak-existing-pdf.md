@@ -1,7 +1,8 @@
 # ADR-019: Warga unduh/cetak existing PDF without regenerating QR
 
 **Date:** 2026-08-07
-**Status:** accepted
+**Status:** superseded
+**Superseded by:** ADR-024
 **Supersedes:** —
 
 ## Context
@@ -26,6 +27,7 @@ US-7.6 requires warga to download the generated surat PDF for statuses `diproses
 ### Negative
 
 - Two near-duplicate route closures (unduh vs cetak) share authorization logic inline.
+- Hard 404 when the DB row exists but the file was deleted/never written (seeded demo) — addressed later by ADR-024 hybrid lazy regenerate.
 - Admin has no dedicated unduh-surat route (deferred; rekap archive is US-7.7).
 
 ### Neutral

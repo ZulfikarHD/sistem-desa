@@ -73,7 +73,7 @@ No new tables. Timeline is reconstructed from existing relations. Legacy rows wi
    - Rejected (`log_verifikasi` aksi=tolak) — stops here when rejected
    - Ready for pickup (`siap_diambil_at` or `updated_at` fallback)
    - Completed (`qr_digunakan_at` + `qr_digunakan_oleh`)
-4. **Response** — Ringkasan + vertical timeline; **Unduh PDF Surat** when PDF file exists; **Kembali ke Rekap**.
+4. **Response** — Ringkasan + vertical timeline; **Unduh PDF Surat** when `surat_terbit` exists and `pastikanFilePdf()` succeeds (lazy regen if file missing); **Kembali ke Rekap**.
 
 ## API Endpoints (if applicable)
 
@@ -95,5 +95,7 @@ No public JSON API.
 - [Rekap Pengajuan & Reporting](rekap-pengajuan.md)
 - [Surat Diproses](surat-diproses.md)
 - [QR Sekali Pakai](qr-sekali-pakai.md)
+- [Unduh/Cetak Surat Warga](unduh-surat-warga.md)
 - [ADR-023](../decisions/023-rekap-timeline-detail-page.md)
+- [ADR-024](../decisions/024-hybrid-pdf-lazy-regenerate.md)
 - Phase 08 US-8.7

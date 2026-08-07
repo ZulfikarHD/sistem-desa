@@ -168,6 +168,33 @@ test('admin dapat mengunduh pdf surat dari detail', function () {
         ->assertHeader('content-disposition');
 });
 
+test('admin pdf download lazy regenerates missing file without changing qr', function () {
+    ['pengajuan' => $pengajuan, 'surat' => $surat, 'admin' => $admin] = buatDetailDiprosesDenganSurat();
+    $tokenSebelum = $surat->qr_token;
+    Storage::disk('local')->delete($surat->file_path);
+
+    $this->actingAs($admin)
+        ->get(route('surat-diproses.pdf.download', $pengajuan))
+        ->assertSuccessful();
+
+    $surat->refresh();
+    expect($surat->qr_token)->toBe($tokenSebelum)
+        ->and($surat->file_path)->toBe('surat-terbit/'.$pengajuan->id.'/surat.pdf');
+    Storage::disk('local')->assertExists($surat->file_path);
+});
+
+test('admin pdf preview lazy regenerates missing file', function () {
+    ['pengajuan' => $pengajuan, 'surat' => $surat, 'admin' => $admin] = buatDetailDiprosesDenganSurat();
+    Storage::disk('local')->delete($surat->file_path);
+
+    $this->actingAs($admin)
+        ->get(route('surat-diproses.pdf.show', $pengajuan))
+        ->assertSuccessful()
+        ->assertHeader('content-type', 'application/pdf');
+
+    Storage::disk('local')->assertExists($surat->fresh()->file_path);
+});
+
 test('warga tidak dapat mengakses detail surat diproses', function () {
     ['pengajuan' => $pengajuan, 'warga' => $warga] = buatDetailDiprosesDenganSurat();
 

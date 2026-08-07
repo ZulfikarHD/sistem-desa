@@ -47,5 +47,5 @@ A: Pilih tanggal hari kerja yang valid terlebih dahulu.
 |---------|--------|
 | Tanggal Sabtu/Minggu | Pilih Senin–Jumat |
 | Tanggal libur nasional | Pilih hari kerja lain |
-| PDF tidak muncul | Pastikan setujui berhasil generate surat; hubungi admin teknis |
+| PDF tidak muncul | Refresh halaman detail (sistem dapat membuat ulang file dari data surat); jika tetap kosong, pastikan setujui berhasil generate surat |
 | Form tanggal tidak ada | Status sudah Siap Diambil/Selesai — lihat info status terkini |

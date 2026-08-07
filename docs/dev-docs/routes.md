@@ -33,7 +33,7 @@ Non-Livewire routes (file downloads/previews) are plain `Route::get()` closures.
 - Both `unduh-surat` and `cetak-surat` enforce:
   - `$pengajuan->user_id === auth()->id()` (ownership)
   - `$pengajuan->dapatUnduhSurat()` (status: `diproses`, `siap_diambil`, or `selesai`)
-  - PDF file must exist on `local` disk
+  - `SuratTerbit::pastikanFilePdf()` — serve stored PDF or lazy-regenerate without minting a new QR (ADR-024)
 - `unduh-surat` → `Storage::download()` (forces browser download)
 - `cetak-surat` → `Storage::response()` with `Content-Type: application/pdf` (opens in browser/PDF viewer)
 
@@ -60,7 +60,7 @@ Non-Livewire routes (file downloads/previews) are plain `Route::get()` closures.
 ### Admin File Route Notes
 
 - Dokumen routes (`verifikasi/dokumen/*`) serve private files from `local` disk without additional ownership check — the `role:admin` middleware is the guard.
-- PDF routes (`surat-diproses/*/pdf*`) serve from `local` disk; the `PengajuanSurat` model is route-model-bound automatically.
+- PDF routes (`surat-diproses/*/pdf*`) call `SuratTerbit::pastikanFilePdf()` (same hybrid as warga) then serve from `local` disk; the `PengajuanSurat` model is route-model-bound automatically.
 - Static file routes for dokumen and PDF are registered **before** their Livewire counterparts to avoid the `{dokumen}` / `{pengajuan}` wildcard capturing them first.
 
 ---
@@ -113,4 +113,5 @@ graph TD
 - [ADR-002: Role-based login redirect](decisions/002-role-based-login-redirect.md)
 - [ADR-003: Role middleware 403](decisions/003-role-middleware-403.md)
 - [ADR-011: Verifikasi dokumen secure route](decisions/011-verifikasi-dokumen-secure-route.md)
-- [ADR-019: Warga unduh/cetak existing PDF](decisions/019-warga-unduh-cetak-existing-pdf.md)
+- [ADR-019: Warga unduh/cetak existing PDF](decisions/019-warga-unduh-cetak-existing-pdf.md) (superseded)
+- [ADR-024: Hybrid PDF lazy regenerate](decisions/024-hybrid-pdf-lazy-regenerate.md)

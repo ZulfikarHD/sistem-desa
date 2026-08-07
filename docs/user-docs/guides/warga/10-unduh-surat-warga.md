@@ -5,7 +5,7 @@
 
 ## Apa itu Unduh/Cetak Surat?
 
-Setelah pengajuan Anda berstatus **Diproses**, **Siap Diambil**, atau **Selesai**, Anda dapat **mengunduh** file PDF surat keterangan yang sudah dibuat desa. Unduh ulang kapan saja — file yang sama tetap tersedia. Kode QR di surat **tidak** menjadi baru saat diunduh ulang.
+Setelah pengajuan Anda berstatus **Diproses**, **Siap Diambil**, atau **Selesai**, Anda dapat **mengunduh** file PDF surat keterangan yang sudah dibuat desa. Unduh ulang kapan saja — isi surat (nomor dan QR) tetap sama. Kode QR di surat **tidak** menjadi baru saat diunduh ulang.
 
 Jika admin sudah mengatur tanggal pengambilan, halaman **Detail** menampilkan tanggal dan jam kerja kantor desa.
 
@@ -29,13 +29,13 @@ Jika admin sudah mengatur tanggal pengambilan, halaman **Detail** menampilkan ta
 ### Unduh Ulang
 
 1. Ulangi langkah unduh kapan saja selama status masih Diproses / Siap Diambil / Selesai.
-2. File dan nomor surat tetap sama.
+2. Nomor surat dan QR tetap sama.
 3. QR tetap yang sama — setelah petugas scan sekali saat pengambilan, QR tidak bisa dipakai ulang.
 
 ## FAQ
 
 **Q: Apakah unduh membuat QR baru?**
-A: Tidak. Unduh hanya mengambil file yang sudah ada.
+A: Tidak. Unduh selalu memakai QR yang sama dengan saat surat diterbitkan.
 
 **Q: Kapan saya bisa mengunduh?**
 A: Setelah status **Diproses** (PDF sudah digenerate). Bisa juga saat **Siap Diambil** atau **Selesai**.
@@ -43,11 +43,14 @@ A: Setelah status **Diproses** (PDF sudah digenerate). Bisa juga saat **Siap Dia
 **Q: Apa bedanya Unduh dan Cetak?**
 A: Unduh menyimpan file ke perangkat. Cetak membuka PDF di browser agar bisa dicetak.
 
+**Q: Bagaimana jika unduh sempat gagal lalu berhasil lagi?**
+A: Sistem dapat membuat ulang file PDF dari data surat yang sudah tersimpan (tanpa mengubah QR). Coba unduh lagi; jika tetap gagal, hubungi admin.
+
 ## Troubleshooting
 
 | Masalah | Solusi |
 |---------|--------|
 | Tombol Unduh tidak muncul | Pastikan status Diproses / Siap Diambil / Selesai; refresh halaman |
-| Unduh gagal / error | Hubungi admin — kemungkinan file surat belum tersedia di server |
+| Unduh gagal / error | Coba lagi; jika berulang, hubungi admin (data surat mungkin belum lengkap) |
 | Tanggal pengambilan tidak tampil di detail | Admin belum menandai dokumen siap diambil; tunggu notifikasi |
 | QR ditolak saat pengambilan | QR hanya berlaku sekali; unduh ulang tidak mengembalikan QR ke valid |

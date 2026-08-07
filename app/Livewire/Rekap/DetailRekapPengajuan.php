@@ -7,7 +7,6 @@ use App\Models\PengajuanSurat;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -34,7 +33,7 @@ class DetailRekapPengajuan extends Component
     }
 
     /**
-     * Apakah tombol unduh PDF boleh ditampilkan (ada surat_terbit + file).
+     * Apakah tombol unduh PDF boleh ditampilkan (ada surat_terbit; hybrid pastikan file).
      */
     public function dapatUnduhPdf(): bool
     {
@@ -44,7 +43,7 @@ class DetailRekapPengajuan extends Component
             return false;
         }
 
-        return Storage::disk('local')->exists($surat->file_path);
+        return $surat->pastikanFilePdf() !== null;
     }
 
     /**

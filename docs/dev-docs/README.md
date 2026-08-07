@@ -70,7 +70,8 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [016](decisions/016-nomor-surat-resmi-format.md) | Official nomor surat format + per-year sequence |
 | [017](decisions/017-qr-sekali-pakai-conditional-update.md) | QR once-only scan via conditional update |
 | [018](decisions/018-jam-kerja-dan-libur-nasional-config.md) | Jam kerja labels + libur nasional config; reject invalid dates |
-| [019](decisions/019-warga-unduh-cetak-existing-pdf.md) | Warga unduh/cetak existing PDF; no QR regeneration |
+| [019](decisions/019-warga-unduh-cetak-existing-pdf.md) | Warga unduh/cetak existing PDF (superseded by 024) |
+| [024](decisions/024-hybrid-pdf-lazy-regenerate.md) | Hybrid store + lazy regenerate PDF; never mint new QR |
 | [020](decisions/020-setujui-langsung-diproses-us-8-4.md) | Setujui langsung diproses; keep disetujui historis |
 | [021](decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated Surat Diproses pages + siap_diambil_at |
 | [022](decisions/022-dashboard-aging-and-status-helpers.md) | Dashboard aging helpers + component thresholds |

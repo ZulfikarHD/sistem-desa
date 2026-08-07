@@ -7,6 +7,7 @@ use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\JenisSuratSeeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 test('database seeder membuat akun admin dan warga baku', function () {
     $this->seed(DatabaseSeeder::class);
@@ -56,6 +57,12 @@ test('database seeder mengisi demo factory pengajuan untuk testing', function ()
         ->and(PengajuanSurat::query()->where('status', PengajuanSurat::STATUS_SIAP_DIAMBIL)->count())->toBe(2)
         ->and(PengajuanSurat::query()->where('status', PengajuanSurat::STATUS_SELESAI)->count())->toBe(2)
         ->and(SuratTerbit::query()->count())->toBe(7);
+
+    // Setiap surat terbit demo punya file PDF nyata di disk lokal.
+    foreach (SuratTerbit::query()->get() as $surat) {
+        expect(Storage::disk('local')->exists($surat->file_path))->toBeTrue()
+            ->and($surat->file_path)->toBe('surat-terbit/'.$surat->pengajuan_id.'/surat.pdf');
+    }
 });
 
 test('jenis surat seeder idempotent saat dijalankan ulang', function () {

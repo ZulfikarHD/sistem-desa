@@ -196,10 +196,26 @@ test('timeline memakai fallback updated_at jika siap_diambil_at null pada status
         ->and($siap['estimasi'])->toBeTrue();
 });
 
-test('tombol unduh pdf tidak tampil jika file surat tidak ada', function () {
+test('tombol unduh pdf tetap tampil dan regenerate jika file hilang', function () {
     ['pengajuan' => $pengajuan, 'surat' => $surat, 'admin' => $admin] = buatPengajuanDiprosesDenganLog();
+    $tokenSebelum = $surat->qr_token;
 
     Storage::disk('local')->delete($surat->file_path);
+
+    Livewire::actingAs($admin)
+        ->test(DetailRekapPengajuan::class, ['pengajuan' => $pengajuan])
+        ->assertSee('Unduh PDF Surat');
+
+    $surat->refresh();
+    expect($surat->qr_token)->toBe($tokenSebelum);
+    Storage::disk('local')->assertExists($surat->file_path);
+});
+
+test('tombol unduh pdf tidak tampil jika surat_terbit belum ada', function () {
+    $admin = User::factory()->admin()->create();
+    $pengajuan = PengajuanSurat::factory()->create([
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
+    ]);
 
     Livewire::actingAs($admin)
         ->test(DetailRekapPengajuan::class, ['pengajuan' => $pengajuan])

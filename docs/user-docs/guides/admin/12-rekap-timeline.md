@@ -85,5 +85,5 @@ A: Tidak. Halaman ini khusus admin. Warga melihat status pengajuan mereka melalu
 |---------|--------|
 | Halaman 404 saat buka `/admin/rekap/{id}` | ID pengajuan tidak ditemukan atau Anda tidak memiliki akses admin |
 | Timeline kosong | Tidak ada log proses; periksa data di tabel `log_verifikasi` |
-| Tombol Unduh PDF tidak muncul | Status pengajuan masih Diajukan/Ditolak, atau file PDF belum ada di server |
+| Tombol Unduh PDF tidak muncul | Status pengajuan masih Diajukan/Ditolak, atau surat belum pernah diterbitkan (belum ada data surat terbit) |
 | Waktu bertanda "estimasi" | Data lama tanpa `siap_diambil_at`; nilai estimasi dari `surat_terbit.updated_at` |

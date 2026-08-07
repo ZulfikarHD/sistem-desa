@@ -12,9 +12,9 @@
 
 ## Deskripsi
 
-Proses ini menggambarkan alur aktivitas saat warga mengunduh atau mencetak file PDF surat keterangan yang sudah diterbitkan oleh admin. Tombol unduh hanya tersedia jika status pengajuan sudah **Diproses**, **Siap Diambil**, atau **Selesai**. Unduh ulang tidak menghasilkan file baru — sistem menyajikan file yang sudah ada.
+Proses ini menggambarkan alur aktivitas saat warga mengunduh atau mencetak file PDF surat keterangan yang sudah diterbitkan oleh admin. Tombol unduh hanya tersedia jika status pengajuan sudah **Diproses**, **Siap Diambil**, atau **Selesai**. Unduh ulang tidak membuat QR baru — sistem menyajikan file tersimpan, atau membuat ulang file dari data yang sama jika file di server hilang.
 
-**Prasyarat:** Pengajuan berstatus Diproses / Siap Diambil / Selesai dan file PDF sudah tersimpan di server.
+**Prasyarat:** Pengajuan berstatus Diproses / Siap Diambil / Selesai dan baris `surat_terbit` sudah ada.
 
 **Hasil:** File PDF surat terunduh ke perangkat warga atau terbuka di browser untuk dicetak.
 
@@ -44,13 +44,21 @@ flowchart TD
     M -->|"Unduh"| J
     M -->|"Cetak"| N[Klik Cetak Surat]
 
-    J --> O[Sistem sajikan file PDF yang sudah ada\ntanpa generate ulang]
-    O --> P[Browser mengunduh file PDF]
-    P --> End
+    J --> O{File PDF ada di server?}
+    O -->|Ya| P[Sajikan file PDF tersimpan]
+    O -->|Tidak| Q[Generate ulang PDF\ndengan nomor & QR yang sama]
+    Q --> R[Simpan ulang ke server]
+    R --> P
+    P --> S[Browser mengunduh file PDF]
+    S --> End
 
-    N --> Q[Sistem buka PDF di tab baru browser]
-    Q --> R[Warga pilih menu Cetak / Print di browser]
-    R --> End
+    N --> T{File PDF ada di server?}
+    T -->|Ya| U[Buka PDF di tab baru]
+    T -->|Tidak| V[Generate ulang PDF\ndengan nomor & QR yang sama]
+    V --> W[Simpan ulang ke server]
+    W --> U
+    U --> X[Warga pilih menu Cetak / Print di browser]
+    X --> End
 ```
 
 ## Penjelasan Alur
@@ -61,7 +69,7 @@ flowchart TD
 | 2 | Temukan pengajuan | Dari dashboard atau riwayat pengajuan |
 | 3 | Cek status | Tombol unduh hanya muncul untuk status tertentu |
 | 4 | Pilih aksi | Unduh langsung atau buka detail dulu |
-| 5 | Unduh | Sistem menyajikan file yang sudah ada (bukan generate ulang) |
+| 5 | Unduh / Cetak | File tersimpan disajikan; jika hilang, digenerate ulang tanpa mengubah QR |
 | 6 (opsional) | Cetak | PDF terbuka di tab baru, siap dicetak dari browser |
 
 ## Kondisi Alternatif (Error)
@@ -69,4 +77,5 @@ flowchart TD
 | Kondisi | Penyebab | Tindakan Sistem |
 |---------|----------|-----------------|
 | Status Diajukan/Ditolak | PDF belum digenerate | Tombol unduh tidak ditampilkan |
-| File tidak ditemukan di server | Error penyimpanan | Pesan error; warga perlu menghubungi admin |
+| File hilang di server | Disk/storage hilang atau data demo lama | Sistem regenerate dari data `surat_terbit` (QR tetap sama) |
+| Data surat_terbit hilang | Belum pernah diterbitkan | 404 / unduh gagal; hubungi admin |
