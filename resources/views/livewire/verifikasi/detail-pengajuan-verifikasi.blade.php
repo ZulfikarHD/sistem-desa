@@ -64,55 +64,132 @@
         <div class="flex flex-col gap-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">
             <flux:heading size="sm">{{ __('Dokumen Persyaratan') }}</flux:heading>
 
-            @if ($pengajuan->dokumenPersyaratan->isEmpty())
-                <flux:text data-test="verifikasi-detail-dokumen-empty">
-                    {{ __('Belum ada dokumen yang diunggah.') }}
-                </flux:text>
-            @else
-                <div class="flex flex-col gap-6">
-                    @foreach ($pengajuan->dokumenPersyaratan as $dokumen)
+            <div class="flex flex-col gap-6">
+                <section class="flex flex-col gap-3" data-test="verifikasi-detail-dokumen-online">
+                    <flux:heading size="xs">{{ __('Diunggah online') }}</flux:heading>
+
+                    @forelse ($this->itemDokumenOnline() as $index => $item)
+                        @php
+                            /** @var \App\Models\JenisSuratPersyaratan|null $syarat */
+                            $syarat = $item['syarat'];
+                            /** @var \App\Models\DokumenPersyaratan|null $dokumen */
+                            $dokumen = $item['dokumen'];
+                            $status = $item['status'];
+                            $label = $syarat?->nama
+                                ?? ($dokumen?->labelDokumen() ?? __('Dokumen'));
+                            $rowKey = $dokumen?->id ?? ('syarat-'.($syarat?->id ?? $index));
+                        @endphp
+
                         <div
-                            wire:key="verifikasi-dokumen-{{ $dokumen->id }}"
+                            wire:key="verifikasi-dokumen-online-{{ $rowKey }}"
                             class="flex flex-col gap-3"
-                            data-test="verifikasi-detail-dokumen-{{ $dokumen->id }}"
+                            data-test="verifikasi-detail-dokumen-online-item-{{ $rowKey }}"
+                            data-status="{{ $status }}"
                         >
-                            <flux:heading size="xs">{{ $dokumen->labelDokumen() }}</flux:heading>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <flux:heading size="xs" data-test="verifikasi-detail-dokumen-online-label-{{ $rowKey }}">
+                                    {{ $label }}
+                                </flux:heading>
 
-                            @if ($this->isPreviewableImage($dokumen))
-                                <img
-                                    src="{{ route('verifikasi.dokumen.show', $dokumen) }}"
-                                    alt="{{ __('Pratinjau :jenis', ['jenis' => $dokumen->labelDokumen()]) }}"
-                                    class="max-h-80 w-full rounded-lg border border-zinc-200 object-contain dark:border-zinc-700"
-                                    data-test="verifikasi-detail-dokumen-preview-{{ $dokumen->id }}"
-                                />
-                            @elseif ($this->isPreviewablePdf($dokumen))
-                                <iframe
-                                    src="{{ route('verifikasi.dokumen.show', $dokumen) }}"
-                                    title="{{ __('Pratinjau :jenis', ['jenis' => $dokumen->labelDokumen()]) }}"
-                                    class="h-80 w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
-                                    data-test="verifikasi-detail-dokumen-preview-{{ $dokumen->id }}"
-                                ></iframe>
-                            @else
-                                <flux:callout variant="warning" data-test="verifikasi-detail-dokumen-fallback-{{ $dokumen->id }}">
-                                    {{ __('Pratinjau tidak tersedia. Unduh dokumen untuk memeriksa berkas.') }}
-                                </flux:callout>
-                            @endif
-
-                            <div>
-                                <flux:button
-                                    variant="ghost"
-                                    size="sm"
-                                    icon="arrow-down-tray"
-                                    :href="route('verifikasi.dokumen.download', $dokumen)"
-                                    data-test="verifikasi-detail-dokumen-download-{{ $dokumen->id }}"
-                                >
-                                    {{ __('Unduh Dokumen') }}
-                                </flux:button>
+                                @if ($status === 'optional_empty')
+                                    <flux:badge
+                                        color="amber"
+                                        size="sm"
+                                        data-test="verifikasi-detail-dokumen-optional-empty-{{ $syarat?->id }}"
+                                    >
+                                        {{ __('Tidak diunggah — diperbolehkan') }}
+                                    </flux:badge>
+                                @elseif ($status === 'missing_required')
+                                    <flux:badge
+                                        color="red"
+                                        size="sm"
+                                        data-test="verifikasi-detail-dokumen-missing-{{ $syarat?->id }}"
+                                    >
+                                        {{ __('Belum diunggah') }}
+                                    </flux:badge>
+                                @endif
                             </div>
+
+                            @if ($dokumen !== null)
+                                <div data-test="verifikasi-detail-dokumen-{{ $dokumen->id }}">
+                                    @if ($this->isPreviewableImage($dokumen))
+                                        <img
+                                            src="{{ route('verifikasi.dokumen.show', $dokumen) }}"
+                                            alt="{{ __('Pratinjau :jenis', ['jenis' => $label]) }}"
+                                            class="max-h-80 w-full rounded-lg border border-zinc-200 object-contain dark:border-zinc-700"
+                                            data-test="verifikasi-detail-dokumen-preview-{{ $dokumen->id }}"
+                                        />
+                                    @elseif ($this->isPreviewablePdf($dokumen))
+                                        <iframe
+                                            src="{{ route('verifikasi.dokumen.show', $dokumen) }}"
+                                            title="{{ __('Pratinjau :jenis', ['jenis' => $label]) }}"
+                                            class="h-80 w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
+                                            data-test="verifikasi-detail-dokumen-preview-{{ $dokumen->id }}"
+                                        ></iframe>
+                                    @else
+                                        <flux:callout variant="warning" data-test="verifikasi-detail-dokumen-fallback-{{ $dokumen->id }}">
+                                            {{ __('Pratinjau tidak tersedia. Unduh dokumen untuk memeriksa berkas.') }}
+                                        </flux:callout>
+                                    @endif
+
+                                    <div class="mt-3">
+                                        <flux:button
+                                            variant="ghost"
+                                            size="sm"
+                                            icon="arrow-down-tray"
+                                            :href="route('verifikasi.dokumen.download', $dokumen)"
+                                            data-test="verifikasi-detail-dokumen-download-{{ $dokumen->id }}"
+                                        >
+                                            {{ __('Unduh Dokumen') }}
+                                        </flux:button>
+                                    </div>
+                                </div>
+                            @elseif ($status === 'optional_empty')
+                                <flux:text class="text-sm text-zinc-500">
+                                    {{ __('Warga tidak mengunggah berkas ini (opsional).') }}
+                                </flux:text>
+                            @endif
                         </div>
-                    @endforeach
-                </div>
-            @endif
+                    @empty
+                        <flux:text data-test="verifikasi-detail-dokumen-empty">
+                            {{ __('Belum ada dokumen yang diunggah.') }}
+                        </flux:text>
+                    @endforelse
+                </section>
+
+                <section class="flex flex-col gap-3" data-test="verifikasi-detail-checklist-fisik">
+                    <flux:heading size="xs">{{ __('Harus dicek / dibawa ke kantor') }}</flux:heading>
+
+                    @if ($this->itemChecklistFisik()->isEmpty())
+                        <flux:text class="text-sm text-zinc-500" data-test="verifikasi-detail-checklist-fisik-empty">
+                            {{ __('Tidak ada syarat yang harus dibawa ke kantor untuk jenis surat ini.') }}
+                        </flux:text>
+                    @else
+                        <ul class="space-y-2" data-test="verifikasi-detail-checklist-fisik-list">
+                            @foreach ($this->itemChecklistFisik() as $syaratFisik)
+                                <li
+                                    wire:key="verifikasi-checklist-fisik-{{ $syaratFisik->id }}"
+                                    class="flex items-start gap-2 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                                    data-test="verifikasi-detail-checklist-fisik-item-{{ $syaratFisik->id }}"
+                                >
+                                    <flux:icon.clipboard-document-check class="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400" />
+                                    <div class="space-y-1">
+                                        <span
+                                            class="text-sm font-medium"
+                                            data-test="verifikasi-detail-checklist-fisik-nama-{{ $syaratFisik->id }}"
+                                        >
+                                            {{ $syaratFisik->nama }}
+                                        </span>
+                                        <flux:text class="text-sm">
+                                            {{ __('Periksa berkas fisik saat warga datang / saat pengambilan.') }}
+                                        </flux:text>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </section>
+            </div>
         </div>
     </div>
 

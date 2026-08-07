@@ -17,12 +17,15 @@ function ensureJenisSurat(
     persyaratan = '- Fotokopi KTP\n- Fotokopi KK',
 ): void {
     const php = [
-        `\\App\\Models\\JenisSurat::updateOrCreate(`,
+        `\\App\\Models\\JenisSurat::query()->updateOrCreate(`,
         `['nama_surat' => ${JSON.stringify(namaSurat)}],`,
         `[`,
         `'deskripsi' => ${JSON.stringify(deskripsi)},`,
         `'persyaratan_dokumen' => ${JSON.stringify(persyaratan)},`,
         `]`,
+        `)->syncPersyaratan(`,
+        `\\App\\Models\\JenisSuratPersyaratan::parseFromFreeText(${JSON.stringify(persyaratan)}`,
+        `)`,
         `);`,
     ].join('');
 

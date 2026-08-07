@@ -50,12 +50,15 @@ function ensureJenisSurat(
     persyaratan = '- Fotokopi KTP\n- Fotokopi KK',
 ): void {
     const php = [
-        `\\App\\Models\\JenisSurat::updateOrCreate(`,
+        `\\App\\Models\\JenisSurat::query()->updateOrCreate(`,
         `['nama_surat' => ${JSON.stringify(namaSurat)}],`,
         `[`,
         `'deskripsi' => ${JSON.stringify(deskripsi)},`,
         `'persyaratan_dokumen' => ${JSON.stringify(persyaratan)},`,
         `]`,
+        `)->syncPersyaratan(`,
+        `\\App\\Models\\JenisSuratPersyaratan::parseFromFreeText(${JSON.stringify(persyaratan)}`,
+        `)`,
         `);`,
     ].join('');
 
@@ -188,6 +191,8 @@ test.describe('US-2.2 Tampilan Persyaratan Dokumen untuk Warga', () => {
         await expect(page.locator('[data-test="persyaratan-dokumen-detail-persyaratan"]')).toContainText(
             'Surat pengantar RT/RW',
         );
+        await expect(page.getByText('Wajib diunggah').first()).toBeVisible();
+        await expect(page.getByText('Bawa ke kantor').first()).toBeVisible();
 
         await page.locator('[data-test="persyaratan-dokumen-detail-close"]').click();
         await expect(page.locator('[data-test="persyaratan-dokumen-detail-title"]')).toBeHidden();

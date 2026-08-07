@@ -3,12 +3,14 @@
 namespace App\Livewire\Verifikasi;
 
 use App\Models\DokumenPersyaratan;
+use App\Models\JenisSuratPersyaratan;
 use App\Models\LogVerifikasi;
 use App\Models\Notifikasi;
 use App\Models\PengajuanSurat;
 use App\Models\SuratTerbit;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -34,11 +36,81 @@ class DetailPengajuanVerifikasi extends Component
         $pengajuan->load([
             'user:id,name,nik,no_telepon,alamat',
             'jenisSurat:id,nama_surat,deskripsi,persyaratan_dokumen',
-            'dokumenPersyaratan.jenisSuratPersyaratan:id,nama',
+            'jenisSurat.persyaratan',
+            'dokumenPersyaratan.jenisSuratPersyaratan',
             'suratTerbit',
         ]);
 
         $this->pengajuan = $pengajuan;
+    }
+
+    /**
+     * Syarat unggah + file terkait untuk seksi "Diunggah online" (US-9.5).
+     *
+     * @return Collection<int, array{syarat: ?JenisSuratPersyaratan, dokumen: ?DokumenPersyaratan, status: string}>
+     */
+    public function itemDokumenOnline(): Collection
+    {
+        $dokumenBySyaratId = $this->pengajuan->dokumenPersyaratan
+            ->filter(fn (DokumenPersyaratan $dokumen): bool => $dokumen->jenis_surat_persyaratan_id !== null)
+            ->keyBy('jenis_surat_persyaratan_id');
+
+        $items = collect();
+
+        $unggahRows = $this->pengajuan->jenisSurat?->persyaratan
+            ->where('cara_pemenuhan', JenisSuratPersyaratan::CARA_UNGGAH)
+            ->values() ?? collect();
+
+        foreach ($unggahRows as $syarat) {
+            /** @var JenisSuratPersyaratan $syarat */
+            $dokumen = $dokumenBySyaratId->get($syarat->id);
+
+            if ($dokumen !== null) {
+                $items->push([
+                    'syarat' => $syarat,
+                    'dokumen' => $dokumen,
+                    'status' => 'uploaded',
+                ]);
+
+                continue;
+            }
+
+            $items->push([
+                'syarat' => $syarat,
+                'dokumen' => null,
+                'status' => $syarat->is_wajib ? 'missing_required' : 'optional_empty',
+            ]);
+        }
+
+        // Dokumen lama tanpa tautan syarat, atau syarat sudah dihapus dari master
+        foreach ($this->pengajuan->dokumenPersyaratan as $dokumen) {
+            $sudahDitampilkan = $dokumen->jenis_surat_persyaratan_id !== null
+                && $unggahRows->contains('id', $dokumen->jenis_surat_persyaratan_id);
+
+            if ($sudahDitampilkan) {
+                continue;
+            }
+
+            $items->push([
+                'syarat' => $dokumen->jenisSuratPersyaratan,
+                'dokumen' => $dokumen,
+                'status' => 'uploaded',
+            ]);
+        }
+
+        return $items;
+    }
+
+    /**
+     * Syarat yang harus dicek fisik di kantor (US-9.5 — checklist visual saja).
+     *
+     * @return Collection<int, JenisSuratPersyaratan>
+     */
+    public function itemChecklistFisik(): Collection
+    {
+        return $this->pengajuan->jenisSurat?->persyaratan
+            ->where('cara_pemenuhan', JenisSuratPersyaratan::CARA_BAWA_KANTOR)
+            ->values() ?? collect();
     }
 
     /**

@@ -5,7 +5,7 @@
 
 ## Apa itu Daftar Pengajuan Surat?
 
-Fitur ini membantu **admin/petugas desa** memeriksa pengajuan surat keterangan yang sudah dikirim warga. Petugas melihat daftar pengajuan yang menunggu pemeriksaan, membuka detail, mempratinjau dokumen KTP/KK, lalu **menyetujui** atau **menolak** pengajuan.
+Fitur ini membantu **admin/petugas desa** memeriksa pengajuan surat keterangan yang sudah dikirim warga. Petugas melihat daftar pengajuan yang menunggu pemeriksaan, membuka detail, mempratinjau dokumen yang diunggah online, melihat checklist berkas yang harus dicek fisik, lalu **menyetujui** atau **menolak** pengajuan.
 
 Menu di sidebar bernama **Daftar Pengajuan Surat**.
 
@@ -28,8 +28,13 @@ Menu di sidebar bernama **Daftar Pengajuan Surat**.
 
 ### Memeriksa Dokumen
 
-1. Di bagian **Dokumen Persyaratan**, pratinjau gambar atau PDF ditampilkan langsung.
-2. Jika pratinjau tidak tersedia, klik **Unduh Dokumen**.
+1. Di bagian **Diunggah online**:
+   - Pratinjau gambar/PDF yang sudah dikirim warga.
+   - Jika syarat opsional tidak diunggah, muncul tanda **Tidak diunggah — diperbolehkan**.
+   - Jika pratinjau tidak tersedia, klik **Unduh Dokumen**.
+2. Di bagian **Harus dicek / dibawa ke kantor**:
+   - Lihat daftar syarat yang harus dicek sebagai berkas fisik (misalnya pengantar RT/RW).
+   - Checklist ini hanya informasi — tidak perlu dicentang di sistem sebelum Setujui.
 
 ### Menyetujui Pengajuan
 
@@ -59,9 +64,13 @@ A: Alur baru menggabungkan persetujuan dan mulai proses surat dalam satu langkah
 **Q: Apakah saya bisa menolak tanpa alasan?**
 A: Tidak. Alasan penolakan wajib diisi.
 
+**Q: Apa bedanya Diunggah online dan Harus dicek / dibawa ke kantor?**
+A: Yang online sudah ada file di sistem. Yang dibawa ke kantor harus dicek fisik saat warga datang — tidak ada tombol unggah untuk syarat itu.
+
 ## Troubleshooting
 
 | Masalah | Solusi |
 |---------|--------|
 | Tombol Setujui hilang | Pengajuan sudah diproses/ditolak |
 | Tidak menemukan menu Verifikasi Pengajuan | Gunakan **Daftar Pengajuan Surat** |
+| Checklist fisik kosong | Jenis surat tersebut tidak punya syarat “Bawa ke kantor desa” |

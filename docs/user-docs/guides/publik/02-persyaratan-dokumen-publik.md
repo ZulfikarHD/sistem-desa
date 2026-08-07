@@ -5,7 +5,7 @@
 
 ## Apa itu Akses Publik Persyaratan Dokumen?
 
-Calon pemohon yang **belum punya akun** tetap bisa melihat daftar jenis surat keterangan dan dokumen yang harus disiapkan, tanpa perlu daftar atau masuk terlebih dahulu.
+Calon pemohon yang **belum punya akun** tetap bisa melihat daftar jenis surat keterangan dan persyaratan ber-badge (unggah wajib / boleh dikosongkan / bawa ke kantor / informasi), tanpa perlu daftar atau masuk terlebih dahulu.
 
 ## Cara Menggunakan
 
@@ -13,7 +13,7 @@ Calon pemohon yang **belum punya akun** tetap bisa melihat daftar jenis surat ke
 
 1. Buka halaman **Beranda** aplikasi.
 2. Klik tautan **Lihat Persyaratan Dokumen**.
-3. Anda akan melihat daftar jenis surat beserta ringkasan persyaratan.
+3. Anda akan melihat daftar jenis surat beserta syarat dan badge-nya.
 
 > 💡 **Tips:** Anda juga bisa membuka langsung alamat `/persyaratan-dokumen` tanpa login.
 
@@ -21,7 +21,7 @@ Calon pemohon yang **belum punya akun** tetap bisa melihat daftar jenis surat ke
 
 1. Di halaman **Persyaratan Dokumen**, cari jenis surat yang dibutuhkan (opsional: gunakan kotak pencarian).
 2. Klik **Lihat Detail**.
-3. Baca deskripsi dan daftar persyaratan dokumen lengkap.
+3. Baca deskripsi dan daftar persyaratan lengkap beserta badge.
 4. Klik **Tutup** jika sudah selesai membaca.
 
 ### Daftar atau Masuk untuk Mengajukan
@@ -33,7 +33,7 @@ Halaman publik **hanya menampilkan informasi**. Untuk mengajukan surat:
    - **Login untuk Mengajukan** — jika sudah punya akun
 2. Setelah masuk sebagai warga, Anda dapat kembali ke halaman yang sama dari menu **Persyaratan Dokumen** di dashboard.
 
-> 💡 **Tips:** Siapkan dokumen (KTP/KK) terlebih dahulu agar proses pengajuan lebih cepat.
+> 💡 **Tips:** Perhatikan badge **Bawa ke kantor** — berkas itu biasanya tidak diunggah online.
 
 ## FAQ
 
@@ -48,5 +48,5 @@ A: Tidak. Hanya jenis surat yang masih aktif yang ditampilkan.
 | Masalah | Solusi |
 |---------|--------|
 | Halaman kosong / belum ada jenis surat | Data belum diisi admin. Coba lagi nanti atau hubungi petugas desa. |
-| Pencarian tidak menemukan apa pun | Ganti kata kunci (nama surat, deskripsi, atau isi persyaratan). |
+| Pencarian tidak menemukan apa pun | Ganti kata kunci (nama surat, deskripsi, atau nama syarat). |
 | Ingin mengajukan tapi belum punya akun | Klik **Daftar** pada ajakan di halaman persyaratan. |

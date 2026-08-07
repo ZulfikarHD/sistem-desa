@@ -109,7 +109,8 @@ function ensurePengajuanDiajukan(options: {
         // Tanggal jauh ke depan agar baris tetap di halaman 1 meski rekap e2e
         // menyisipkan data diajukan bertanggal 2090 (shared DB, paginate 10).
         // Hindari rentang 2099 yang dipakai filter empty-state di rekap e2e.
-        `'tanggal_pengajuan' => '2100-06-01',`,
+        // Pakai akhir tahun 2100 agar selalu di atas baris e2e lain bertanggal 2100-06-01.
+        `'tanggal_pengajuan' => '2100-12-31',`,
         `]);`,
         `$dir = 'pengajuan-dokumen/' . $pengajuan->id;`,
         `$ktpPath = $dir . '/ktp_e2e.jpg';`,

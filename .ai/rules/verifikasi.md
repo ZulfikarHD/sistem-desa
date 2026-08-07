@@ -25,3 +25,6 @@ UI label is Daftar Pengajuan Surat (sidebar, header mobile, list heading, Title 
 
 ## Siap diambil UI removed from verifikasi detail
 US-8.6 relocated Dokumen Siap Diambil panel off DetailPengajuanVerifikasi. Do not re-add tanggalPengambilan / tandaiDokumenSiapDiambil there — use SuratDiproses\DetailSuratDiproses.
+
+## Verifikasi detail online vs physical checklist
+US-9.5: DetailPengajuanVerifikasi dokumen section splits Diunggah online (preview + optional-empty badge) and Harus dicek/bawa ke kantor (visual list only). Do not require checkbox before Setujui. Do not change US-8.4 setujui/tolak flow.

@@ -14,13 +14,13 @@ Technical documentation for contributors working on sistem-desa.
 | Profile Management (US-1.4) | [features/profile-management.md](features/profile-management.md) |
 | Password Reset (US-1.5) | [features/password-reset.md](features/password-reset.md) |
 | Jenis Surat Management (US-2.1 + US-9.1/9.2) | [features/jenis-surat.md](features/jenis-surat.md) |
-| Persyaratan Dokumen Warga (US-2.2) | [features/persyaratan-dokumen.md](features/persyaratan-dokumen.md) |
-| Akses Publik Persyaratan Dokumen (US-2.3) | [features/persyaratan-dokumen-publik.md](features/persyaratan-dokumen-publik.md) |
+| Persyaratan Dokumen Warga (US-2.2 + US-9.4) | [features/persyaratan-dokumen.md](features/persyaratan-dokumen.md) |
+| Akses Publik Persyaratan Dokumen (US-2.3 + US-9.4) | [features/persyaratan-dokumen-publik.md](features/persyaratan-dokumen-publik.md) |
 | Form Pengajuan Surat (US-3.1) | [features/pengajuan-surat-form.md](features/pengajuan-surat-form.md) |
 | Unggah Dokumen Persyaratan (US-3.2 + US-9.3) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
 | Validasi Kelengkapan Pengajuan (US-3.3 + US-9.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
 | Ajukan Ulang Setelah Ditolak (US-3.4) | [features/pengajuan-surat-ajukan-ulang.md](features/pengajuan-surat-ajukan-ulang.md) |
-| Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
+| Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4 + US-9.5) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
 | Rename Daftar Pengajuan Surat (US-8.3) | [features/daftar-pengajuan-surat-rename.md](features/daftar-pengajuan-surat-rename.md) |
 | Setujui Langsung Diproses (US-8.4) | [features/setujui-langsung-diproses.md](features/setujui-langsung-diproses.md) |
 | Migrasi Alur Status (US-7.1 / US-8.4) | [features/migrasi-alur-status.md](features/migrasi-alur-status.md) |
@@ -64,6 +64,7 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [009](decisions/009-pengajuan-surat-table-and-nomor-format.md) | `pengajuan_surat` naming + PJ-YYYYMMDD-#### nomor generation |
 | [010](decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | KTP/KK text detection + private file storage (rules → ADR-026) |
 | [026](decisions/026-persyaratan-terstruktur-supersede-keyword-upload.md) | Structured persyaratan rows supersede keyword upload rules (form warga US-9.3) |
+| [027](decisions/027-persyaratan-badge-display-and-verifikasi-checklist.md) | Public/warga badges + visual physical checklist on verifikasi detail |
 | [011](decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only secure routes for dokumen preview/download |
 | [012](decisions/012-verifikasi-log-and-concurrent-lock.md) | `log_verifikasi` audit table + pessimistic locking |
 | [013](decisions/013-rekap-summary-filters-and-csv-bom.md) | Rekap summary ignores status filter; CSV UTF-8 BOM |

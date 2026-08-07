@@ -23,13 +23,13 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Profile Management (US-1.4)](dev-docs/features/profile-management.md) | Technical docs for profile edit + password change |
 | [Password Reset (US-1.5)](dev-docs/features/password-reset.md) | Technical docs for forgot-password flow |
 | [Jenis Surat Management (US-2.1 + US-9.1/9.2)](dev-docs/features/jenis-surat.md) | Admin CRUD jenis surat + persyaratan terstruktur |
-| [Persyaratan Dokumen Warga (US-2.2)](dev-docs/features/persyaratan-dokumen.md) | Warga browse + detail persyaratan dokumen |
-| [Akses Publik Persyaratan Dokumen (US-2.3)](dev-docs/features/persyaratan-dokumen-publik.md) | Guest browse persyaratan tanpa login + CTA daftar/login |
+| [Persyaratan Dokumen Warga (US-2.2 + US-9.4)](dev-docs/features/persyaratan-dokumen.md) | Warga browse + badge persyaratan terstruktur |
+| [Akses Publik Persyaratan Dokumen (US-2.3 + US-9.4)](dev-docs/features/persyaratan-dokumen-publik.md) | Guest browse persyaratan tanpa login + CTA daftar/login |
 | [Form Pengajuan Surat (US-3.1)](dev-docs/features/pengajuan-surat-form.md) | Warga submit pengajuan + auto nomor_pengajuan |
 | [Unggah Dokumen Persyaratan (US-3.2 + US-9.3)](dev-docs/features/pengajuan-surat-dokumen.md) | Structured upload slots, preview, private storage |
 | [Validasi Kelengkapan (US-3.3 + US-9.3)](dev-docs/features/pengajuan-surat-kelengkapan.md) | Wajib vs opsional from `is_wajib` |
 | [Ajukan Ulang Setelah Ditolak (US-3.4)](dev-docs/features/pengajuan-surat-ajukan-ulang.md) | Resubmit ditolak pengajuan + riwayat page |
-| [Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4)](dev-docs/features/verifikasi-pengajuan.md) | Admin list, detail preview, setujui/tolak, log audit |
+| [Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4 + US-9.5)](dev-docs/features/verifikasi-pengajuan.md) | Admin list, detail preview, checklist fisik, setujui/tolak |
 | [Rename Daftar Pengajuan Surat (US-8.3)](dev-docs/features/daftar-pengajuan-surat-rename.md) | Label sidebar/heading: Verifikasi → Daftar Pengajuan Surat |
 | [Setujui Langsung Diproses (US-8.4)](dev-docs/features/setujui-langsung-diproses.md) | Approve path: diajukan → diproses + satu notifikasi |
 | [Migrasi Alur Status (US-7.1 / US-8.4)](dev-docs/features/migrasi-alur-status.md) | Status flow: diajukan → diproses; siap_diambil/selesai filters |
@@ -56,6 +56,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-009: pengajuan_surat table + nomor format](dev-docs/decisions/009-pengajuan-surat-table-and-nomor-format.md) | Why singular table name + PJ-YYYYMMDD-#### nomor |
 | [ADR-010: dokumen persyaratan upload](dev-docs/decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | Text-based KTP/KK detection (rules superseded by ADR-026) |
 | [ADR-026: persyaratan terstruktur](dev-docs/decisions/026-persyaratan-terstruktur-supersede-keyword-upload.md) | Structured rows supersede keyword upload rules |
+| [ADR-027: badge display + checklist fisik](dev-docs/decisions/027-persyaratan-badge-display-and-verifikasi-checklist.md) | Public/warga badges + visual physical checklist on verifikasi |
 | [ADR-011: verifikasi dokumen secure route](dev-docs/decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only preview/download routes for private dokumen |
 | [ADR-012: log_verifikasi and concurrent lock](dev-docs/decisions/012-verifikasi-log-and-concurrent-lock.md) | Audit log table + lockForUpdate on approve/reject |
 | [ADR-013: Rekap summary filters + CSV BOM](dev-docs/decisions/013-rekap-summary-filters-and-csv-bom.md) | Ringkasan ignores status filter; CSV UTF-8 BOM |

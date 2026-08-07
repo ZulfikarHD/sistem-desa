@@ -16,3 +16,6 @@ US-9.1/9.2: source of truth is jenis_surat_persyaratan (nama, cara_pemenuhan ung
 
 ## Keyword detection removed from form pengajuan
 US-9.1/9.2/9.3 complete: jenis_surat_persyaratan is source of truth for upload rules. FormPengajuanSurat no longer uses keyword detection. Keep admin DataJenisSurat row editor + syncPersyaratan; do not reintroduce free-text as upload rule source.
+
+## Persyaratan dokumen page shows structured badges
+US-9.4: PersyaratanDokumen list+detail render jenis_surat_persyaratan with badgeLabel/badgeColor (not raw persyaratan_dokumen block). Eager-load persyaratan; search also orWhereHas nama. Soft-delete + public access unchanged.

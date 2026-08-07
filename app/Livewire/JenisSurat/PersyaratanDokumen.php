@@ -10,14 +10,14 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 /**
- * Tampilan read-only daftar & detail persyaratan dokumen (US-2.2 warga + US-2.3 publik).
+ * Tampilan read-only daftar & detail persyaratan dokumen (US-2.2 / US-2.3 + US-9.4 badge).
  */
 #[Title('Persyaratan Dokumen')]
 class PersyaratanDokumen extends Component
 {
     use WithPagination;
 
-    /** Kata kunci pencarian nama / deskripsi / persyaratan. */
+    /** Kata kunci pencarian nama / deskripsi / teks syarat. */
     #[Url(as: 'q', except: '')]
     public string $search = '';
 
@@ -58,20 +58,27 @@ class PersyaratanDokumen extends Component
 
     public function render(): View
     {
-        $query = JenisSurat::query()->latest();
+        $query = JenisSurat::query()
+            ->with('persyaratan')
+            ->latest();
 
         if (trim($this->search) !== '') {
             $term = '%'.trim($this->search).'%';
             $query->where(function ($builder) use ($term): void {
                 $builder->where('nama_surat', 'like', $term)
                     ->orWhere('deskripsi', 'like', $term)
-                    ->orWhere('persyaratan_dokumen', 'like', $term);
+                    ->orWhere('persyaratan_dokumen', 'like', $term)
+                    ->orWhereHas('persyaratan', function ($persyaratanQuery) use ($term): void {
+                        $persyaratanQuery->where('nama', 'like', $term);
+                    });
             });
         }
 
         $selectedJenisSurat = null;
         if ($this->showDetail && $this->selectedId !== null) {
-            $selectedJenisSurat = JenisSurat::query()->find($this->selectedId);
+            $selectedJenisSurat = JenisSurat::query()
+                ->with('persyaratan')
+                ->find($this->selectedId);
         }
 
         // Guest memakai layout publik (app layout bergantung auth()->user())

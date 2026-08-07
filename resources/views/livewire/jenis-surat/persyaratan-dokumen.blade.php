@@ -86,16 +86,44 @@
                         </flux:text>
                     </div>
 
-                    <div class="space-y-1">
+                    <div class="space-y-2">
                         <flux:text class="text-sm font-medium text-zinc-700 dark:text-zinc-200">
                             {{ __('Persyaratan') }}
                         </flux:text>
-                        <flux:text
-                            class="line-clamp-3 whitespace-pre-line"
-                            data-test="persyaratan-dokumen-preview-{{ $item->id }}"
-                        >
-                            {{ $item->persyaratan_dokumen }}
-                        </flux:text>
+
+                        @if ($item->persyaratan->isEmpty())
+                            <flux:text
+                                class="text-sm text-zinc-500"
+                                data-test="persyaratan-dokumen-preview-empty-{{ $item->id }}"
+                            >
+                                {{ __('Persyaratan belum diatur.') }}
+                            </flux:text>
+                        @else
+                            <ul
+                                class="space-y-2"
+                                data-test="persyaratan-dokumen-preview-{{ $item->id }}"
+                            >
+                                @foreach ($item->persyaratan as $syarat)
+                                    <li
+                                        wire:key="persyaratan-dokumen-preview-item-{{ $item->id }}-{{ $syarat->id }}"
+                                        class="flex flex-wrap items-center gap-2"
+                                        data-test="persyaratan-dokumen-preview-item-{{ $syarat->id }}"
+                                        data-cara="{{ $syarat->cara_pemenuhan }}"
+                                    >
+                                        <span class="text-sm" data-test="persyaratan-dokumen-preview-nama-{{ $syarat->id }}">
+                                            {{ $syarat->nama }}
+                                        </span>
+                                        <flux:badge
+                                            :color="$syarat->badgeColor()"
+                                            size="sm"
+                                            data-test="persyaratan-dokumen-preview-badge-{{ $syarat->id }}"
+                                        >
+                                            {{ __($syarat->badgeLabel()) }}
+                                        </flux:badge>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
 
                     <div class="mt-auto pt-1">
@@ -136,22 +164,67 @@
                     </flux:text>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-3">
                     <flux:heading size="sm">{{ __('Persyaratan Dokumen') }}</flux:heading>
-                    <flux:text
-                        class="whitespace-pre-line"
-                        data-test="persyaratan-dokumen-detail-persyaratan"
-                    >
-                        {{ $selectedJenisSurat->persyaratan_dokumen }}
-                    </flux:text>
+
+                    @if ($selectedJenisSurat->persyaratan->isEmpty())
+                        <flux:text data-test="persyaratan-dokumen-detail-persyaratan-empty">
+                            {{ __('Persyaratan belum diatur — hubungi admin desa.') }}
+                        </flux:text>
+                    @else
+                        <ul class="space-y-3" data-test="persyaratan-dokumen-detail-persyaratan">
+                            @foreach ($selectedJenisSurat->persyaratan as $syarat)
+                                <li
+                                    wire:key="persyaratan-dokumen-detail-item-{{ $syarat->id }}"
+                                    class="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                                    data-test="persyaratan-dokumen-detail-item-{{ $syarat->id }}"
+                                    data-cara="{{ $syarat->cara_pemenuhan }}"
+                                >
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span
+                                            class="text-sm font-medium"
+                                            data-test="persyaratan-dokumen-detail-nama-{{ $syarat->id }}"
+                                        >
+                                            {{ $syarat->nama }}
+                                        </span>
+                                        <flux:badge
+                                            :color="$syarat->badgeColor()"
+                                            size="sm"
+                                            data-test="persyaratan-dokumen-detail-badge-{{ $syarat->id }}"
+                                        >
+                                            {{ __($syarat->badgeLabel()) }}
+                                        </flux:badge>
+                                    </div>
+
+                                    @if ($syarat->cara_pemenuhan === \App\Models\JenisSuratPersyaratan::CARA_BAWA_KANTOR)
+                                        <flux:text class="mt-2 text-sm">
+                                            {{ __(\App\Models\JenisSuratPersyaratan::bantuanBawaKantor()) }}
+                                        </flux:text>
+                                    @elseif ($syarat->cara_pemenuhan === \App\Models\JenisSuratPersyaratan::CARA_INFO)
+                                        <flux:text class="mt-2 text-sm">
+                                            {{ __('Catatan informasi — tidak perlu diunggah maupun dibawa.') }}
+                                        </flux:text>
+                                    @elseif ($syarat->cara_pemenuhan === \App\Models\JenisSuratPersyaratan::CARA_UNGGAH)
+                                        <flux:text class="mt-2 text-sm">
+                                            @if ($syarat->is_wajib)
+                                                {{ __('Harus diunggah saat mengajukan lewat aplikasi.') }}
+                                            @else
+                                                {{ __('Opsional / jika ada; pengajuan tetap bisa dikirim tanpa file ini.') }}
+                                            @endif
+                                        </flux:text>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
 
                 <flux:callout icon="information-circle" data-test="persyaratan-dokumen-detail-note">
                     <flux:callout.text>
                         @guest
-                            {{ __('Siapkan dokumen di atas sebelum mengajukan surat. Daftar atau masuk terlebih dahulu untuk mengajukan (fitur pengajuan akan tersedia di tahap berikutnya).') }}
+                            {{ __('Siapkan dokumen di atas sebelum mengajukan surat. Daftar atau masuk terlebih dahulu untuk mengajukan.') }}
                         @else
-                            {{ __('Siapkan dokumen di atas sebelum mengajukan surat. Fitur pengajuan akan tersedia di tahap berikutnya.') }}
+                            {{ __('Siapkan dokumen di atas sebelum mengajukan surat melalui menu Pengajuan Surat.') }}
                         @endguest
                     </flux:callout.text>
                 </flux:callout>
