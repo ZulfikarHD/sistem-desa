@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\JenisSurat;
+use App\Models\PengajuanSurat;
+use App\Models\SuratTerbit;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\JenisSuratSeeder;
@@ -22,7 +24,7 @@ test('database seeder membuat akun admin dan warga baku', function () {
         ->and($warga->nik)->toBe('3201010101000002')
         ->and(Hash::check('password', $warga->password))->toBeTrue();
 
-    // 1 admin + 1 warga baku + 5 warga factory
+    // 1 admin + 1 warga baku + 5 warga factory (demo factory recycle akun baku)
     expect(User::query()->count())->toBe(7)
         ->and(User::query()->where('role', 'admin')->count())->toBe(1)
         ->and(User::query()->where('role', 'warga')->count())->toBe(6);
@@ -42,6 +44,18 @@ test('database seeder mengisi jenis surat keterangan desa beserta persyaratan', 
 
     expect($sktm)->not->toBeNull()
         ->and($sktm->persyaratan_dokumen)->toContain('pernyataan tidak mampu');
+});
+
+test('database seeder mengisi demo factory pengajuan untuk testing', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    expect(PengajuanSurat::query()->count())->toBe(14)
+        ->and(PengajuanSurat::query()->where('status', PengajuanSurat::STATUS_DIAJUKAN)->count())->toBe(5)
+        ->and(PengajuanSurat::query()->where('status', PengajuanSurat::STATUS_DITOLAK)->count())->toBe(2)
+        ->and(PengajuanSurat::query()->where('status', PengajuanSurat::STATUS_DIPROSES)->count())->toBe(3)
+        ->and(PengajuanSurat::query()->where('status', PengajuanSurat::STATUS_SIAP_DIAMBIL)->count())->toBe(2)
+        ->and(PengajuanSurat::query()->where('status', PengajuanSurat::STATUS_SELESAI)->count())->toBe(2)
+        ->and(SuratTerbit::query()->count())->toBe(7);
 });
 
 test('jenis surat seeder idempotent saat dijalankan ulang', function () {

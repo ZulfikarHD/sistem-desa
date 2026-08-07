@@ -36,6 +36,14 @@ Technical documentation for contributors working on sistem-desa.
 | Rekap Pengajuan & Reporting (US-6.1 – US-6.2) | [features/rekap-pengajuan.md](features/rekap-pengajuan.md) |
 | Rekap Timeline Detail (US-8.7) | [features/rekap-timeline.md](features/rekap-timeline.md) |
 
+## Reference Docs
+
+| Document | Description |
+|----------|-------------|
+| [Database Architecture](database.md) | ER diagram, table dictionary, status flow, indexes |
+| [Route Map](routes.md) | All routes grouped by role + middleware, file route notes |
+| [Livewire Components](livewire-components.md) | Component inventory — props, methods, stories |
+
 ## API
 
 No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpoint notes live in the feature docs.

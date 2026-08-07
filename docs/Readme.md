@@ -5,6 +5,9 @@ Index of all documentation for **Sistem Informasi Pelayanan Surat Keterangan** (
 ## Architecture
 
 - [System Architecture](architecture.md)
+- [Database Architecture](dev-docs/database.md) — ER diagram, table dictionary, indexes
+- [Route Map](dev-docs/routes.md) — all routes grouped by role + middleware
+- [Livewire Components](dev-docs/livewire-components.md) — component inventory with responsibility summary
 
 ## Developer Docs
 
