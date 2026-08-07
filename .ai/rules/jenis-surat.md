@@ -1,6 +1,7 @@
 ---
 paths:
   - 'app/Livewire/JenisSurat/**'
+  - 'resources/views/livewire/jenis-surat/**'
 ---
 
 # Jenis Surat
@@ -19,6 +20,9 @@ US-9.1/9.2/9.3 complete: jenis_surat_persyaratan is source of truth for upload r
 
 ## Jenis surat create/edit use dedicated pages
 List + arsip/delete stay on DataJenisSurat (`jenis-surat.index`). Create/edit (including structured persyaratan rows + pratinjau) live on FormJenisSurat at `jenis-surat.create` and `jenis-surat.edit` (ADR-028). Do not put the form back into a Flux modal on the list page. Force-delete confirmation modal on the list is OK. Soft-deleted records 404 on edit.
+
+## Flux default radio needs label prop
+On FormJenisSurat (and any default-variant flux:radio), use `:label="__('…')"`. Slot text is ignored by the default variant and renders naked circles. Segmented/cards/buttons variants may use slot content.
 
 ## Persyaratan dokumen page shows structured badges
 US-9.4: PersyaratanDokumen list+detail render jenis_surat_persyaratan with badgeLabel/badgeColor (not raw persyaratan_dokumen block). Eager-load persyaratan; search also orWhereHas nama. Soft-delete + public access unchanged.

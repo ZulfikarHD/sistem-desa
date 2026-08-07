@@ -7,7 +7,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | resources/views/welcome.blade.php, resources/views/layouts/auth/**, resources/views/pages/auth/** | .ai/rules/auth.md |
 | app/Livewire/Dashboard/** | .ai/rules/dashboard.md |
 | app/Actions/Fortify/** | .ai/rules/fortify.md |
-| app/Livewire/JenisSurat/** | .ai/rules/jenis-surat.md |
+| app/Livewire/JenisSurat/**, resources/views/livewire/jenis-surat/** | .ai/rules/jenis-surat.md |
 | resources/views/layouts/** | .ai/rules/layouts.md |
 | app/Http/Middleware/** | .ai/rules/middleware.md |
 | app/Models/User.php, app/Models/JenisSurat.php, app/Models/PengajuanSurat.php, app/Models/SuratTerbit.php | .ai/rules/models.md |

@@ -1,6 +1,6 @@
 ---
 paths:
-  - 'resources/views/welcome.blade.php'
+  - resources/views/welcome.blade.php
   - 'resources/views/layouts/auth/**'
   - 'resources/views/pages/auth/**'
 ---

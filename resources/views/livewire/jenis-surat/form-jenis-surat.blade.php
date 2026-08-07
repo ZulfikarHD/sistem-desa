@@ -131,9 +131,12 @@
                                     data-test="jenis-surat-persyaratan-cara-{{ $index }}"
                                 >
                                     @foreach ($caraPemenuhanOptions as $value => $label)
-                                        <flux:radio value="{{ $value }}" data-test="jenis-surat-persyaratan-cara-{{ $index }}-{{ $value }}">
-                                            {{ __($label) }}
-                                        </flux:radio>
+                                        {{-- Flux default variant memakai prop label, bukan slot. --}}
+                                        <flux:radio
+                                            value="{{ $value }}"
+                                            :label="__($label)"
+                                            data-test="jenis-surat-persyaratan-cara-{{ $index }}-{{ $value }}"
+                                        />
                                     @endforeach
                                 </flux:radio.group>
 
@@ -156,12 +159,16 @@
                                         data-test="jenis-surat-persyaratan-wajib-{{ $index }}"
                                     >
                                         {{-- Nilai 1/0 agar Livewire boolean cast benar (string "false" bersifat truthy). --}}
-                                        <flux:radio value="1" data-test="jenis-surat-persyaratan-wajib-{{ $index }}-true">
-                                            {{ __('Wajib') }}
-                                        </flux:radio>
-                                        <flux:radio value="0" data-test="jenis-surat-persyaratan-wajib-{{ $index }}-false">
-                                            {{ __('Boleh dikosongkan') }}
-                                        </flux:radio>
+                                        <flux:radio
+                                            value="1"
+                                            :label="__('Wajib')"
+                                            data-test="jenis-surat-persyaratan-wajib-{{ $index }}-true"
+                                        />
+                                        <flux:radio
+                                            value="0"
+                                            :label="__('Boleh dikosongkan')"
+                                            data-test="jenis-surat-persyaratan-wajib-{{ $index }}-false"
+                                        />
                                     </flux:radio.group>
                                     <flux:text class="mt-1 text-sm">
                                         @if (filter_var($row['is_wajib'] ?? true, FILTER_VALIDATE_BOOLEAN))
