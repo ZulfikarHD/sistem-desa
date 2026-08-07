@@ -1,50 +1,45 @@
 # Validasi Kelengkapan Pengajuan - Panduan Pengguna (Warga)
 
 > **Kelompok Pengguna:** Warga
-> **Urutan:** 7 dari 12 — Memahami aturan dokumen wajib sebelum mengirim pengajuan.
+> **Urutan:** 7 dari 12 — Memahami dokumen wajib sebelum mengirim pengajuan.
 
 ## Apa itu Validasi Kelengkapan?
 
-Saat Anda mengirim formulir pengajuan surat, sistem memeriksa apakah semua dokumen wajib (KTP dan/atau KK) sudah diunggah sesuai jenis surat yang dipilih. Jika ada yang kurang, pengajuan **tidak disimpan** dan pesan error menunjukkan dokumen mana yang belum dilengkapi.
+Saat Anda mengirim pengajuan, sistem memeriksa apakah semua syarat **Wajib diunggah** sudah punya file. Syarat **Boleh dikosongkan**, **Bawa ke kantor**, dan **Informasi** tidak menahan pengiriman. Jika ada yang kurang, pengajuan **tidak disimpan** dan pesan error menunjukkan dokumen mana yang belum dilengkapi.
 
 ## Cara Menggunakan
 
 ### Mengirim Pengajuan Lengkap
 
-1. Buka halaman **Pengajuan Surat**.
-2. Pilih **Jenis Surat** — perhatikan kolom unggah yang muncul (KTP, KK, atau keduanya).
-3. Unggah **semua** dokumen yang diminta sebelum menekan **Kirim Pengajuan**.
-4. Isi **Keperluan**, lalu klik **Kirim Pengajuan**.
-5. Jika semua valid, nomor pengajuan akan muncul.
+1. Buka **Pengajuan Surat**.
+2. Pilih **Jenis Surat** — baca badge pada setiap syarat.
+3. Unggah semua syarat berbadge **Wajib diunggah**.
+4. (Opsional) Unggah syarat **Boleh dikosongkan** jika Anda punya filenya.
+5. Isi **Keperluan**, lalu **Kirim Pengajuan**.
 
-> 💡 **Tips:** Lihat daftar persyaratan lengkap di menu **Persyaratan Dokumen** sebelum mengunggah.
+### Jika Sistem Menolak (Dokumen Kurang)
 
-### Jika Pengajuan Ditolak Sistem (Dokumen Kurang)
-
-1. Baca pesan error di bawah kolom yang bermasalah, misalnya:
-   - **"Fotokopi KTP wajib diunggah."**
-   - **"Fotokopi Kartu Keluarga (KK) wajib diunggah."**
-2. Unggah file yang belum ada.
+1. Baca pesan di bawah kolom, misalnya: **“Dokumen Fotokopi KTP wajib diunggah.”**
+2. Unggah file yang diminta.
 3. Klik **Kirim Pengajuan** lagi.
 
-Formulir tetap terbuka — data jenis surat dan keperluan tidak hilang saat validasi gagal.
+Data jenis surat dan keperluan tetap ada saat validasi gagal.
 
 ## FAQ
 
-**Q: Apakah saya bisa kirim tanpa KTP/KK?**
-A: Tidak, jika jenis surat yang dipilih mewajibkan dokumen tersebut.
+**Q: Bisakah saya kirim tanpa NPWP jika badge-nya “Boleh dikosongkan”?**
+A: Ya.
 
-**Q: Saya sudah unggah KTP, kenapa masih error?**
-A: Jenis surat Anda mungkin juga mewajibkan KK. Unggah semua dokumen yang ditampilkan.
+**Q: Saya sudah unggah satu file, kenapa masih error?**
+A: Mungkin ada syarat wajib lain. Cek semua badge **Wajib diunggah**.
 
 **Q: Apakah pengajuan tersimpan sebagian jika dokumen kurang?**
-A: Tidak. Sistem hanya menyimpan pengajuan setelah semua validasi lulus.
+A: Tidak.
 
 ## Troubleshooting
 
 | Masalah | Solusi |
 |---------|--------|
-| "Fotokopi KTP wajib diunggah" | Pilih file KTP (JPG/PNG/PDF, maks. 2 MB) lalu kirim ulang |
-| "Fotokopi Kartu Keluarga (KK) wajib diunggah" | Unggah KK meskipun KTP sudah ada |
-| Error format/ukuran file | Lihat [panduan unggah dokumen](06-pengajuan-surat-dokumen.md) |
-| Kolom unggah hilang setelah ganti jenis surat | Normal — unggah ulang sesuai persyaratan jenis surat baru |
+| “Dokumen … wajib diunggah” | Unggah file untuk syarat wajib, lalu kirim ulang |
+| Error format/ukuran | Lihat [panduan unggah dokumen](06-pengajuan-surat-dokumen.md) |
+| Kolom unggah hilang setelah ganti jenis surat | Normal — unggah ulang sesuai daftar baru |

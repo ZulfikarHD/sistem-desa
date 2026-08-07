@@ -5,15 +5,18 @@ import { fileURLToPath } from 'node:url';
 
 /**
  * US-3.1 — Form Pengajuan Surat Keterangan (Warga)
- * US-3.2 — Unggah Dokumen Persyaratan (KTP/KK)
- * US-3.3 — Validasi Kelengkapan Pengajuan (dokumen wajib)
- * Happy path: isi form, upload dokumen, submit, nomor pengajuan otomatis.
- * Edge/failure: guest redirect, admin 403, validasi jenis surat & keperluan wajib,
- * validasi format/ukuran file upload.
+ * US-3.2 / US-9.3 — Unggah mengikuti persyaratan terstruktur
+ * US-3.3 — Validasi kelengkapan (wajib vs opsional)
  */
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fixturesDir = path.join(projectRoot, 'e2e', 'fixtures');
+
+type PersyaratanRowInput = {
+    nama: string;
+    cara_pemenuhan: 'unggah' | 'bawa_kantor' | 'info';
+    is_wajib: boolean;
+};
 
 function uniqueNik(suffix: number): string {
     return `3205050505${String(suffix).padStart(6, '0')}`;
@@ -48,19 +51,38 @@ function ensureUser(options: {
     });
 }
 
-function ensureJenisSurat(
-    namaSurat: string,
-    persyaratanDokumen = '- Fotokopi KTP\n- Fotokopi KK',
-    deskripsi = 'Deskripsi e2e pengajuan',
-): void {
+function defaultKtpKkRows(): PersyaratanRowInput[] {
+    return [
+        { nama: 'Fotokopi KTP', cara_pemenuhan: 'unggah', is_wajib: true },
+        { nama: 'Fotokopi KK', cara_pemenuhan: 'unggah', is_wajib: true },
+    ];
+}
+
+function rowsToPhpArray(rows: PersyaratanRowInput[]): string {
+    return (
+        '[' +
+        rows
+            .map(
+                (row, index) =>
+                    `[` +
+                    `'nama' => ${JSON.stringify(row.nama)}, ` +
+                    `'cara_pemenuhan' => ${JSON.stringify(row.cara_pemenuhan)}, ` +
+                    `'is_wajib' => ${row.is_wajib ? 'true' : 'false'}, ` +
+                    `'urutan' => ${index}` +
+                    `]`,
+            )
+            .join(', ') +
+        ']'
+    );
+}
+
+function ensureJenisSurat(namaSurat: string, rows: PersyaratanRowInput[] = defaultKtpKkRows()): void {
+    // Hindari variabel $ di string --execute (bash meng-expand meskipun di JSON.stringify).
     const php = [
-        `\\App\\Models\\JenisSurat::updateOrCreate(`,
+        `\\App\\Models\\JenisSurat::query()->updateOrCreate(`,
         `['nama_surat' => ${JSON.stringify(namaSurat)}],`,
-        `[`,
-        `'deskripsi' => ${JSON.stringify(deskripsi)},`,
-        `'persyaratan_dokumen' => ${JSON.stringify(persyaratanDokumen)},`,
-        `]`,
-        `);`,
+        `['deskripsi' => 'Deskripsi e2e pengajuan', 'persyaratan_dokumen' => 'placeholder']`,
+        `)->syncPersyaratan(${rowsToPhpArray(rows)});`,
     ].join('');
 
     execSync(`php artisan tinker --execute ${JSON.stringify(php)}`, {
@@ -69,16 +91,36 @@ function ensureJenisSurat(
     });
 }
 
-async function uploadKtpFile(page: import('@playwright/test').Page, filePath: string): Promise<void> {
-    await page.locator('[data-test="pengajuan-surat-dokumen-ktp-input"]').setInputFiles(filePath);
-    await expect(page.locator('[data-test="pengajuan-surat-dokumen-ktp-preview"]')).toBeVisible({
-        timeout: 30_000,
+function persyaratanIdsByNama(namaSurat: string): Record<string, number> {
+    const php = [
+        `echo json_encode(`,
+        `\\App\\Models\\JenisSurat::where('nama_surat', ${JSON.stringify(namaSurat)})`,
+        `->firstOrFail()`,
+        `->persyaratan()`,
+        `->pluck('id', 'nama')`,
+        `);`,
+    ].join('');
+
+    const output = execSync(`php artisan tinker --execute ${JSON.stringify(php)}`, {
+        cwd: projectRoot,
+        encoding: 'utf8',
     });
+
+    const match = output.match(/\{[\s\S]*\}/);
+    if (!match) {
+        throw new Error(`Gagal membaca persyaratan IDs untuk ${namaSurat}: ${output}`);
+    }
+
+    return JSON.parse(match[0]) as Record<string, number>;
 }
 
-async function uploadKkFile(page: import('@playwright/test').Page, filePath: string): Promise<void> {
-    await page.locator('[data-test="pengajuan-surat-dokumen-kk-input"]').setInputFiles(filePath);
-    await expect(page.locator('[data-test="pengajuan-surat-dokumen-kk-preview"]')).toBeVisible({
+async function uploadDokumenBySyaratId(
+    page: import('@playwright/test').Page,
+    syaratId: number,
+    filePath: string,
+): Promise<void> {
+    await page.locator(`[data-test="pengajuan-surat-dokumen-input-${syaratId}"]`).setInputFiles(filePath);
+    await expect(page.locator(`[data-test="pengajuan-surat-dokumen-preview-${syaratId}"]`)).toBeVisible({
         timeout: 30_000,
     });
 }
@@ -135,6 +177,7 @@ test.describe('US-3.1 Form Pengajuan Surat Keterangan', () => {
             nik,
         });
         ensureJenisSurat(namaSurat);
+        const ids = persyaratanIdsByNama(namaSurat);
 
         await loginAs(page, email);
         await expect(page).toHaveURL(/\/dashboard$/);
@@ -145,8 +188,8 @@ test.describe('US-3.1 Form Pengajuan Surat Keterangan', () => {
         await selectJenisSuratByName(page, namaSurat);
         await expect(page.locator('[data-test="pengajuan-surat-dokumen-section"]')).toBeVisible();
 
-        await uploadKtpFile(page, path.join(fixturesDir, 'ktp-sample.jpg'));
-        await uploadKkFile(page, path.join(fixturesDir, 'kk-sample.png'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KTP'], path.join(fixturesDir, 'ktp-sample.jpg'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KK'], path.join(fixturesDir, 'kk-sample.png'));
 
         await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill(keperluan);
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
@@ -206,8 +249,8 @@ test.describe('US-3.1 Form Pengajuan Surat Keterangan', () => {
     });
 });
 
-test.describe('US-3.2 Unggah Dokumen Persyaratan', () => {
-    test('area unggah KTP/KK muncul sesuai persyaratan jenis surat terpilih', async ({ page }) => {
+test.describe('US-3.2 / US-9.3 Unggah Dokumen Persyaratan Terstruktur', () => {
+    test('area unggah muncul sesuai baris syarat unggah jenis surat terpilih', async ({ page }) => {
         const stamp = Date.now();
         const email = `warga.dokumen.section.${stamp}@example.com`;
         const nik = uniqueNik(Number(String(stamp).slice(-6)) + 10);
@@ -219,7 +262,8 @@ test.describe('US-3.2 Unggah Dokumen Persyaratan', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP\n- Fotokopi KK');
+        ensureJenisSurat(namaSurat, defaultKtpKkRows());
+        const ids = persyaratanIdsByNama(namaSurat);
 
         await loginAs(page, email);
         await page.goto('/pengajuan-surat');
@@ -229,8 +273,9 @@ test.describe('US-3.2 Unggah Dokumen Persyaratan', () => {
         await selectJenisSuratByName(page, namaSurat);
 
         await expect(page.locator('[data-test="pengajuan-surat-dokumen-section"]')).toBeVisible();
-        await expect(page.locator('[data-test="pengajuan-surat-dokumen-ktp-input"]')).toBeVisible();
-        await expect(page.locator('[data-test="pengajuan-surat-dokumen-kk-input"]')).toBeVisible();
+        await expect(page.locator(`[data-test="pengajuan-surat-dokumen-input-${ids['Fotokopi KTP']}"]`)).toBeVisible();
+        await expect(page.locator(`[data-test="pengajuan-surat-dokumen-input-${ids['Fotokopi KK']}"]`)).toBeVisible();
+        await expect(page.getByText('Wajib diunggah').first()).toBeVisible();
     });
 
     test('warga dapat melihat preview dokumen sebelum submit final', async ({ page }) => {
@@ -245,14 +290,15 @@ test.describe('US-3.2 Unggah Dokumen Persyaratan', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP');
+        ensureJenisSurat(namaSurat, [{ nama: 'Fotokopi KTP', cara_pemenuhan: 'unggah', is_wajib: true }]);
+        const ids = persyaratanIdsByNama(namaSurat);
 
         await loginAs(page, email);
         await page.goto('/pengajuan-surat');
 
         await selectJenisSuratByName(page, namaSurat);
 
-        await uploadKtpFile(page, path.join(fixturesDir, 'ktp-sample.jpg'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KTP'], path.join(fixturesDir, 'ktp-sample.jpg'));
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
     });
 
@@ -268,7 +314,8 @@ test.describe('US-3.2 Unggah Dokumen Persyaratan', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP');
+        ensureJenisSurat(namaSurat, [{ nama: 'Fotokopi KTP', cara_pemenuhan: 'unggah', is_wajib: true }]);
+        const ids = persyaratanIdsByNama(namaSurat);
 
         await loginAs(page, email);
         await page.goto('/pengajuan-surat');
@@ -276,16 +323,15 @@ test.describe('US-3.2 Unggah Dokumen Persyaratan', () => {
         await selectJenisSuratByName(page, namaSurat);
         await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill('Keperluan dengan file invalid');
 
-        await page.locator('[data-test="pengajuan-surat-dokumen-ktp-input"]').setInputFiles(
-            path.join(fixturesDir, 'invalid-sample.txt'),
-        );
+        await page
+            .locator(`[data-test="pengajuan-surat-dokumen-input-${ids['Fotokopi KTP']}"]`)
+            .setInputFiles(path.join(fixturesDir, 'invalid-sample.txt'));
 
-        // Tunggu Livewire selesai memproses unggahan sementara (tidak ada preview untuk file invalid).
         await page.waitForTimeout(2000);
 
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
 
-        await expect(page.getByText(/Format KTP harus JPG, PNG, atau PDF/i)).toBeVisible();
+        await expect(page.getByText(/Format Fotokopi KTP harus JPG, PNG, atau PDF/i)).toBeVisible();
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
     });
 });
@@ -303,7 +349,7 @@ test.describe('US-3.3 Validasi Kelengkapan Pengajuan', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP');
+        ensureJenisSurat(namaSurat, [{ nama: 'Fotokopi KTP', cara_pemenuhan: 'unggah', is_wajib: true }]);
 
         await loginAs(page, email);
         await page.goto('/pengajuan-surat');
@@ -312,7 +358,7 @@ test.describe('US-3.3 Validasi Kelengkapan Pengajuan', () => {
         await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill('Keperluan tanpa unggah KTP');
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
 
-        await expect(page.getByText(/Fotokopi KTP wajib diunggah/i)).toBeVisible();
+        await expect(page.getByText(/Dokumen Fotokopi KTP wajib diunggah/i)).toBeVisible();
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
     });
 
@@ -328,17 +374,18 @@ test.describe('US-3.3 Validasi Kelengkapan Pengajuan', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP\n- Fotokopi KK');
+        ensureJenisSurat(namaSurat, defaultKtpKkRows());
+        const ids = persyaratanIdsByNama(namaSurat);
 
         await loginAs(page, email);
         await page.goto('/pengajuan-surat');
 
         await selectJenisSuratByName(page, namaSurat);
-        await uploadKtpFile(page, path.join(fixturesDir, 'ktp-sample.jpg'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KTP'], path.join(fixturesDir, 'ktp-sample.jpg'));
         await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill('Keperluan hanya KTP, KK belum');
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
 
-        await expect(page.getByText(/Fotokopi Kartu Keluarga \(KK\) wajib diunggah/i)).toBeVisible();
+        await expect(page.getByText(/Dokumen Fotokopi KK wajib diunggah/i)).toBeVisible();
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
     });
 
@@ -354,14 +401,15 @@ test.describe('US-3.3 Validasi Kelengkapan Pengajuan', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP\n- Fotokopi KK');
+        ensureJenisSurat(namaSurat, defaultKtpKkRows());
+        const ids = persyaratanIdsByNama(namaSurat);
 
         await loginAs(page, email);
         await page.goto('/pengajuan-surat');
 
         await selectJenisSuratByName(page, namaSurat);
-        await uploadKtpFile(page, path.join(fixturesDir, 'ktp-sample.jpg'));
-        await uploadKkFile(page, path.join(fixturesDir, 'kk-sample.png'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KTP'], path.join(fixturesDir, 'ktp-sample.jpg'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KK'], path.join(fixturesDir, 'kk-sample.png'));
         await page.locator('[data-test="pengajuan-surat-keperluan-input"]').fill(`Keperluan lengkap ${stamp}`);
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
 

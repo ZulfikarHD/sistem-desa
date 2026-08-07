@@ -19,3 +19,6 @@ RiwayatPengajuan eager-loads suratTerbit tanggal_pengambilan + jam_kerja_label a
 
 ## US-7.6 unduh on riwayat and detail pickup display
 Riwayat shows Unduh Surat button when dapatUnduhSurat(). DetailPengajuanWarga loads suratTerbit and shows tanggal_pengambilan + jam_kerja_label when set, plus Unduh and Cetak buttons for allowed statuses.
+
+## Form pengajuan uses structured persyaratan rows
+US-9.3: FormPengajuanSurat reads jenis_surat_persyaratan for badges/slots/validation. dokumenFiles keyed by persyaratan id; store jenis_surat_persyaratan_id + jenis_dokumen=nama. Do not restore detectRequiredDokumenTypes() keyword logic. Optional unggah (is_wajib=false) must not block submit; bawa_kantor/info never get file inputs.

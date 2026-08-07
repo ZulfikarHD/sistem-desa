@@ -33,8 +33,7 @@ class JenisSuratFactory extends Factory
 
     /**
      * Setelah create, isi baris persyaratan terstruktur dari teks persyaratan_dokumen
-     * tanpa menimpa teks tersebut (tetap kompatibel dengan deteksi keyword Phase 03
-     * sampai US-9.3 menggantinya).
+     * (sumber aturan unggah form warga sejak US-9.3).
      */
     public function configure(): static
     {

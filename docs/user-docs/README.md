@@ -74,8 +74,8 @@ docs/user-docs/
 | 3 | [Lupa Password](guides/warga/03-password-reset.md) | Mereset password melalui email jika lupa |
 | 4 | [Persyaratan Dokumen](guides/warga/04-persyaratan-dokumen.md) | Melihat dokumen yang diperlukan per jenis surat |
 | 5 | [Pengajuan Surat](guides/warga/05-pengajuan-surat-form.md) | Mengajukan surat keterangan secara online |
-| 6 | [Unggah Dokumen Persyaratan](guides/warga/06-pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |
-| 7 | [Validasi Kelengkapan Pengajuan](guides/warga/07-pengajuan-surat-kelengkapan.md) | Memahami dokumen wajib dan pesan error sebelum kirim |
+| 6 | [Unggah Dokumen Persyaratan](guides/warga/06-pengajuan-surat-dokumen.md) | Cara mengunggah sesuai badge syarat (wajib / opsional / bawa kantor) |
+| 7 | [Validasi Kelengkapan Pengajuan](guides/warga/07-pengajuan-surat-kelengkapan.md) | Memahami dokumen wajib vs boleh dikosongkan sebelum kirim |
 | 8 | [Dashboard Warga](guides/warga/08-dashboard-warga.md) | Status surat aktif di halaman utama (alur + unduh + jadwal) |
 | 9 | [Notifikasi & Riwayat Pengajuan](guides/warga/09-notifikasi-pengajuan.md) | Melihat notifikasi perubahan status dan riwayat pengajuan |
 | 10 | [Unduh/Cetak Bukti Pengambilan](guides/warga/10-unduh-surat-warga.md) | Mengunduh bukti pengambilan berkas (bukan surat resmi) |

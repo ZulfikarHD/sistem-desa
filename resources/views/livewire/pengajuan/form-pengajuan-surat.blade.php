@@ -85,118 +85,131 @@
                 <flux:error name="keperluan" />
             </flux:field>
 
-            @if ($this->requiredDokumenTypes !== [])
-                <div class="space-y-4" data-test="pengajuan-surat-dokumen-section">
+            @if ($jenis_surat_id && $this->persyaratanRows->isEmpty())
+                <flux:callout icon="exclamation-triangle" variant="warning" data-test="pengajuan-surat-persyaratan-kosong">
+                    <flux:callout.heading>{{ __('Persyaratan Belum Diatur') }}</flux:callout.heading>
+                    <flux:callout.text>
+                        {{ __('Jenis surat ini belum punya daftar persyaratan. Silakan hubungi admin desa.') }}
+                    </flux:callout.text>
+                </flux:callout>
+            @endif
+
+            @if ($this->persyaratanRows->isNotEmpty())
+                <div class="space-y-4" data-test="pengajuan-surat-persyaratan-section">
                     <div>
-                        <flux:heading size="sm">{{ __('Unggah Dokumen Persyaratan') }}</flux:heading>
+                        <flux:heading size="sm">{{ __('Persyaratan') }}</flux:heading>
                         <flux:text class="mt-1">
-                            {{ __('Format yang diterima: JPG, PNG, atau PDF. Ukuran maksimum :size MB per file.', ['size' => number_format($maxFileSizeKb / 1024, 0)]) }}
+                            {{ __('Periksa setiap syarat di bawah. Badge mengikuti aturan yang diatur admin.') }}
                         </flux:text>
                     </div>
 
-                    @if (in_array(\App\Models\DokumenPersyaratan::JENIS_KTP, $this->requiredDokumenTypes, true))
-                        <flux:field>
-                            <flux:label>{{ __('Fotokopi KTP') }}</flux:label>
-                            <flux:input
-                                type="file"
-                                wire:model="dokumenKtp"
-                                accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
-                                data-test="pengajuan-surat-dokumen-ktp-input"
-                            />
-                            <flux:error name="dokumenKtp" />
-
-                            @if ($dokumenKtp)
-                                <div
-                                    class="mt-3 flex items-start gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
-                                    data-test="pengajuan-surat-dokumen-ktp-preview"
-                                >
-                                    @if (str_starts_with($dokumenKtp->getMimeType(), 'image/'))
-                                        <img
-                                            src="{{ $dokumenKtp->temporaryUrl() }}"
-                                            alt="{{ __('Preview KTP') }}"
-                                            class="h-20 w-20 rounded object-cover"
-                                        />
-                                    @else
-                                        <flux:icon.document class="size-10 text-zinc-400" />
-                                    @endif
-
-                                    <div class="min-w-0 flex-1">
-                                        <flux:text class="truncate font-medium">
-                                            {{ $dokumenKtp->getClientOriginalName() }}
-                                        </flux:text>
-                                        <flux:text class="text-sm">
-                                            {{ number_format($dokumenKtp->getSize() / 1024, 1) }} KB
-                                        </flux:text>
-                                    </div>
-
-                                    <flux:button
-                                        type="button"
-                                        variant="ghost"
+                    <ul class="space-y-3" data-test="pengajuan-surat-persyaratan-list">
+                        @foreach ($this->persyaratanRows as $syarat)
+                            <li
+                                class="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                                wire:key="persyaratan-{{ $syarat->id }}"
+                                data-test="pengajuan-surat-persyaratan-item-{{ $syarat->id }}"
+                                data-cara="{{ $syarat->cara_pemenuhan }}"
+                            >
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-sm font-medium" data-test="pengajuan-surat-persyaratan-nama-{{ $syarat->id }}">
+                                        {{ $syarat->nama }}
+                                    </span>
+                                    <flux:badge
+                                        :color="$syarat->badgeColor()"
                                         size="sm"
-                                        icon="x-mark"
-                                        wire:click="removeDokumenKtp"
-                                        data-test="pengajuan-surat-dokumen-ktp-remove"
+                                        data-test="pengajuan-surat-persyaratan-badge-{{ $syarat->id }}"
                                     >
-                                        {{ __('Hapus') }}
-                                    </flux:button>
+                                        {{ __($syarat->badgeLabel()) }}
+                                    </flux:badge>
                                 </div>
-                            @endif
-                        </flux:field>
-                    @endif
 
-                    @if (in_array(\App\Models\DokumenPersyaratan::JENIS_KK, $this->requiredDokumenTypes, true))
-                        <flux:field>
-                            <flux:label>{{ __('Fotokopi Kartu Keluarga (KK)') }}</flux:label>
-                            <flux:input
-                                type="file"
-                                wire:model="dokumenKk"
-                                accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
-                                data-test="pengajuan-surat-dokumen-kk-input"
-                            />
-                            <flux:error name="dokumenKk" />
+                                @if ($syarat->cara_pemenuhan === \App\Models\JenisSuratPersyaratan::CARA_BAWA_KANTOR)
+                                    <flux:text class="mt-2 text-sm" data-test="pengajuan-surat-bawa-kantor-help-{{ $syarat->id }}">
+                                        {{ __($bantuanBawaKantor) }}
+                                    </flux:text>
+                                @endif
 
-                            @if ($dokumenKk)
-                                <div
-                                    class="mt-3 flex items-start gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
-                                    data-test="pengajuan-surat-dokumen-kk-preview"
-                                >
-                                    @if (str_starts_with($dokumenKk->getMimeType(), 'image/'))
-                                        <img
-                                            src="{{ $dokumenKk->temporaryUrl() }}"
-                                            alt="{{ __('Preview KK') }}"
-                                            class="h-20 w-20 rounded object-cover"
-                                        />
-                                    @else
-                                        <flux:icon.document class="size-10 text-zinc-400" />
-                                    @endif
+                                @if ($syarat->cara_pemenuhan === \App\Models\JenisSuratPersyaratan::CARA_INFO)
+                                    <flux:text class="mt-2 text-sm" data-test="pengajuan-surat-info-help-{{ $syarat->id }}">
+                                        {{ __('Catatan informasi — tidak perlu diunggah maupun dibawa.') }}
+                                    </flux:text>
+                                @endif
 
-                                    <div class="min-w-0 flex-1">
-                                        <flux:text class="truncate font-medium">
-                                            {{ $dokumenKk->getClientOriginalName() }}
-                                        </flux:text>
-                                        <flux:text class="text-sm">
-                                            {{ number_format($dokumenKk->getSize() / 1024, 1) }} KB
-                                        </flux:text>
+                                @if ($syarat->cara_pemenuhan === \App\Models\JenisSuratPersyaratan::CARA_UNGGAH)
+                                    <div class="mt-3" data-test="pengajuan-surat-dokumen-slot-{{ $syarat->id }}">
+                                        <flux:field>
+                                            <flux:label>
+                                                {{ __('Unggah :nama', ['nama' => $syarat->nama]) }}
+                                                @unless ($syarat->is_wajib)
+                                                    <span class="font-normal text-zinc-500">({{ __('opsional') }})</span>
+                                                @endunless
+                                            </flux:label>
+                                            <flux:input
+                                                type="file"
+                                                wire:model="dokumenFiles.{{ $syarat->id }}"
+                                                accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
+                                                data-test="pengajuan-surat-dokumen-input-{{ $syarat->id }}"
+                                            />
+                                            <flux:error name="dokumenFiles.{{ $syarat->id }}" />
+
+                                            @if (! empty($dokumenFiles[$syarat->id]))
+                                                @php $file = $dokumenFiles[$syarat->id]; @endphp
+                                                <div
+                                                    class="mt-3 flex items-start gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                                                    data-test="pengajuan-surat-dokumen-preview-{{ $syarat->id }}"
+                                                >
+                                                    @if (str_starts_with($file->getMimeType(), 'image/'))
+                                                        <img
+                                                            src="{{ $file->temporaryUrl() }}"
+                                                            alt="{{ __('Preview :nama', ['nama' => $syarat->nama]) }}"
+                                                            class="h-20 w-20 rounded object-cover"
+                                                        />
+                                                    @else
+                                                        <flux:icon.document class="size-10 text-zinc-400" />
+                                                    @endif
+
+                                                    <div class="min-w-0 flex-1">
+                                                        <flux:text class="truncate font-medium">
+                                                            {{ $file->getClientOriginalName() }}
+                                                        </flux:text>
+                                                        <flux:text class="text-sm">
+                                                            {{ number_format($file->getSize() / 1024, 1) }} KB
+                                                        </flux:text>
+                                                    </div>
+
+                                                    <flux:button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        icon="x-mark"
+                                                        wire:click="removeDokumen({{ $syarat->id }})"
+                                                        data-test="pengajuan-surat-dokumen-remove-{{ $syarat->id }}"
+                                                    >
+                                                        {{ __('Hapus') }}
+                                                    </flux:button>
+                                                </div>
+                                            @endif
+                                        </flux:field>
                                     </div>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
 
-                                    <flux:button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        icon="x-mark"
-                                        wire:click="removeDokumenKk"
-                                        data-test="pengajuan-surat-dokumen-kk-remove"
-                                    >
-                                        {{ __('Hapus') }}
-                                    </flux:button>
-                                </div>
-                            @endif
-                        </flux:field>
+                    @if ($this->unggahPersyaratan->isNotEmpty())
+                        <div
+                            wire:loading
+                            wire:target="dokumenFiles"
+                            class="text-sm text-zinc-500"
+                            data-test="pengajuan-surat-dokumen-loading"
+                        >
+                            {{ __('Mengunggah file...') }}
+                        </div>
+                        <flux:text class="text-sm" data-test="pengajuan-surat-dokumen-section">
+                            {{ __('Format yang diterima: JPG, PNG, atau PDF. Ukuran maksimum :size MB per file.', ['size' => number_format($maxFileSizeKb / 1024, 0)]) }}
+                        </flux:text>
                     @endif
-
-                    <div wire:loading wire:target="dokumenKtp,dokumenKk" class="text-sm text-zinc-500">
-                        {{ __('Mengunggah file...') }}
-                    </div>
                 </div>
             @endif
 

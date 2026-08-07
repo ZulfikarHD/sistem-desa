@@ -21,7 +21,8 @@ class DetailPengajuanWarga extends Component
 
         $pengajuan->load([
             'jenisSurat:id,nama_surat,deskripsi',
-            'dokumenPersyaratan:id,pengajuan_id,jenis_dokumen,file_path',
+            'dokumenPersyaratan:id,pengajuan_id,jenis_surat_persyaratan_id,jenis_dokumen,file_path',
+            'dokumenPersyaratan.jenisSuratPersyaratan:id,nama',
             'suratTerbit:id,pengajuan_id,nomor_surat,file_path,tanggal_pengambilan,jam_kerja_label',
         ]);
 

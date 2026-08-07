@@ -20,6 +20,7 @@ class DokumenPersyaratanFactory extends Factory
     {
         return [
             'pengajuan_id' => PengajuanSurat::factory(),
+            'jenis_surat_persyaratan_id' => null,
             'jenis_dokumen' => fake()->randomElement([
                 DokumenPersyaratan::JENIS_KTP,
                 DokumenPersyaratan::JENIS_KK,

@@ -26,8 +26,8 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Persyaratan Dokumen Warga (US-2.2)](dev-docs/features/persyaratan-dokumen.md) | Warga browse + detail persyaratan dokumen |
 | [Akses Publik Persyaratan Dokumen (US-2.3)](dev-docs/features/persyaratan-dokumen-publik.md) | Guest browse persyaratan tanpa login + CTA daftar/login |
 | [Form Pengajuan Surat (US-3.1)](dev-docs/features/pengajuan-surat-form.md) | Warga submit pengajuan + auto nomor_pengajuan |
-| [Unggah Dokumen Persyaratan (US-3.2)](dev-docs/features/pengajuan-surat-dokumen.md) | KTP/KK upload, preview, private storage |
-| [Validasi Kelengkapan Pengajuan (US-3.3)](dev-docs/features/pengajuan-surat-kelengkapan.md) | Required-doc submit blocking + clear error messages |
+| [Unggah Dokumen Persyaratan (US-3.2 + US-9.3)](dev-docs/features/pengajuan-surat-dokumen.md) | Structured upload slots, preview, private storage |
+| [Validasi Kelengkapan (US-3.3 + US-9.3)](dev-docs/features/pengajuan-surat-kelengkapan.md) | Wajib vs opsional from `is_wajib` |
 | [Ajukan Ulang Setelah Ditolak (US-3.4)](dev-docs/features/pengajuan-surat-ajukan-ulang.md) | Resubmit ditolak pengajuan + riwayat page |
 | [Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4)](dev-docs/features/verifikasi-pengajuan.md) | Admin list, detail preview, setujui/tolak, log audit |
 | [Rename Daftar Pengajuan Surat (US-8.3)](dev-docs/features/daftar-pengajuan-surat-rename.md) | Label sidebar/heading: Verifikasi → Daftar Pengajuan Surat |

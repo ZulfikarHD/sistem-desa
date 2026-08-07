@@ -3,6 +3,7 @@
 use App\Livewire\Pengajuan\FormPengajuanSurat;
 use App\Models\DokumenPersyaratan;
 use App\Models\JenisSurat;
+use App\Models\JenisSuratPersyaratan;
 use App\Models\PengajuanSurat;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -164,7 +165,7 @@ test('create another resets success state', function () {
         ->assertSet('keperluan', '');
 });
 
-test('dokumen upload section appears for jenis surat with KTP and KK persyaratan', function () {
+test('dokumen upload section appears for jenis surat with structured unggah persyaratan', function () {
     $user = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
@@ -173,12 +174,13 @@ test('dokumen upload section appears for jenis surat with KTP and KK persyaratan
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
-        ->assertSee('Unggah Dokumen Persyaratan')
+        ->assertSee('Persyaratan')
         ->assertSee('Fotokopi KTP')
-        ->assertSee('Fotokopi Kartu Keluarga');
+        ->assertSee('Fotokopi KK')
+        ->assertSee('Wajib diunggah');
 });
 
-test('dokumen upload section detects kartu keluarga text as KK requirement', function () {
+test('dokumen upload section detects kartu keluarga text as KK requirement via structured rows', function () {
     $user = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi Kartu Keluarga",
@@ -190,13 +192,15 @@ test('dokumen upload section detects kartu keluarga text as KK requirement', fun
         ->assertSee('Fotokopi Kartu Keluarga');
 });
 
-test('warga can upload KTP and KK and files are stored on submit', function () {
+test('warga can upload dokumen and files are stored linked to persyaratan rows', function () {
     Storage::fake();
 
     $user = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
     ]);
+    $ktpSyarat = $jenisSurat->persyaratan()->where('nama', 'Fotokopi KTP')->firstOrFail();
+    $kkSyarat = $jenisSurat->persyaratan()->where('nama', 'Fotokopi KK')->firstOrFail();
     $ktpFile = UploadedFile::fake()->image('ktp.jpg');
     $kkFile = UploadedFile::fake()->image('kk.png');
 
@@ -204,8 +208,8 @@ test('warga can upload KTP and KK and files are stored on submit', function () {
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
         ->set('keperluan', 'Keperluan dengan dokumen lengkap')
-        ->set('dokumenKtp', $ktpFile)
-        ->set('dokumenKk', $kkFile)
+        ->set('dokumenFiles.'.$ktpSyarat->id, $ktpFile)
+        ->set('dokumenFiles.'.$kkSyarat->id, $kkFile)
         ->call('submit')
         ->assertHasNoErrors();
 
@@ -214,16 +218,18 @@ test('warga can upload KTP and KK and files are stored on submit', function () {
 
     $this->assertDatabaseHas('dokumen_persyaratan', [
         'pengajuan_id' => $pengajuan->id,
-        'jenis_dokumen' => DokumenPersyaratan::JENIS_KTP,
+        'jenis_surat_persyaratan_id' => $ktpSyarat->id,
+        'jenis_dokumen' => 'Fotokopi KTP',
     ]);
     $this->assertDatabaseHas('dokumen_persyaratan', [
         'pengajuan_id' => $pengajuan->id,
-        'jenis_dokumen' => DokumenPersyaratan::JENIS_KK,
+        'jenis_surat_persyaratan_id' => $kkSyarat->id,
+        'jenis_dokumen' => 'Fotokopi KK',
     ]);
 
     $ktpRecord = DokumenPersyaratan::query()
         ->where('pengajuan_id', $pengajuan->id)
-        ->where('jenis_dokumen', DokumenPersyaratan::JENIS_KTP)
+        ->where('jenis_surat_persyaratan_id', $ktpSyarat->id)
         ->first();
 
     Storage::assertExists($ktpRecord->file_path);
@@ -234,15 +240,16 @@ test('upload rejects invalid file format', function () {
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => '- Fotokopi KTP',
     ]);
+    $syarat = $jenisSurat->persyaratan()->firstOrFail();
     $invalidFile = UploadedFile::fake()->create('dokumen.txt', 100, 'text/plain');
 
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
         ->set('keperluan', 'Keperluan valid')
-        ->set('dokumenKtp', $invalidFile)
+        ->set('dokumenFiles.'.$syarat->id, $invalidFile)
         ->call('submit')
-        ->assertHasErrors(['dokumenKtp']);
+        ->assertHasErrors(['dokumenFiles.'.$syarat->id]);
 });
 
 test('upload rejects file larger than 2MB', function () {
@@ -250,15 +257,16 @@ test('upload rejects file larger than 2MB', function () {
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => '- Fotokopi KTP',
     ]);
+    $syarat = $jenisSurat->persyaratan()->firstOrFail();
     $largeFile = UploadedFile::fake()->create('ktp.jpg', FormPengajuanSurat::MAX_FILE_SIZE_KB + 1, 'image/jpeg');
 
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
         ->set('keperluan', 'Keperluan valid')
-        ->set('dokumenKtp', $largeFile)
+        ->set('dokumenFiles.'.$syarat->id, $largeFile)
         ->call('submit')
-        ->assertHasErrors(['dokumenKtp']);
+        ->assertHasErrors(['dokumenFiles.'.$syarat->id]);
 });
 
 test('changing jenis surat resets uploaded dokumen', function () {
@@ -271,61 +279,47 @@ test('changing jenis surat resets uploaded dokumen', function () {
         'nama_surat' => 'Surat Hanya KK',
         'persyaratan_dokumen' => '- Fotokopi KK',
     ]);
+    $ktpSyarat = $jenisKtp->persyaratan()->firstOrFail();
     $ktpFile = UploadedFile::fake()->image('ktp.jpg');
 
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisKtp->id)
-        ->set('dokumenKtp', $ktpFile)
-        ->assertSet('dokumenKtp', fn ($file) => $file !== null)
+        ->set('dokumenFiles.'.$ktpSyarat->id, $ktpFile)
+        ->assertSet('dokumenFiles.'.$ktpSyarat->id, fn ($file) => $file !== null)
         ->set('jenis_surat_id', $jenisKk->id)
-        ->assertSet('dokumenKtp', null)
-        ->assertSet('dokumenKk', null);
+        ->assertSet('dokumenFiles', []);
 });
 
-test('remove dokumen ktp clears preview state', function () {
+test('remove dokumen clears preview state', function () {
     $user = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => '- Fotokopi KTP',
     ]);
+    $syarat = $jenisSurat->persyaratan()->firstOrFail();
     $ktpFile = UploadedFile::fake()->image('ktp.jpg');
 
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
-        ->set('dokumenKtp', $ktpFile)
-        ->call('removeDokumenKtp')
-        ->assertSet('dokumenKtp', null);
+        ->set('dokumenFiles.'.$syarat->id, $ktpFile)
+        ->call('removeDokumen', $syarat->id)
+        ->assertSet('dokumenFiles', []);
 });
 
-test('submit fails when required KTP is not uploaded', function () {
+test('submit fails when required unggah syarat is not uploaded', function () {
     $user = User::factory()->create(['role' => 'warga']);
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => '- Fotokopi KTP',
     ]);
+    $syarat = $jenisSurat->persyaratan()->firstOrFail();
 
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
         ->set('keperluan', 'Keperluan tanpa KTP')
         ->call('submit')
-        ->assertHasErrors(['dokumenKtp' => 'required']);
-
-    expect(PengajuanSurat::query()->count())->toBe(0);
-});
-
-test('submit fails when required KK is not uploaded', function () {
-    $user = User::factory()->create(['role' => 'warga']);
-    $jenisSurat = JenisSurat::factory()->create([
-        'persyaratan_dokumen' => '- Fotokopi KK',
-    ]);
-
-    Livewire::actingAs($user)
-        ->test(FormPengajuanSurat::class)
-        ->set('jenis_surat_id', $jenisSurat->id)
-        ->set('keperluan', 'Keperluan tanpa KK')
-        ->call('submit')
-        ->assertHasErrors(['dokumenKk' => 'required']);
+        ->assertHasErrors(['dokumenFiles.'.$syarat->id => 'required']);
 
     expect(PengajuanSurat::query()->count())->toBe(0);
 });
@@ -337,15 +331,17 @@ test('submit fails when only one of two required dokumen is uploaded', function 
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
     ]);
+    $ktpSyarat = $jenisSurat->persyaratan()->where('nama', 'Fotokopi KTP')->firstOrFail();
+    $kkSyarat = $jenisSurat->persyaratan()->where('nama', 'Fotokopi KK')->firstOrFail();
     $ktpFile = UploadedFile::fake()->image('ktp.jpg');
 
     Livewire::actingAs($user)
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
         ->set('keperluan', 'Keperluan hanya KTP')
-        ->set('dokumenKtp', $ktpFile)
+        ->set('dokumenFiles.'.$ktpSyarat->id, $ktpFile)
         ->call('submit')
-        ->assertHasErrors(['dokumenKk' => 'required']);
+        ->assertHasErrors(['dokumenFiles.'.$kkSyarat->id => 'required']);
 
     expect(PengajuanSurat::query()->count())->toBe(0);
 });
@@ -357,6 +353,8 @@ test('submit succeeds only when all required dokumen are uploaded', function () 
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
     ]);
+    $ktpSyarat = $jenisSurat->persyaratan()->where('nama', 'Fotokopi KTP')->firstOrFail();
+    $kkSyarat = $jenisSurat->persyaratan()->where('nama', 'Fotokopi KK')->firstOrFail();
     $ktpFile = UploadedFile::fake()->image('ktp.jpg');
     $kkFile = UploadedFile::fake()->image('kk.png');
 
@@ -364,8 +362,8 @@ test('submit succeeds only when all required dokumen are uploaded', function () 
         ->test(FormPengajuanSurat::class)
         ->set('jenis_surat_id', $jenisSurat->id)
         ->set('keperluan', 'Keperluan lengkap')
-        ->set('dokumenKtp', $ktpFile)
-        ->set('dokumenKk', $kkFile)
+        ->set('dokumenFiles.'.$ktpSyarat->id, $ktpFile)
+        ->set('dokumenFiles.'.$kkSyarat->id, $kkFile)
         ->call('submit')
         ->assertHasNoErrors()
         ->assertSet('submittedNomor', fn (?string $nomor) => $nomor !== null);
@@ -373,4 +371,32 @@ test('submit succeeds only when all required dokumen are uploaded', function () 
     $pengajuan = PengajuanSurat::query()->first();
     expect($pengajuan?->status)->toBe(PengajuanSurat::STATUS_DIAJUKAN);
     expect(DokumenPersyaratan::query()->where('pengajuan_id', $pengajuan?->id)->count())->toBe(2);
+});
+
+test('form does not rely on keyword detection when persyaratan rows exist without KTP text', function () {
+    $user = User::factory()->create(['role' => 'warga']);
+    $jenisSurat = JenisSurat::factory()->create([
+        'persyaratan_dokumen' => '- Bukti pendukung',
+    ]);
+
+    // Timpa baris hasil parse: unggah wajib dengan nama tanpa kata KTP/KK.
+    $jenisSurat->syncPersyaratan([
+        [
+            'nama' => 'Bukti slip gaji',
+            'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
+            'is_wajib' => true,
+            'urutan' => 0,
+        ],
+    ]);
+
+    $syarat = $jenisSurat->persyaratan()->firstOrFail();
+
+    Livewire::actingAs($user)
+        ->test(FormPengajuanSurat::class)
+        ->set('jenis_surat_id', $jenisSurat->id)
+        ->assertSee('Bukti slip gaji')
+        ->assertSee('Wajib diunggah')
+        ->set('keperluan', 'Tanpa file')
+        ->call('submit')
+        ->assertHasErrors(['dokumenFiles.'.$syarat->id => 'required']);
 });

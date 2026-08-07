@@ -1,86 +1,80 @@
-# Unggah Dokumen Persyaratan (US-3.2)
+# Unggah Dokumen Persyaratan (US-3.2 + US-9.3)
 
 ## Overview
 
-Extends the warga submission form (`FormPengajuanSurat`) with conditional KTP/KK file upload areas derived from the selected `jenis_surat.persyaratan_dokumen` text. Uploaded files are validated (JPG/PNG/PDF, max 2MB), previewed before final submit, stored on the private `local` disk, and recorded in `dokumen_persyaratan` linked to the parent `pengajuan_surat` row.
+Extends the warga submission form (`FormPengajuanSurat`) with **dynamic upload slots** driven by structured `jenis_surat_persyaratan` rows (`cara_pemenuhan = unggah`). Labels follow each syarat’s `nama` (not hardcoded KTP/KK only). Files validate as JPG/PNG/PDF (max 2MB), preview before submit, store on the private `local` disk, and record in `dokumen_persyaratan` with `jenis_surat_persyaratan_id` plus `jenis_dokumen` = nama syarat.
 
-Completeness enforcement (reject submit when required docs are missing) is implemented in **US-3.3** via dynamic `required` rules on `dokumenKtp` / `dokumenKk`.
+Keyword scanning (`detectRequiredDokumenTypes`) is **removed**. Completeness uses `is_wajib` on unggah rows (US-3.3 / US-9.3).
 
 ## Architecture Diagram
 
 ```mermaid
 flowchart TD
-    A[Warga selects jenis_surat] --> B[detectRequiredDokumenTypes from persyaratan text]
-    B --> C[Show KTP/KK upload fields]
-    C --> D[wire:model file to Livewire temp storage]
-    D --> E[Preview via temporaryUrl or PDF icon]
-    E --> F[submit validates + creates pengajuan_surat]
-    F --> G[storeAs on local disk]
-    G --> H[Insert dokumen_persyaratan rows]
-    B --> I[(jenis_surat)]
-    F --> J[(pengajuan_surat)]
-    H --> K[(dokumen_persyaratan)]
+    A[Warga selects jenis_surat] --> B[Load jenis_surat_persyaratan ordered]
+    B --> C[Render badges for all rows]
+    C --> D{cara_pemenuhan}
+    D -->|unggah| E[Show file input + optional/wajib label]
+    D -->|bawa_kantor| F[Info checklist help text]
+    D -->|info| G[Informasi note]
+    E --> H[wire:model dokumenFiles.id]
+    H --> I[Preview temporaryUrl]
+    I --> J[submit validates per is_wajib]
+    J --> K[storeAs private disk]
+    K --> L[Insert dokumen_persyaratan + FK syarat]
 ```
 
 ## Data Model
 
 ```mermaid
 erDiagram
+    jenis_surat ||--o{ jenis_surat_persyaratan : has
     pengajuan_surat ||--o{ dokumen_persyaratan : has
-    pengajuan_surat {
-        int id PK
-        int user_id FK
-        int jenis_surat_id FK
-        string nomor_pengajuan UK
-        text keperluan
-        string status
-        date tanggal_pengajuan
-    }
+    jenis_surat_persyaratan ||--o{ dokumen_persyaratan : source
     dokumen_persyaratan {
         int id PK
         int pengajuan_id FK
-        string jenis_dokumen "KTP or KK"
+        int jenis_surat_persyaratan_id FK "nullable legacy"
+        string jenis_dokumen "nama syarat / legacy KTP|KK"
         string file_path
     }
 ```
 
-Unique constraint on `(pengajuan_id, jenis_dokumen)` prevents duplicate document type per submission.
+Unique constraint: `(pengajuan_id, jenis_surat_persyaratan_id)`.
 
 ## Key Files
 
 | Layer | File | Purpose |
 |-------|------|---------|
-| Livewire | `app/Livewire/Pengajuan/FormPengajuanSurat.php` | `WithFileUploads`, detection, validation, storage |
-| Blade | `resources/views/livewire/pengajuan/form-pengajuan-surat.blade.php` | Upload inputs, previews, loading state |
-| Model | `app/Models/DokumenPersyaratan.php` | Eloquent model + `JENIS_KTP` / `JENIS_KK` constants |
-| Model | `app/Models/PengajuanSurat.php` | `dokumenPersyaratan()` relationship |
-| Migration | `database/migrations/2026_08_06_074402_create_dokumen_persyaratan_table.php` | Creates `dokumen_persyaratan` table |
-| Factory | `database/factories/DokumenPersyaratanFactory.php` | Test data |
-| Pest | `tests/Feature/FormPengajuanSuratTest.php` | Upload, validation, preview state tests |
-| Playwright | `e2e/pengajuan-surat.spec.ts` | US-3.2 E2E flows + fixtures in `e2e/fixtures/` |
+| Livewire | `app/Livewire/Pengajuan/FormPengajuanSurat.php` | `dokumenFiles[]`, structured rules, storage |
+| Blade | `resources/views/livewire/pengajuan/form-pengajuan-surat.blade.php` | Badges, slots, bawa/info help |
+| Model | `app/Models/DokumenPersyaratan.php` | FK + `labelDokumen()` |
+| Model | `app/Models/JenisSuratPersyaratan.php` | `badgeLabel()` / `badgeColor()` |
+| Migration | `database/migrations/2026_08_07_055105_add_jenis_surat_persyaratan_id_to_dokumen_persyaratan_table.php` | FK + unique + widen `jenis_dokumen` |
+| Pest | `tests/Feature/FormPengajuanSuratTest.php`, `FormPengajuanPersyaratanTerstrukturTest.php` | Structured upload AC |
+| Playwright | `e2e/pengajuan-surat.spec.ts`, `e2e/pengajuan-persyaratan-terstruktur.spec.ts` | E2E US-3.2 / US-9.3 |
 
 ## Flow Explanation
 
-1. **User triggers** — warga selects a `jenis_surat` (live wire model). Component computes `requiredDokumenTypes` by scanning `persyaratan_dokumen` for `KTP` and `KK` / `Kartu Keluarga`.
-2. **Request handling** — conditional upload fields render. Files bind via `wire:model` to `$dokumenKtp` / `$dokumenKk`. Changing jenis surat resets uploads.
-3. **Business logic** — on `submit()`, files validate with `mimes:jpg,jpeg,png,pdf` and `max:2048`; required types also get `required` (US-3.3). Inside DB transaction: create `pengajuan_surat`, then `storeAs('pengajuan-dokumen/{id}/', ...)` on default disk, then insert `dokumen_persyaratan` with relative path.
-4. **Response** — image previews use `temporaryUrl()` before submit; PDF shows document icon + filename. Success flow unchanged from US-3.1.
+1. **User triggers** — warga selects `jenis_surat` (live). Component loads `persyaratanRows` / `unggahPersyaratan`.
+2. **Request handling** — list shows badges; file inputs only for `unggah`. Changing jenis resets `dokumenFiles`.
+3. **Business logic** — `submit()` validates each unggah slot (`required` iff `is_wajib`). Persist file under `pengajuan-dokumen/{id}/` and create `dokumen_persyaratan` linked to the syarat row.
+4. **Response** — preview before submit; success nomor unchanged from US-3.1.
 
 ## API Endpoints (if applicable)
 
-No new routes. Upload is handled via Livewire on existing `GET /pengajuan-surat` (`pengajuan-surat.create`).
+No new routes. Livewire on `GET /pengajuan-surat` (`pengajuan-surat.create`).
 
 ## Decisions & Trade-offs
 
-- **Text-based requirement detection** — Phase 02 stores free-text `persyaratan_dokumen`; keyword scan avoids schema change. See ADR-010.
-- **Private `local` disk** — identity documents must not be web-public; `storage/app/private` with `serve: true` for authorized access later (Phase 04).
-- **Required at submit (US-3.3)** — when KTP/KK detected in persyaratan text, corresponding upload is mandatory before save. See [pengajuan-surat-kelengkapan.md](pengajuan-surat-kelengkapan.md).
-- **Unique per pengajuan + jenis** — one KTP and one KK row max per submission.
+- **Structured rows as upload rules** — supersedes ADR-010 keyword detection (ADR-026 fully applied in US-9.3).
+- **Dynamic `dokumenFiles.{id}`** — supports any syarat name, not only KTP/KK.
+- **Private `local` disk** — unchanged from Phase 03.
+- **Optional unggah** — `is_wajib = false` does not block submit; bawa_kantor/info never require files.
 
 ## Related
 
-- Form header fields: [pengajuan-surat-form.md](pengajuan-surat-form.md)
+- Form header: [pengajuan-surat-form.md](pengajuan-surat-form.md)
+- Completeness: [pengajuan-surat-kelengkapan.md](pengajuan-surat-kelengkapan.md)
 - Master data: [jenis-surat.md](jenis-surat.md)
-- Completeness validation: [pengajuan-surat-kelengkapan.md](pengajuan-surat-kelengkapan.md)
-- User guide: [../../user-docs/guides/pengajuan-surat-dokumen.md](../../user-docs/guides/pengajuan-surat-dokumen.md)
-- ADR: [010-dokumen-persyaratan-text-detection-and-storage.md](../decisions/010-dokumen-persyaratan-text-detection-and-storage.md)
+- User guide: [../../user-docs/guides/warga/06-pengajuan-surat-dokumen.md](../../user-docs/guides/warga/06-pengajuan-surat-dokumen.md)
+- ADR-026: [026-persyaratan-terstruktur-supersede-keyword-upload.md](../decisions/026-persyaratan-terstruktur-supersede-keyword-upload.md)

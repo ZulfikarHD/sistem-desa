@@ -110,6 +110,26 @@ class JenisSuratPersyaratan extends Model
     }
 
     /**
+     * Warna Flux badge selaras pratinjau admin & form warga.
+     */
+    public function badgeColor(): string
+    {
+        return match ($this->cara_pemenuhan) {
+            self::CARA_UNGGAH => $this->is_wajib ? 'red' : 'amber',
+            self::CARA_BAWA_KANTOR => 'blue',
+            default => 'zinc',
+        };
+    }
+
+    /**
+     * Teks bantuan singkat di form warga untuk cara bawa ke kantor.
+     */
+    public static function bantuanBawaKantor(): string
+    {
+        return 'Siapkan berkas ini dan bawa saat diminta petugas / saat pengambilan.';
+    }
+
+    /**
      * Parse teks persyaratan lama menjadi baris terstruktur (sekali jalan / seeder).
      *
      * Aturan migrasi (ADR-026):

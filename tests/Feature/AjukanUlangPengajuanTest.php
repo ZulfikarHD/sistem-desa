@@ -1,7 +1,6 @@
 <?php
 
 use App\Livewire\Pengajuan\FormPengajuanSurat;
-use App\Models\DokumenPersyaratan;
 use App\Models\JenisSurat;
 use App\Models\PengajuanSurat;
 use App\Models\User;
@@ -69,6 +68,7 @@ test('resubmit creates new pengajuan record with new nomor and status diajukan',
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => '- Fotokopi KTP',
     ]);
+    $syarat = $jenisSurat->persyaratan()->firstOrFail();
 
     $pengajuanLama = PengajuanSurat::factory()->ditolak('Perbaiki dokumen')->create([
         'user_id' => $warga->id,
@@ -81,7 +81,7 @@ test('resubmit creates new pengajuan record with new nomor and status diajukan',
 
     Livewire::actingAs($warga)
         ->test(FormPengajuanSurat::class, ['pengajuan' => $pengajuanLama])
-        ->set('dokumenKtp', $ktpFile)
+        ->set('dokumenFiles.'.$syarat->id, $ktpFile)
         ->call('submit')
         ->assertHasNoErrors()
         ->assertSet('submittedNomor', fn (?string $nomor) => $nomor !== null && $nomor !== 'PJ-'.now()->format('Ymd').'-0500');
@@ -102,7 +102,8 @@ test('resubmit creates new pengajuan record with new nomor and status diajukan',
 
     $this->assertDatabaseHas('dokumen_persyaratan', [
         'pengajuan_id' => $pengajuanBaru->id,
-        'jenis_dokumen' => DokumenPersyaratan::JENIS_KTP,
+        'jenis_surat_persyaratan_id' => $syarat->id,
+        'jenis_dokumen' => 'Fotokopi KTP',
     ]);
 });
 
@@ -111,6 +112,7 @@ test('resubmit still requires mandatory dokumen upload', function () {
     $jenisSurat = JenisSurat::factory()->create([
         'persyaratan_dokumen' => '- Fotokopi KTP',
     ]);
+    $syarat = $jenisSurat->persyaratan()->firstOrFail();
 
     $pengajuan = PengajuanSurat::factory()->ditolak()->create([
         'user_id' => $warga->id,
@@ -120,7 +122,7 @@ test('resubmit still requires mandatory dokumen upload', function () {
     Livewire::actingAs($warga)
         ->test(FormPengajuanSurat::class, ['pengajuan' => $pengajuan])
         ->call('submit')
-        ->assertHasErrors(['dokumenKtp' => 'required']);
+        ->assertHasErrors(['dokumenFiles.'.$syarat->id => 'required']);
 
     expect(PengajuanSurat::query()->count())->toBe(1);
 });

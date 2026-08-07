@@ -76,19 +76,19 @@
                             class="flex flex-col gap-3"
                             data-test="verifikasi-detail-dokumen-{{ $dokumen->id }}"
                         >
-                            <flux:heading size="xs">{{ $dokumen->jenis_dokumen }}</flux:heading>
+                            <flux:heading size="xs">{{ $dokumen->labelDokumen() }}</flux:heading>
 
                             @if ($this->isPreviewableImage($dokumen))
                                 <img
                                     src="{{ route('verifikasi.dokumen.show', $dokumen) }}"
-                                    alt="{{ __('Pratinjau :jenis', ['jenis' => $dokumen->jenis_dokumen]) }}"
+                                    alt="{{ __('Pratinjau :jenis', ['jenis' => $dokumen->labelDokumen()]) }}"
                                     class="max-h-80 w-full rounded-lg border border-zinc-200 object-contain dark:border-zinc-700"
                                     data-test="verifikasi-detail-dokumen-preview-{{ $dokumen->id }}"
                                 />
                             @elseif ($this->isPreviewablePdf($dokumen))
                                 <iframe
                                     src="{{ route('verifikasi.dokumen.show', $dokumen) }}"
-                                    title="{{ __('Pratinjau :jenis', ['jenis' => $dokumen->jenis_dokumen]) }}"
+                                    title="{{ __('Pratinjau :jenis', ['jenis' => $dokumen->labelDokumen()]) }}"
                                     class="h-80 w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
                                     data-test="verifikasi-detail-dokumen-preview-{{ $dokumen->id }}"
                                 ></iframe>

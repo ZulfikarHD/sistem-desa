@@ -4,13 +4,17 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /**
- * US-3.4 — Ajukan Ulang Setelah Ditolak
- * Happy path: riwayat → Ajukan Ulang → form terisi → upload dokumen → nomor baru.
- * Edge/failure: tombol tidak muncul untuk status non-ditolak, submit tanpa dokumen gagal.
+ * US-3.4 — Ajukan Ulang Setelah Ditolak (regresi US-9.3: unggah mengikuti aturan terstruktur).
  */
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fixturesDir = path.join(projectRoot, 'e2e', 'fixtures');
+
+type PersyaratanRowInput = {
+    nama: string;
+    cara_pemenuhan: 'unggah' | 'bawa_kantor' | 'info';
+    is_wajib: boolean;
+};
 
 function uniqueNik(suffix: number): string {
     return `3205050505${String(suffix).padStart(6, '0')}`;
@@ -45,24 +49,65 @@ function ensureUser(options: {
     });
 }
 
+function rowsToPhpArray(rows: PersyaratanRowInput[]): string {
+    return (
+        '[' +
+        rows
+            .map(
+                (row, index) =>
+                    `[` +
+                    `'nama' => ${JSON.stringify(row.nama)}, ` +
+                    `'cara_pemenuhan' => ${JSON.stringify(row.cara_pemenuhan)}, ` +
+                    `'is_wajib' => ${row.is_wajib ? 'true' : 'false'}, ` +
+                    `'urutan' => ${index}` +
+                    `]`,
+            )
+            .join(', ') +
+        ']'
+    );
+}
+
 function ensureJenisSurat(
     namaSurat: string,
-    persyaratanDokumen = '- Fotokopi KTP\n- Fotokopi KK',
+    rows: PersyaratanRowInput[] = [
+        { nama: 'Fotokopi KTP', cara_pemenuhan: 'unggah', is_wajib: true },
+        { nama: 'Fotokopi KK', cara_pemenuhan: 'unggah', is_wajib: true },
+    ],
 ): void {
     const php = [
-        `\\App\\Models\\JenisSurat::updateOrCreate(`,
+        `\\App\\Models\\JenisSurat::query()->updateOrCreate(`,
         `['nama_surat' => ${JSON.stringify(namaSurat)}],`,
-        `[`,
-        `'deskripsi' => 'Deskripsi e2e ajukan ulang',`,
-        `'persyaratan_dokumen' => ${JSON.stringify(persyaratanDokumen)},`,
-        `]`,
-        `);`,
+        `['deskripsi' => 'Deskripsi e2e ajukan ulang', 'persyaratan_dokumen' => 'placeholder']`,
+        `)->syncPersyaratan(${rowsToPhpArray(rows)});`,
     ].join('');
 
     execSync(`php artisan tinker --execute ${JSON.stringify(php)}`, {
         cwd: projectRoot,
         stdio: 'pipe',
     });
+}
+
+function persyaratanIdsByNama(namaSurat: string): Record<string, number> {
+    const php = [
+        `echo json_encode(`,
+        `\\App\\Models\\JenisSurat::where('nama_surat', ${JSON.stringify(namaSurat)})`,
+        `->firstOrFail()`,
+        `->persyaratan()`,
+        `->pluck('id', 'nama')`,
+        `);`,
+    ].join('');
+
+    const output = execSync(`php artisan tinker --execute ${JSON.stringify(php)}`, {
+        cwd: projectRoot,
+        encoding: 'utf8',
+    });
+
+    const match = output.match(/\{[\s\S]*\}/);
+    if (!match) {
+        throw new Error(`Gagal membaca persyaratan IDs untuk ${namaSurat}: ${output}`);
+    }
+
+    return JSON.parse(match[0]) as Record<string, number>;
 }
 
 function seedDitolakPengajuan(options: {
@@ -125,16 +170,13 @@ async function loginAs(page: import('@playwright/test').Page, email: string, pas
     await page.locator('[data-test="login-button"]').click();
 }
 
-async function uploadKtpFile(page: import('@playwright/test').Page, filePath: string): Promise<void> {
-    await page.locator('[data-test="pengajuan-surat-dokumen-ktp-input"]').setInputFiles(filePath);
-    await expect(page.locator('[data-test="pengajuan-surat-dokumen-ktp-preview"]')).toBeVisible({
-        timeout: 30_000,
-    });
-}
-
-async function uploadKkFile(page: import('@playwright/test').Page, filePath: string): Promise<void> {
-    await page.locator('[data-test="pengajuan-surat-dokumen-kk-input"]').setInputFiles(filePath);
-    await expect(page.locator('[data-test="pengajuan-surat-dokumen-kk-preview"]')).toBeVisible({
+async function uploadDokumenBySyaratId(
+    page: import('@playwright/test').Page,
+    syaratId: number,
+    filePath: string,
+): Promise<void> {
+    await page.locator(`[data-test="pengajuan-surat-dokumen-input-${syaratId}"]`).setInputFiles(filePath);
+    await expect(page.locator(`[data-test="pengajuan-surat-dokumen-preview-${syaratId}"]`)).toBeVisible({
         timeout: 30_000,
     });
 }
@@ -156,6 +198,7 @@ test.describe('US-3.4 Ajukan Ulang Setelah Ditolak', () => {
             nik,
         });
         ensureJenisSurat(namaSurat);
+        const ids = persyaratanIdsByNama(namaSurat);
         seedDitolakPengajuan({
             email,
             namaSurat,
@@ -179,8 +222,8 @@ test.describe('US-3.4 Ajukan Ulang Setelah Ditolak', () => {
         await expect(page.locator('[data-test="pengajuan-surat-keperluan-input"]')).toHaveValue(keperluan);
         await expect(page.locator('[data-test="pengajuan-surat-dokumen-section"]')).toBeVisible();
 
-        await uploadKtpFile(page, path.join(fixturesDir, 'ktp-sample.jpg'));
-        await uploadKkFile(page, path.join(fixturesDir, 'kk-sample.png'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KTP'], path.join(fixturesDir, 'ktp-sample.jpg'));
+        await uploadDokumenBySyaratId(page, ids['Fotokopi KK'], path.join(fixturesDir, 'kk-sample.png'));
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
 
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toBeVisible();
@@ -203,7 +246,7 @@ test.describe('US-3.4 Ajukan Ulang Setelah Ditolak', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP');
+        ensureJenisSurat(namaSurat, [{ nama: 'Fotokopi KTP', cara_pemenuhan: 'unggah', is_wajib: true }]);
         seedDiajukanPengajuan({
             email,
             namaSurat,
@@ -231,7 +274,7 @@ test.describe('US-3.4 Ajukan Ulang Setelah Ditolak', () => {
             role: 'warga',
             nik,
         });
-        ensureJenisSurat(namaSurat, '- Fotokopi KTP');
+        ensureJenisSurat(namaSurat, [{ nama: 'Fotokopi KTP', cara_pemenuhan: 'unggah', is_wajib: true }]);
         seedDitolakPengajuan({
             email,
             namaSurat,
@@ -247,7 +290,7 @@ test.describe('US-3.4 Ajukan Ulang Setelah Ditolak', () => {
         await expect(page.locator('[data-test="pengajuan-surat-keperluan-input"]')).not.toHaveValue('');
         await page.locator('[data-test="pengajuan-surat-submit-button"]').click();
 
-        await expect(page.getByText(/Fotokopi KTP wajib diunggah/i)).toBeVisible();
+        await expect(page.getByText(/Dokumen Fotokopi KTP wajib diunggah/i)).toBeVisible();
         await expect(page.locator('[data-test="pengajuan-surat-success"]')).toHaveCount(0);
     });
 });

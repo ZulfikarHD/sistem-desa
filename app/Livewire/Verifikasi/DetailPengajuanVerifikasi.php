@@ -34,7 +34,7 @@ class DetailPengajuanVerifikasi extends Component
         $pengajuan->load([
             'user:id,name,nik,no_telepon,alamat',
             'jenisSurat:id,nama_surat,deskripsi,persyaratan_dokumen',
-            'dokumenPersyaratan',
+            'dokumenPersyaratan.jenisSuratPersyaratan:id,nama',
             'suratTerbit',
         ]);
 

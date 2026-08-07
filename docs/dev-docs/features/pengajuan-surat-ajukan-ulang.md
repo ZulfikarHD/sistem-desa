@@ -2,7 +2,7 @@
 
 ## Overview
 
-When a warga's submission is rejected (`status = ditolak`), they can resubmit from **Status & Riwayat Pengajuan** without re-entering all fields. The resubmit form pre-fills `jenis_surat_id` and `keperluan`, displays the previous `catatan_admin` as a reference callout, and requires fresh document uploads. Submit creates a **new** `pengajuan_surat` row with a new `nomor_pengajuan` and status `diajukan`; the original rejected record is unchanged.
+When a warga's submission is rejected (`status = ditolak`), they can resubmit from **Status & Riwayat Pengajuan** without re-entering all fields. The resubmit form pre-fills `jenis_surat_id` and `keperluan`, displays the previous `catatan_admin` as a reference callout, and requires fresh uploads following **current** structured `jenis_surat_persyaratan` rules (US-9.3). Submit creates a **new** `pengajuan_surat` row with a new `nomor_pengajuan` and status `diajukan`; the original rejected record is unchanged.
 
 This story also introduces a minimal **Riwayat Pengajuan** page (aligned with Phase 05 US-5.3 table requirements) because US-3.4 AC explicitly places the **Ajukan Ulang** button there.
 

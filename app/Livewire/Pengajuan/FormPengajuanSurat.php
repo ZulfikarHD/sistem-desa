@@ -4,10 +4,12 @@ namespace App\Livewire\Pengajuan;
 
 use App\Models\DokumenPersyaratan;
 use App\Models\JenisSurat;
+use App\Models\JenisSuratPersyaratan;
 use App\Models\PengajuanSurat;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -31,11 +33,12 @@ class FormPengajuanSurat extends Component
     /** Alasan/keperluan pengajuan surat. */
     public string $keperluan = '';
 
-    /** File KTP yang diunggah (sementara sebelum submit). */
-    public ?TemporaryUploadedFile $dokumenKtp = null;
-
-    /** File KK yang diunggah (sementara sebelum submit). */
-    public ?TemporaryUploadedFile $dokumenKk = null;
+    /**
+     * File sementara per ID baris syarat (cara = unggah).
+     *
+     * @var array<int|string, TemporaryUploadedFile|null>
+     */
+    public array $dokumenFiles = [];
 
     /** Nomor pengajuan setelah submit berhasil; null = form masih aktif. */
     public ?string $submittedNomor = null;
@@ -77,42 +80,44 @@ class FormPengajuanSurat extends Component
     }
 
     /**
-     * Hapus preview KTP.
+     * Hapus preview file untuk satu baris syarat.
      */
-    public function removeDokumenKtp(): void
+    public function removeDokumen(int $persyaratanId): void
     {
-        $this->dokumenKtp = null;
-        $this->resetValidation('dokumenKtp');
+        unset($this->dokumenFiles[$persyaratanId]);
+        $this->resetValidation('dokumenFiles.'.$persyaratanId);
     }
 
     /**
-     * Hapus preview KK.
-     */
-    public function removeDokumenKk(): void
-    {
-        $this->dokumenKk = null;
-        $this->resetValidation('dokumenKk');
-    }
-
-    /**
-     * Jenis dokumen wajib berdasarkan persyaratan jenis surat terpilih.
+     * Baris persyaratan terstruktur untuk jenis surat terpilih.
      *
-     * @return list<string>
+     * @return Collection<int, JenisSuratPersyaratan>
      */
     #[Computed]
-    public function requiredDokumenTypes(): array
+    public function persyaratanRows(): Collection
     {
         if ($this->jenis_surat_id === null) {
-            return [];
+            return collect();
         }
 
-        $jenisSurat = JenisSurat::query()->find($this->jenis_surat_id);
+        return JenisSuratPersyaratan::query()
+            ->where('jenis_surat_id', $this->jenis_surat_id)
+            ->orderBy('urutan')
+            ->orderBy('id')
+            ->get();
+    }
 
-        if ($jenisSurat === null) {
-            return [];
-        }
-
-        return $this->detectRequiredDokumenTypes($jenisSurat->persyaratan_dokumen);
+    /**
+     * Baris syarat yang perlu slot unggah di form.
+     *
+     * @return Collection<int, JenisSuratPersyaratan>
+     */
+    #[Computed]
+    public function unggahPersyaratan(): Collection
+    {
+        return $this->persyaratanRows
+            ->where('cara_pemenuhan', JenisSuratPersyaratan::CARA_UNGGAH)
+            ->values();
     }
 
     /**
@@ -120,7 +125,7 @@ class FormPengajuanSurat extends Component
      */
     public function submit(): void
     {
-        $validated = $this->validate($this->rules(), $this->messages());
+        $validated = $this->validate($this->rules(), $this->messages(), $this->validationAttributes());
 
         $attempts = 0;
 
@@ -142,7 +147,7 @@ class FormPengajuanSurat extends Component
                 });
 
                 $this->submittedNomor = $nomorPengajuan;
-                $this->reset(['jenis_surat_id', 'keperluan', 'dokumenKtp', 'dokumenKk']);
+                $this->reset(['jenis_surat_id', 'keperluan', 'dokumenFiles']);
                 $this->resetValidation();
 
                 Flux::toast(
@@ -172,7 +177,7 @@ class FormPengajuanSurat extends Component
         $this->resubmitFromId = null;
         $this->catatanAdminReferensi = null;
         $this->nomorPengajuanSebelumnya = null;
-        $this->reset(['jenis_surat_id', 'keperluan', 'dokumenKtp', 'dokumenKk']);
+        $this->reset(['jenis_surat_id', 'keperluan', 'dokumenFiles']);
         $this->resetValidation();
     }
 
@@ -181,12 +186,14 @@ class FormPengajuanSurat extends Component
      */
     protected function storeUploadedDokumen(PengajuanSurat $pengajuan): void
     {
-        if ($this->dokumenKtp !== null) {
-            $this->persistDokumenFile($pengajuan, DokumenPersyaratan::JENIS_KTP, $this->dokumenKtp);
-        }
+        foreach ($this->unggahPersyaratan as $syarat) {
+            $file = $this->dokumenFiles[$syarat->id] ?? null;
 
-        if ($this->dokumenKk !== null) {
-            $this->persistDokumenFile($pengajuan, DokumenPersyaratan::JENIS_KK, $this->dokumenKk);
+            if (! $file instanceof TemporaryUploadedFile) {
+                continue;
+            }
+
+            $this->persistDokumenFile($pengajuan, $syarat, $file);
         }
     }
 
@@ -195,40 +202,20 @@ class FormPengajuanSurat extends Component
      */
     protected function persistDokumenFile(
         PengajuanSurat $pengajuan,
-        string $jenisDokumen,
+        JenisSuratPersyaratan $syarat,
         TemporaryUploadedFile $file,
     ): void {
         $extension = $file->getClientOriginalExtension();
-        $filename = Str::lower($jenisDokumen).'_'.Str::uuid()->toString().'.'.$extension;
+        $filename = 'syarat_'.$syarat->id.'_'.Str::uuid()->toString().'.'.$extension;
         $directory = 'pengajuan-dokumen/'.$pengajuan->id;
         $path = $file->storeAs($directory, $filename);
 
         DokumenPersyaratan::query()->create([
             'pengajuan_id' => $pengajuan->id,
-            'jenis_dokumen' => $jenisDokumen,
+            'jenis_surat_persyaratan_id' => $syarat->id,
+            'jenis_dokumen' => $syarat->nama,
             'file_path' => $path,
         ]);
-    }
-
-    /**
-     * Deteksi KTP/KK dari teks persyaratan dokumen jenis surat.
-     *
-     * @return list<string>
-     */
-    protected function detectRequiredDokumenTypes(string $persyaratanDokumen): array
-    {
-        $text = strtoupper($persyaratanDokumen);
-        $required = [];
-
-        if (str_contains($text, 'KTP')) {
-            $required[] = DokumenPersyaratan::JENIS_KTP;
-        }
-
-        if (str_contains($text, 'KK') || str_contains($text, 'KARTU KELUARGA')) {
-            $required[] = DokumenPersyaratan::JENIS_KK;
-        }
-
-        return $required;
     }
 
     /**
@@ -236,9 +223,8 @@ class FormPengajuanSurat extends Component
      */
     protected function resetDokumenUploads(): void
     {
-        $this->dokumenKtp = null;
-        $this->dokumenKk = null;
-        $this->resetValidation(['dokumenKtp', 'dokumenKk']);
+        $this->dokumenFiles = [];
+        $this->resetValidation();
     }
 
     /**
@@ -295,24 +281,22 @@ class FormPengajuanSurat extends Component
             'max:'.self::MAX_FILE_SIZE_KB,
         ];
 
-        $dokumenKtpRules = in_array(DokumenPersyaratan::JENIS_KTP, $this->requiredDokumenTypes, true)
-            ? $requiredFileRules
-            : $optionalFileRules;
-
-        $dokumenKkRules = in_array(DokumenPersyaratan::JENIS_KK, $this->requiredDokumenTypes, true)
-            ? $requiredFileRules
-            : $optionalFileRules;
-
-        return [
+        $rules = [
             'jenis_surat_id' => [
                 'required',
                 'integer',
                 Rule::exists('jenis_surat', 'id')->whereNull('deleted_at'),
             ],
             'keperluan' => ['required', 'string', 'max:2000'],
-            'dokumenKtp' => $dokumenKtpRules,
-            'dokumenKk' => $dokumenKkRules,
         ];
+
+        foreach ($this->unggahPersyaratan as $syarat) {
+            $rules['dokumenFiles.'.$syarat->id] = $syarat->is_wajib
+                ? $requiredFileRules
+                : $optionalFileRules;
+        }
+
+        return $rules;
     }
 
     /**
@@ -322,20 +306,37 @@ class FormPengajuanSurat extends Component
      */
     protected function messages(): array
     {
-        return [
+        $messages = [
             'jenis_surat_id.required' => 'Jenis surat wajib dipilih.',
             'jenis_surat_id.exists' => 'Jenis surat tidak valid atau sudah tidak tersedia.',
             'keperluan.required' => 'Keperluan wajib diisi.',
             'keperluan.max' => 'Keperluan maksimal 2000 karakter.',
-            'dokumenKtp.required' => 'Fotokopi KTP wajib diunggah.',
-            'dokumenKtp.file' => 'File KTP harus berupa file yang valid.',
-            'dokumenKtp.mimes' => 'Format KTP harus JPG, PNG, atau PDF.',
-            'dokumenKtp.max' => 'Ukuran file KTP maksimal 2MB.',
-            'dokumenKk.required' => 'Fotokopi Kartu Keluarga (KK) wajib diunggah.',
-            'dokumenKk.file' => 'File KK harus berupa file yang valid.',
-            'dokumenKk.mimes' => 'Format KK harus JPG, PNG, atau PDF.',
-            'dokumenKk.max' => 'Ukuran file KK maksimal 2MB.',
+            'dokumenFiles.*.required' => 'Dokumen :attribute wajib diunggah.',
+            'dokumenFiles.*.file' => 'File :attribute harus berupa file yang valid.',
+            'dokumenFiles.*.mimes' => 'Format :attribute harus JPG, PNG, atau PDF.',
+            'dokumenFiles.*.max' => 'Ukuran file :attribute maksimal 2MB.',
         ];
+
+        return $messages;
+    }
+
+    /**
+     * Nama atribut dinamis per baris syarat (untuk pesan validasi).
+     *
+     * @return array<string, string>
+     */
+    protected function validationAttributes(): array
+    {
+        $attributes = [
+            'jenis_surat_id' => 'jenis surat',
+            'keperluan' => 'keperluan',
+        ];
+
+        foreach ($this->unggahPersyaratan as $syarat) {
+            $attributes['dokumenFiles.'.$syarat->id] = $syarat->nama;
+        }
+
+        return $attributes;
     }
 
     public function render(): View
@@ -345,6 +346,7 @@ class FormPengajuanSurat extends Component
                 ->orderBy('nama_surat')
                 ->get(['id', 'nama_surat']),
             'maxFileSizeKb' => self::MAX_FILE_SIZE_KB,
+            'bantuanBawaKantor' => JenisSuratPersyaratan::bantuanBawaKantor(),
         ])->layout('layouts::app');
     }
 }

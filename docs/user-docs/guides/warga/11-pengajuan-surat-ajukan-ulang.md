@@ -24,7 +24,7 @@ Jika pengajuan surat Anda **ditolak** oleh petugas desa, Anda tidak perlu mengis
 4. Form terbuka dengan:
    - **Jenis Surat** dan **Keperluan** sudah terisi dari pengajuan sebelumnya
    - Kotak peringatan berisi catatan admin dan nomor pengajuan lama
-5. **Unggah ulang** dokumen yang diminta (KTP/KK) jika perlu diperbaiki.
+5. **Unggah ulang** dokumen sesuai daftar persyaratan jenis surat terkini (badge wajib/opsional).
 6. Klik **Kirim Pengajuan**.
 7. Catat **nomor pengajuan baru** yang muncul — berbeda dari nomor sebelumnya.
 
@@ -37,7 +37,7 @@ Tombol **Ajukan Ulang** hanya muncul untuk status **Ditolak**. Pengajuan yang ma
 ## FAQ
 
 **Q: Apakah dokumen lama otomatis ikut?**
-A: Tidak. Anda perlu mengunggah ulang dokumen yang wajib (misalnya KTP/KK).
+A: Tidak. Anda perlu mengunggah ulang dokumen yang wajib menurut aturan jenis surat saat ini.
 
 **Q: Apakah nomor pengajuan lama masih dipakai?**
 A: Tidak. Sistem memberi **nomor pengajuan baru** untuk setiap ajukan ulang.

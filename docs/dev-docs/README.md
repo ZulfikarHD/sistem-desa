@@ -17,8 +17,8 @@ Technical documentation for contributors working on sistem-desa.
 | Persyaratan Dokumen Warga (US-2.2) | [features/persyaratan-dokumen.md](features/persyaratan-dokumen.md) |
 | Akses Publik Persyaratan Dokumen (US-2.3) | [features/persyaratan-dokumen-publik.md](features/persyaratan-dokumen-publik.md) |
 | Form Pengajuan Surat (US-3.1) | [features/pengajuan-surat-form.md](features/pengajuan-surat-form.md) |
-| Unggah Dokumen Persyaratan (US-3.2) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
-| Validasi Kelengkapan Pengajuan (US-3.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
+| Unggah Dokumen Persyaratan (US-3.2 + US-9.3) | [features/pengajuan-surat-dokumen.md](features/pengajuan-surat-dokumen.md) |
+| Validasi Kelengkapan Pengajuan (US-3.3 + US-9.3) | [features/pengajuan-surat-kelengkapan.md](features/pengajuan-surat-kelengkapan.md) |
 | Ajukan Ulang Setelah Ditolak (US-3.4) | [features/pengajuan-surat-ajukan-ulang.md](features/pengajuan-surat-ajukan-ulang.md) |
 | Verifikasi / Daftar Pengajuan (US-4.x + US-8.3/8.4) | [features/verifikasi-pengajuan.md](features/verifikasi-pengajuan.md) |
 | Rename Daftar Pengajuan Surat (US-8.3) | [features/daftar-pengajuan-surat-rename.md](features/daftar-pengajuan-surat-rename.md) |
@@ -63,7 +63,7 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [008](decisions/008-public-persyaratan-dokumen-access.md) | Public `/persyaratan-dokumen` + layouts/public for guests |
 | [009](decisions/009-pengajuan-surat-table-and-nomor-format.md) | `pengajuan_surat` naming + PJ-YYYYMMDD-#### nomor generation |
 | [010](decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | KTP/KK text detection + private file storage (rules → ADR-026) |
-| [026](decisions/026-persyaratan-terstruktur-supersede-keyword-upload.md) | Structured persyaratan rows supersede keyword upload rules |
+| [026](decisions/026-persyaratan-terstruktur-supersede-keyword-upload.md) | Structured persyaratan rows supersede keyword upload rules (form warga US-9.3) |
 | [011](decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only secure routes for dokumen preview/download |
 | [012](decisions/012-verifikasi-log-and-concurrent-lock.md) | `log_verifikasi` audit table + pessimistic locking |
 | [013](decisions/013-rekap-summary-filters-and-csv-bom.md) | Rekap summary ignores status filter; CSV UTF-8 BOM |

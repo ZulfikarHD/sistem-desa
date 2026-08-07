@@ -2,7 +2,7 @@
 
 ## Overview
 
-Admin/petugas desa manage master data for letter types (`jenis_surat`): list with search, create/edit (Flux modal), soft delete (archive), restore, and hard delete from archive. As of Phase 09, each jenis surat has **structured requirement rows** (`jenis_surat_persyaratan`) that control how warga fulfills each syarat (upload / bring to office / info only) and whether an upload is required. The free-text column `persyaratan_dokumen` remains as a **generated summary** for search and backward-compatible display. Form pengajuan upload slots still use keyword detection until US-9.3.
+Admin/petugas desa manage master data for letter types (`jenis_surat`): list with search, create/edit (Flux modal), soft delete (archive), restore, and hard delete from archive. As of Phase 09, each jenis surat has **structured requirement rows** (`jenis_surat_persyaratan`) that control how warga fulfills each syarat (upload / bring to office / info only) and whether an upload is required. The free-text column `persyaratan_dokumen` remains as a **generated summary** for search and backward-compatible display. **Form pengajuan (US-9.3) consumes these rows** for badges, upload slots, and wajib/opsional validation — keyword detection is no longer used.
 
 ## Architecture Diagram
 
@@ -86,7 +86,7 @@ No JSON API. Session web route only:
 ## Decisions & Trade-offs
 
 - **Table name `jenis_surat`** — matches Phase 02 data model literally (not Laravel’s default `jenis_surats`). See ADR-006.
-- **Structured rows as source of truth** — admin chooses upload vs bring-to-office explicitly; keyword magic superseded for **rules** (ADR-026). Form warga still keyword-based until US-9.3.
+- **Structured rows as source of truth** — admin chooses upload vs bring-to-office explicitly; keyword magic superseded for **rules** (ADR-026). Form warga consumes the same rows (US-9.3).
 - **`persyaratan_dokumen` kept as generated summary** — search + public/warga pages that still show free text stay non-empty.
 - **Default migrasi non-KTP/KK → `bawa_kantor`** — conservative; safer than forcing wrong uploads.
 - **Single page + modal** — one route / one Livewire component (architecture convention). No service/repository/enum files.

@@ -12,9 +12,9 @@
 
 ## Deskripsi
 
-Proses ini menggambarkan alur aktivitas saat warga yang sudah login mengajukan permohonan surat keterangan secara online. Proses mencakup pemilihan jenis surat, pengunggahan dokumen persyaratan (KTP/KK), pengisian keperluan, validasi kelengkapan oleh sistem, hingga nomor pengajuan diterbitkan.
+Proses ini menggambarkan alur aktivitas saat warga yang sudah login mengajukan permohonan surat keterangan secara online. Proses mencakup pemilihan jenis surat, daftar persyaratan ber-badge (unggah / bawa kantor / informasi), pengunggahan file hanya untuk syarat unggah, pengisian keperluan, validasi kelengkapan (`is_wajib`), hingga nomor pengajuan diterbitkan.
 
-**Prasyarat:** Warga sudah login dan admin telah mengisi master data jenis surat.
+**Prasyarat:** Warga sudah login dan admin telah mengisi master data jenis surat beserta baris persyaratan terstruktur.
 
 **Hasil:** Pengajuan tersimpan di sistem dengan nomor pengajuan unik (format: `PJ-YYYYMMDD-####`).
 
@@ -25,41 +25,33 @@ flowchart TD
     Start([Mulai]) --> A[Login sebagai warga]
     A --> B[Buka menu Pengajuan Surat dari sidebar]
     B --> C[Pilih Jenis Surat dari dropdown]
-    C --> D{Jenis surat memerlukan\ndokumen persyaratan?}
+    C --> D[Tampilkan daftar persyaratan + badge]
+    D --> E{Ada syarat cara unggah?}
 
-    D -->|"Ya — KTP dan/atau KK diperlukan"| E[Area unggah dokumen muncul]
-    E --> F[Klik Pilih file untuk KTP]
-    F --> G{Validasi file KTP}
-    G -->|"Format tidak valid\nbukan JPG/PNG/PDF"| H1[Tampilkan pesan error format]
-    H1 --> F
-    G -->|"Ukuran lebih dari 2 MB"| H2[Tampilkan pesan error ukuran]
-    H2 --> F
-    G -->|"File valid"| I[Pratinjau KTP ditampilkan]
-    I --> J{KK juga diperlukan?}
-    J -->|"Ya"| K[Klik Pilih file untuk KK]
-    K --> L{Validasi file KK}
-    L -->|"Tidak valid"| M[Tampilkan pesan error]
-    M --> K
-    L -->|"Valid"| N[Pratinjau KK ditampilkan]
-    J -->|"Tidak"| O
+    E -->|Ya| F[Tampilkan input file per syarat unggah]
+    F --> G[Unggah file wajib / opsional]
+    G --> H{Validasi file}
+    H -->|"Format/ukuran salah"| I[Tampilkan pesan error]
+    I --> G
+    H -->|"File valid"| J[Pratinjau ditampilkan]
 
-    D -->|"Tidak — tidak ada dokumen wajib"| O
-    N --> O[Isi kolom Keperluan]
+    E -->|Tidak| K
+    J --> K[Isi kolom Keperluan]
 
-    O --> P[Klik Kirim Pengajuan]
-    P --> Q{Validasi kelengkapan\noleh sistem}
-    Q -->|"Jenis surat belum dipilih"| R1[Tampilkan pesan error jenis surat]
-    R1 --> C
-    Q -->|"Keperluan belum diisi"| R2[Tampilkan pesan error keperluan]
-    R2 --> O
-    Q -->|"Dokumen wajib belum diunggah"| R3[Tampilkan pesan error dokumen]
-    R3 --> F
-    Q -->|"Semua lengkap"| S[Sistem simpan pengajuan]
-    S --> T["Sistem generate nomor pengajuan\nformat: PJ-YYYYMMDD-####"]
-    T --> U[Tampilkan halaman konfirmasi\ndengan nomor pengajuan]
-    U --> V{Ajukan surat lain?}
-    V -->|"Ya"| C
-    V -->|"Tidak"| End([Selesai])
+    K --> L[Klik Kirim Pengajuan]
+    L --> M{Validasi kelengkapan}
+    M -->|"Jenis surat belum dipilih"| N1[Error jenis surat]
+    N1 --> C
+    M -->|"Keperluan belum diisi"| N2[Error keperluan]
+    N2 --> K
+    M -->|"Syarat unggah wajib kosong"| N3[Error dokumen wajib]
+    N3 --> F
+    M -->|"Semua lengkap"| O[Sistem simpan pengajuan + metadata syarat]
+    O --> P["Generate nomor PJ-YYYYMMDD-####"]
+    P --> Q[Tampilkan konfirmasi nomor]
+    Q --> R{Ajukan surat lain?}
+    R -->|Ya| C
+    R -->|Tidak| End([Selesai])
 ```
 
 ## Penjelasan Alur
@@ -67,20 +59,18 @@ flowchart TD
 | Langkah | Aktivitas | Keterangan |
 |---------|-----------|------------|
 | 1 | Login | Warga harus sudah terautentikasi |
-| 2 | Pilih jenis surat | Dropdown berisi jenis surat aktif dari master data |
-| 3 | Unggah dokumen | Muncul hanya jika jenis surat memerlukan KTP/KK |
-| 4 | Validasi file | Sistem cek format (JPG/PNG/PDF) dan ukuran (maks. 2 MB) |
-| 5 | Isi keperluan | Deskripsi tujuan pengajuan surat |
-| 6 | Validasi kelengkapan | Sistem cek semua field wajib terisi |
-| 7 | Simpan & nomor | Pengajuan tersimpan, nomor unik digenerate |
-| 8 | Konfirmasi | Halaman konfirmasi dengan nomor pengajuan ditampilkan |
+| 2 | Pilih jenis surat | Dropdown jenis surat aktif |
+| 3 | Baca badge | Wajib diunggah / Boleh dikosongkan / Bawa ke kantor / Informasi |
+| 4 | Unggah dokumen | Hanya untuk cara **unggah**; label = nama syarat |
+| 5 | Validasi file | Format JPG/PNG/PDF, maks. 2 MB |
+| 6 | Isi keperluan | Tujuan pengajuan |
+| 7 | Validasi kelengkapan | Hanya syarat unggah wajib yang memblokir |
+| 8 | Simpan & nomor | Status `diajukan`, nomor unik |
 
 ## Kondisi Alternatif (Error)
 
 | Kondisi | Penyebab | Tindakan Sistem |
 |---------|----------|-----------------|
-| Format file tidak valid | File bukan JPG/PNG/PDF | Pesan error pada field unggah |
-| Ukuran file > 2 MB | File terlalu besar | Pesan error pada field unggah |
-| Jenis surat tidak dipilih | Field kosong | Pesan error validasi |
-| Keperluan tidak diisi | Field kosong | Pesan error validasi |
-| Dokumen wajib belum diunggah | File belum dipilih | Pesan error validasi |
+| Dokumen wajib kosong | Syarat unggah `is_wajib` tanpa file | Pesan “Dokumen {nama} wajib diunggah.” — tidak menyimpan |
+| Format/ukuran salah | Bukan JPG/PNG/PDF atau > 2 MB | Pesan error pada kolom file |
+| Jenis / keperluan kosong | Field wajib form | Pesan validasi Bahasa Indonesia |

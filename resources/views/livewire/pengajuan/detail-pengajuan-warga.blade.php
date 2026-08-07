@@ -127,7 +127,7 @@
                 <ul class="flex flex-col gap-2 text-sm" data-test="detail-pengajuan-warga-dokumen-list">
                     @foreach ($pengajuan->dokumenPersyaratan as $dokumen)
                         <li wire:key="detail-dokumen-{{ $dokumen->id }}">
-                            <flux:badge variant="neutral">{{ $dokumen->jenis_dokumen }}</flux:badge>
+                            <flux:badge variant="neutral">{{ $dokumen->labelDokumen() }}</flux:badge>
                             <span class="ms-2 text-zinc-600 dark:text-zinc-300">
                                 {{ basename($dokumen->file_path) }}
                             </span>
