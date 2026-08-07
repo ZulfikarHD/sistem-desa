@@ -179,3 +179,41 @@ test('siap diambil tanpa tanggal pengambilan tidak merender blok jadwal', functi
         ->assertSee('sudah siap diambil')
         ->assertDontSeeHtml('data-test="dashboard-warga-hero-jadwal-'.$pengajuan->id.'"');
 });
+
+test('banyak pengajuan aktif menampilkan CTA di atas daftar kartu', function () {
+    $warga = User::factory()->create(['role' => 'warga']);
+    PengajuanSurat::factory()->count(2)->create([
+        'user_id' => $warga->id,
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
+    ]);
+
+    $html = Livewire::actingAs($warga)
+        ->test(WargaDashboard::class)
+        ->html();
+
+    $ctaPos = strpos($html, 'data-test="dashboard-warga-ajukan-baru"');
+    $heroPos = strpos($html, 'data-test="dashboard-warga-hero"');
+
+    expect($ctaPos)->not->toBeFalse()
+        ->and($heroPos)->not->toBeFalse()
+        ->and($ctaPos)->toBeLessThan($heroPos);
+});
+
+test('satu pengajuan aktif menampilkan CTA di bawah kartu hero', function () {
+    $warga = User::factory()->create(['role' => 'warga']);
+    PengajuanSurat::factory()->create([
+        'user_id' => $warga->id,
+        'status' => PengajuanSurat::STATUS_DIAJUKAN,
+    ]);
+
+    $html = Livewire::actingAs($warga)
+        ->test(WargaDashboard::class)
+        ->html();
+
+    $ctaPos = strpos($html, 'data-test="dashboard-warga-ajukan-baru"');
+    $heroPos = strpos($html, 'data-test="dashboard-warga-hero"');
+
+    expect($ctaPos)->not->toBeFalse()
+        ->and($heroPos)->not->toBeFalse()
+        ->and($ctaPos)->toBeGreaterThan($heroPos);
+});

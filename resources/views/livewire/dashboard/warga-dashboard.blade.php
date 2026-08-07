@@ -1,33 +1,17 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4 p-4 md:p-6" data-test="dashboard-warga">
-    {{-- Header tipis + CTA dekat atas agar tidak terkubur di bawah daftar panjang --}}
-    <div class="flex flex-wrap items-center justify-between gap-2">
-        <div class="min-w-0">
-            <p class="text-xs font-medium uppercase tracking-wide text-zinc-400 dark:text-zinc-500" data-test="dashboard-warga-heading">
-                {{ __('Dashboard Warga') }}
-            </p>
-            <h1 class="truncate text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-                @if ($pengajuanAktif->isEmpty())
-                    {{ __('Mulai pengajuan surat Anda') }}
-                @elseif ($pengajuanAktif->count() === 1)
-                    {{ __('Status surat Anda') }}
-                @else
-                    {{ __('Status :count surat aktif', ['count' => $pengajuanAktif->count()]) }}
-                @endif
-            </h1>
-        </div>
-
-        @if ($pengajuanAktif->isNotEmpty())
-            <flux:button
-                size="sm"
-                variant="filled"
-                icon="document-plus"
-                :href="route('pengajuan-surat.create')"
-                wire:navigate
-                data-test="dashboard-warga-ajukan-baru"
-            >
-                {{ __('Ajukan Surat Baru') }}
-            </flux:button>
-        @endif
+    <div class="min-w-0">
+        <p class="text-xs font-medium uppercase tracking-wide text-zinc-400 dark:text-zinc-500" data-test="dashboard-warga-heading">
+            {{ __('Dashboard Warga') }}
+        </p>
+        <h1 class="truncate text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            @if ($pengajuanAktif->isEmpty())
+                {{ __('Mulai pengajuan surat Anda') }}
+            @elseif ($pengajuanAktif->count() === 1)
+                {{ __('Status surat Anda') }}
+            @else
+                {{ __('Status :count surat aktif', ['count' => $pengajuanAktif->count()]) }}
+            @endif
+        </h1>
     </div>
 
     @if ($unreadCount > 0)
@@ -46,6 +30,22 @@
             >
                 {{ __('Lihat notifikasi') }}
             </button>
+        </div>
+    @endif
+
+    {{-- >1 item: CTA tepat di atas daftar kartu --}}
+    @if ($pengajuanAktif->count() > 1)
+        <div data-test="dashboard-warga-quick-action">
+            <flux:button
+                size="sm"
+                variant="filled"
+                icon="document-plus"
+                :href="route('pengajuan-surat.create')"
+                wire:navigate
+                data-test="dashboard-warga-ajukan-baru"
+            >
+                {{ __('Ajukan Surat Baru') }}
+            </flux:button>
         </div>
     @endif
 
@@ -209,8 +209,21 @@
             @endforeach
         </section>
 
-        {{-- data-test quick-action tetap ada untuk kompatibilitas e2e lama --}}
-        <div class="sr-only" data-test="dashboard-warga-quick-action" aria-hidden="true"></div>
+        {{-- 1 item: CTA di bawah hero agar status tetap paling dominan --}}
+        @if ($pengajuanAktif->count() === 1)
+            <div data-test="dashboard-warga-quick-action">
+                <flux:button
+                    size="sm"
+                    variant="filled"
+                    icon="document-plus"
+                    :href="route('pengajuan-surat.create')"
+                    wire:navigate
+                    data-test="dashboard-warga-ajukan-baru"
+                >
+                    {{ __('Ajukan Surat Baru') }}
+                </flux:button>
+            </div>
+        @endif
     @endif
 
     <div class="grid gap-5 lg:grid-cols-2">
