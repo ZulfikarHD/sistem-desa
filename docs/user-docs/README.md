@@ -76,7 +76,7 @@ docs/user-docs/
 | 5 | [Pengajuan Surat](guides/warga/05-pengajuan-surat-form.md) | Mengajukan surat keterangan secara online |
 | 6 | [Unggah Dokumen Persyaratan](guides/warga/06-pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |
 | 7 | [Validasi Kelengkapan Pengajuan](guides/warga/07-pengajuan-surat-kelengkapan.md) | Memahami dokumen wajib dan pesan error sebelum kirim |
-| 8 | [Dashboard Warga](guides/warga/08-dashboard-warga.md) | Memantau status surat aktif di halaman utama |
+| 8 | [Dashboard Warga](guides/warga/08-dashboard-warga.md) | Status surat aktif di halaman utama (alur + unduh + jadwal) |
 | 9 | [Notifikasi & Riwayat Pengajuan](guides/warga/09-notifikasi-pengajuan.md) | Melihat notifikasi perubahan status dan riwayat pengajuan |
 | 10 | [Unduh/Cetak Surat](guides/warga/10-unduh-surat-warga.md) | Mengunduh atau mencetak PDF surat yang sudah diterbitkan |
 | 11 | [Ajukan Ulang Pengajuan](guides/warga/11-pengajuan-surat-ajukan-ulang.md) | Mengajukan ulang pengajuan yang sebelumnya ditolak |

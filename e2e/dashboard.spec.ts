@@ -235,7 +235,9 @@ test.describe('US-8.2 Dashboard Warga', () => {
         await loginAs(page, wargaEmail);
         await expect(page).toHaveURL(/\/dashboard$/);
         await expect(page.locator('[data-test="dashboard-warga-heading"]')).toBeVisible();
+        await expect(page.getByRole('heading', { name: /Status surat Anda/i })).toBeVisible();
         await expect(page.locator(`[data-test="dashboard-warga-hero-card-${pengajuanId}"]`)).toBeVisible();
+        await expect(page.locator(`[data-test="dashboard-warga-hero-alur-${pengajuanId}"]`)).toBeVisible();
         await expect(page.locator(`[data-test="dashboard-warga-hero-penjelasan-${pengajuanId}"]`)).toContainText(
             'sedang disiapkan',
         );
@@ -256,8 +258,10 @@ test.describe('US-8.2 Dashboard Warga', () => {
         });
 
         await loginAs(page, wargaEmail);
+        await expect(page.getByRole('heading', { name: /Mulai pengajuan surat Anda/i })).toBeVisible();
         await expect(page.locator('[data-test="dashboard-warga-hero-empty"]')).toBeVisible();
         await expect(page.locator('[data-test="dashboard-warga-cta-ajukan"]')).toBeVisible();
+        await expect(page.locator('[data-test="dashboard-warga-ajukan-baru"]')).toHaveCount(0);
     });
 
     test('banner notifikasi muncul saat ada notifikasi belum dibaca', async ({ page }) => {

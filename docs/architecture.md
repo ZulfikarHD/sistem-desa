@@ -173,7 +173,7 @@ Details: [dev-docs/features/generate-surat-pdf.md](dev-docs/features/generate-su
 ```mermaid
 flowchart LR
     Admin[Admin] --> AdminDash[AdminDashboard\naging cards + urgent queue]
-    Warga[Warga] --> WargaDash[WargaDashboard\nhero status + unduh]
+    Warga[Warga] --> WargaDash[WargaDashboard\nstatus-first hero + alur + unduh]
     Admin --> SuratDiproses[DaftarSuratDiproses]
     SuratDiproses --> DetailSuratDiproses[set tanggal pengambilan]
     Admin --> RekapTimeline[DetailRekapPengajuan\ntimeline proses]
@@ -182,14 +182,14 @@ flowchart LR
 | Story | Status |
 |-------|--------|
 | US-8.1 Dashboard Admin (aging + urgent) | Implemented |
-| US-8.2 Dashboard Warga (hero + unduh) | Implemented |
+| US-8.2 Dashboard Warga (status-first hero + unduh) | Implemented |
 | US-8.3 Rename Daftar Pengajuan Surat | Implemented |
 | US-8.4 Setujui Langsung Diproses | Implemented |
 | US-8.5 Halaman Surat Diproses (daftar) | Implemented |
 | US-8.6 Detail Surat Diproses + Siap Diambil | Implemented |
 | US-8.7 Rekap Timeline Detail | Implemented |
 
-Details: [dev-docs/features/dashboard-admin.md](dev-docs/features/dashboard-admin.md), [dev-docs/features/dashboard-warga.md](dev-docs/features/dashboard-warga.md), [dev-docs/features/surat-diproses.md](dev-docs/features/surat-diproses.md), [dev-docs/features/rekap-timeline.md](dev-docs/features/rekap-timeline.md), ADR-021, ADR-022, ADR-023.
+Details: [dev-docs/features/dashboard-admin.md](dev-docs/features/dashboard-admin.md), [dev-docs/features/dashboard-warga.md](dev-docs/features/dashboard-warga.md), [dev-docs/features/surat-diproses.md](dev-docs/features/surat-diproses.md), [dev-docs/features/rekap-timeline.md](dev-docs/features/rekap-timeline.md), ADR-021, ADR-022, ADR-023, ADR-025.
 
 ## Local seed accounts
 

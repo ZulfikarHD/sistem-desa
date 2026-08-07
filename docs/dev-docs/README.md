@@ -76,3 +76,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [021](decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated Surat Diproses pages + siap_diambil_at |
 | [022](decisions/022-dashboard-aging-and-status-helpers.md) | Dashboard aging helpers + component thresholds |
 | [023](decisions/023-rekap-timeline-detail-page.md) | Rekap timeline detail path + actor/fallback rules |
+| [025](decisions/025-warga-dashboard-status-first-ux.md) | Warga dashboard status-first UX redesign |

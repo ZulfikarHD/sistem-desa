@@ -39,7 +39,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Dokumen Siap Diambil (US-7.5)](dev-docs/features/dokumen-siap-diambil.md) | Admin set pickup date + jam kerja + notifikasi warga |
 | [Surat Diproses (US-8.5 & US-8.6)](dev-docs/features/surat-diproses.md) | Dedicated list/detail + Siap Diambil + siap_diambil_at |
 | [Dashboard Admin (US-8.1)](dev-docs/features/dashboard-admin.md) | Aging cards, urgent queue, active table |
-| [Dashboard Warga (US-8.2)](dev-docs/features/dashboard-warga.md) | Hero status, unduh, riwayat, notifikasi |
+| [Dashboard Warga (US-8.2)](dev-docs/features/dashboard-warga.md) | Status-first hero, alur, unduh, riwayat, notifikasi |
 | [Unduh/Cetak Surat Warga (US-7.6)](dev-docs/features/unduh-surat-warga.md) | Warga download/print issued PDF; hybrid lazy regen if file missing |
 | [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [Rekap Pengajuan & Reporting (US-6.1 – US-6.2)](dev-docs/features/rekap-pengajuan.md) | Admin filterable recap table, summary counts, CSV export |
@@ -68,6 +68,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-021: Surat Diproses page + siap_diambil_at](dev-docs/decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated list/detail; relocate Siap Diambil UI; timestamp for timeline |
 | [ADR-022: Dashboard aging helpers](dev-docs/decisions/022-dashboard-aging-and-status-helpers.md) | Component thresholds + PengajuanSurat status entered-at helpers |
 | [ADR-023: Rekap timeline detail page](dev-docs/decisions/023-rekap-timeline-detail-page.md) | Detail path under rekap-pengajuan; actor/fallback rules for timeline |
+| [ADR-025: Warga dashboard status-first UX](dev-docs/decisions/025-warga-dashboard-status-first-ux.md) | Status-focused H1, progress track, list riwayat |
 
 ## User Docs
 

@@ -140,3 +140,42 @@ test('warga hanya melihat pengajuan miliknya sendiri di hero', function () {
         ->assertSee($milik->nomor_pengajuan)
         ->assertDontSee($bukan->nomor_pengajuan);
 });
+
+test('hero menampilkan alur status dan judul fokus status surat', function () {
+    $warga = User::factory()->create(['role' => 'warga', 'name' => 'Budi Warga']);
+    $pengajuan = PengajuanSurat::factory()->create([
+        'user_id' => $warga->id,
+        'status' => PengajuanSurat::STATUS_DIPROSES,
+    ]);
+
+    Livewire::actingAs($warga)
+        ->test(WargaDashboard::class)
+        ->assertSee('Status surat Anda')
+        ->assertSee('Halo, Budi Warga')
+        ->assertSeeHtml('data-test="dashboard-warga-hero-alur-'.$pengajuan->id.'"')
+        ->assertSee('Diajukan')
+        ->assertSee('Diproses')
+        ->assertSee('Siap diambil');
+});
+
+test('siap diambil tanpa tanggal pengambilan tidak merender blok jadwal', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $pengajuan = PengajuanSurat::factory()->siapDiambil()->create([
+        'user_id' => $warga->id,
+        'diverifikasi_oleh' => $admin->id,
+    ]);
+    SuratTerbit::factory()->create([
+        'pengajuan_id' => $pengajuan->id,
+        'diterbitkan_oleh' => $admin->id,
+        'tanggal_pengambilan' => null,
+        'jam_kerja_label' => null,
+        'siap_diambil_at' => now('Asia/Jakarta'),
+        'file_path' => 'surat-terbit/'.$pengajuan->id.'/surat.pdf',
+    ]);
+
+    Livewire::actingAs($warga)
+        ->test(WargaDashboard::class)
+        ->assertSee('sudah siap diambil')
+        ->assertDontSeeHtml('data-test="dashboard-warga-hero-jadwal-'.$pengajuan->id.'"');
+});

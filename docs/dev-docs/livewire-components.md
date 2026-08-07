@@ -77,13 +77,13 @@ Key methods: `tangani(int $pengajuanId)` redirects to detail verifikasi; `lihatD
 | **Role** | `warga` |
 | **Stories** | US-1.2, US-8.2 |
 
-Displays the warga personal overview:
-- **Hero status card** — latest active pengajuan with status badge + unduh button
-- **Active pengajuan summary** — pengajuan that are not yet selesai/ditolak
-- **Riwayat shortcut** — link to full riwayat page
-- **Unread notifikasi count** — badge on bell icon
+Displays the warga personal overview (status-first):
+- **Hero status card** — active pengajuan with large status badge, progress track, penjelasan, unduh, and pickup schedule when relevant
+- **Empty state CTA** — Ajukan Surat Sekarang when no active submissions
+- **Riwayat list (3)** — jenis, nomor, status, tanggal with link to detail
+- **Notifikasi (3)** + unread banner — opens bell panel via `buka-panel-notifikasi`
 
-`penjelasanStatus(string $status)` returns a human-friendly explanation of each status for the warga.
+Helpers: `penjelasanStatus()`, `langkahAlur()`, `indeksLangkahAktif()`.
 
 ---
 
