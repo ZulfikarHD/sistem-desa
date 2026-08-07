@@ -1,7 +1,7 @@
 # Kelola Jenis Surat - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 3 dari 15 — Atur master data jenis surat sebelum warga bisa mengajukan.
+> **Urutan:** 4 dari 17 — Atur master data jenis surat sebelum warga bisa mengajukan.
 
 ## Apa itu Jenis Surat?
 

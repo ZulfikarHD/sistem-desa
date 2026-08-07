@@ -97,17 +97,18 @@ graph LR
 |---|---------|--------|
 | 1 | Login | [01-role-based-login.md](../../guides/admin/01-role-based-login.md) |
 | 2 | Dashboard Admin | [02-dashboard-admin.md](../../guides/admin/02-dashboard-admin.md) |
-| 3 | Kelola Jenis Surat | [03-jenis-surat.md](../../guides/admin/03-jenis-surat.md) |
-| 4 | Verifikasi Pengajuan | [04-verifikasi-pengajuan.md](../../guides/admin/04-verifikasi-pengajuan.md) |
-| 5 | Daftar Pengajuan & Alur Setujui | [05-daftar-pengajuan-dan-alur-setujui.md](../../guides/admin/05-daftar-pengajuan-dan-alur-setujui.md) |
-| 6 | Generate Surat PDF | [06-generate-surat-pdf.md](../../guides/admin/06-generate-surat-pdf.md) |
-| 7 | Nomor Surat Resmi | [07-nomor-surat-resmi.md](../../guides/admin/07-nomor-surat-resmi.md) |
-| 8 | Surat Diproses | [08-surat-diproses.md](../../guides/admin/08-surat-diproses.md) |
-| 9 | Dokumen Siap Diambil | [09-dokumen-siap-diambil.md](../../guides/admin/09-dokumen-siap-diambil.md) |
-| 10 | Scan QR Pengambilan | [10-qr-sekali-pakai.md](../../guides/admin/10-qr-sekali-pakai.md) |
-| 11 | Rekap Pengajuan | [11-rekap-pengajuan.md](../../guides/admin/11-rekap-pengajuan.md) |
-| 12 | Detail Rekap & Timeline (US-8.7) | [12-rekap-timeline.md](../../guides/admin/12-rekap-timeline.md) |
-| 13 | Migrasi Alur Status | [13-migrasi-alur-status.md](../../guides/admin/13-migrasi-alur-status.md) |
-| 14 | Proteksi Akses | [14-role-middleware.md](../../guides/admin/14-role-middleware.md) |
-| 15 | Manajemen Profil | [15-profile-management.md](../../guides/admin/15-profile-management.md) |
-| 16 | Lupa Password | [16-password-reset.md](../../guides/admin/16-password-reset.md) |
+| 3 | Pengaturan Desa | [03-pengaturan-desa.md](../../guides/admin/03-pengaturan-desa.md) |
+| 4 | Kelola Jenis Surat | [04-jenis-surat.md](../../guides/admin/04-jenis-surat.md) |
+| 5 | Verifikasi Pengajuan | [05-verifikasi-pengajuan.md](../../guides/admin/05-verifikasi-pengajuan.md) |
+| 6 | Daftar Pengajuan & Alur Setujui | [06-daftar-pengajuan-dan-alur-setujui.md](../../guides/admin/06-daftar-pengajuan-dan-alur-setujui.md) |
+| 7 | Generate Bukti Pengambilan PDF | [07-generate-surat-pdf.md](../../guides/admin/07-generate-surat-pdf.md) |
+| 8 | Nomor Surat Resmi | [08-nomor-surat-resmi.md](../../guides/admin/08-nomor-surat-resmi.md) |
+| 9 | Surat Diproses | [09-surat-diproses.md](../../guides/admin/09-surat-diproses.md) |
+| 10 | Dokumen Siap Diambil | [10-dokumen-siap-diambil.md](../../guides/admin/10-dokumen-siap-diambil.md) |
+| 11 | Scan QR Pengambilan | [11-qr-sekali-pakai.md](../../guides/admin/11-qr-sekali-pakai.md) |
+| 12 | Rekap Pengajuan | [12-rekap-pengajuan.md](../../guides/admin/12-rekap-pengajuan.md) |
+| 13 | Detail Rekap & Timeline (US-8.7) | [13-rekap-timeline.md](../../guides/admin/13-rekap-timeline.md) |
+| 14 | Migrasi Alur Status | [14-migrasi-alur-status.md](../../guides/admin/14-migrasi-alur-status.md) |
+| 15 | Proteksi Akses | [15-role-middleware.md](../../guides/admin/15-role-middleware.md) |
+| 16 | Manajemen Profil | [16-profile-management.md](../../guides/admin/16-profile-management.md) |
+| 17 | Lupa Password | [17-password-reset.md](../../guides/admin/17-password-reset.md) |

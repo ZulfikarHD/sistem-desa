@@ -8,7 +8,7 @@
 | **Nama Proses** | Verifikasi Pengajuan oleh Admin |
 | **Aktor** | Admin / Petugas Desa |
 | **Use Case Terkait** | UC-17, UC-22, UC-23, UC-24 |
-| **Panduan Pengguna** | [Verifikasi Pengajuan](../../guides/admin/04-verifikasi-pengajuan.md) · [Generate Surat PDF](../../guides/admin/06-generate-surat-pdf.md) |
+| **Panduan Pengguna** | [Verifikasi Pengajuan](../../guides/admin/05-verifikasi-pengajuan.md) · [Generate Bukti Pengambilan PDF](../../guides/admin/07-generate-surat-pdf.md) |
 
 ## Deskripsi
 

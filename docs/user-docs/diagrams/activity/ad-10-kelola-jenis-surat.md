@@ -8,7 +8,7 @@
 | **Nama Proses** | Kelola Master Jenis Surat |
 | **Aktor** | Admin / Petugas Desa |
 | **Use Case Terkait** | UC-16 |
-| **Panduan Pengguna** | [Kelola Jenis Surat](../../guides/admin/03-jenis-surat.md) |
+| **Panduan Pengguna** | [Kelola Jenis Surat](../../guides/admin/04-jenis-surat.md) |
 
 ## Deskripsi
 

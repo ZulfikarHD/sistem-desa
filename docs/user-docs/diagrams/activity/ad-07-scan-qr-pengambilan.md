@@ -8,7 +8,7 @@
 | **Nama Proses** | Pengambilan Surat dengan Scan QR |
 | **Aktor** | Admin / Petugas Desa |
 | **Use Case Terkait** | UC-20 |
-| **Panduan Pengguna** | [Scan QR Pengambilan](../../guides/admin/10-qr-sekali-pakai.md) |
+| **Panduan Pengguna** | [Scan QR Pengambilan](../../guides/admin/11-qr-sekali-pakai.md) |
 
 ## Deskripsi
 

@@ -89,7 +89,7 @@
                         :href="route('pengajuan-surat.unduh-surat', $pengajuan)"
                         data-test="detail-pengajuan-warga-unduh-surat"
                     >
-                        {{ __('Unduh Surat') }}
+                        {{ __('Unduh Bukti Pengambilan') }}
                     </flux:button>
                     <flux:button
                         variant="ghost"
@@ -98,7 +98,7 @@
                         target="_blank"
                         data-test="detail-pengajuan-warga-cetak-surat"
                     >
-                        {{ __('Cetak Surat') }}
+                        {{ __('Cetak Bukti Pengambilan') }}
                     </flux:button>
                 @endif
 

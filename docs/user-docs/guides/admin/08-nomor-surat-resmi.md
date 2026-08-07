@@ -1,7 +1,7 @@
 # Nomor Surat Resmi - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 7 dari 15 — Memahami format nomor surat resmi yang dibuat otomatis sistem.
+> **Urutan:** 8 dari 17 — Memahami format nomor surat resmi yang dibuat otomatis sistem.
 
 ## Apa itu Nomor Surat Resmi?
 

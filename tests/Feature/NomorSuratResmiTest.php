@@ -3,6 +3,7 @@
 use App\Livewire\Verifikasi\DetailPengajuanVerifikasi;
 use App\Models\JenisSurat;
 use App\Models\PengajuanSurat;
+use App\Models\PengaturanDesa;
 use App\Models\SuratTerbit;
 use App\Models\User;
 use Illuminate\Support\Carbon;
@@ -153,17 +154,20 @@ test('nomor surat is printed on the PDF template', function () {
         $admin->id,
     );
 
-    $html = view(SuratTerbit::resolveTemplateView($jenisSurat->nama_surat), [
+    $html = view(SuratTerbit::resolveTemplateView(), [
         'pengajuan' => $pengajuan->fresh(['user', 'jenisSurat']),
         'pemohon' => $warga,
         'jenisSurat' => $jenisSurat,
         'nomorSurat' => $surat->nomor_surat,
         'tanggalTerbit' => now(),
+        'tanggalPengambilan' => null,
+        'jamKerjaLabel' => null,
         'qrDataUri' => 'data:image/png;base64,xx',
-        'desa' => config('desa'),
+        'desa' => PengaturanDesa::untukSurat(),
     ])->render();
 
-    expect($html)->toContain('Nomor: '.$surat->nomor_surat)
+    expect($html)->toContain('Bukti Pengambilan Berkas')
+        ->and($html)->toContain('Referensi: '.$surat->nomor_surat)
         ->and($html)->toContain($surat->nomor_surat);
 
     Storage::disk('local')->assertExists($surat->file_path);

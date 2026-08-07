@@ -257,7 +257,6 @@ class PengajuanSurat extends Model
     public static function statusBolehUnduhSurat(): array
     {
         return [
-            self::STATUS_DIPROSES,
             self::STATUS_SIAP_DIAMBIL,
             self::STATUS_SELESAI,
         ];

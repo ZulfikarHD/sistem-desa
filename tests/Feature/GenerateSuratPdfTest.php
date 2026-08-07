@@ -74,19 +74,13 @@ test('rejecting pengajuan does not generate surat pdf or qr', function () {
     expect(Storage::disk('local')->allFiles())->toBe([]);
 });
 
-test('template resolver picks jenis-specific blade view', function () {
+test('template resolver always returns bukti pengambilan view', function () {
     expect(SuratTerbit::resolveTemplateView('Surat Keterangan Domisili'))
-        ->toBe('pdf.surat.keterangan-domisili')
-        ->and(SuratTerbit::resolveTemplateView('Surat Keterangan Tidak Mampu'))
-        ->toBe('pdf.surat.keterangan-tidak-mampu')
-        ->and(SuratTerbit::resolveTemplateView('Surat Keterangan Usaha'))
-        ->toBe('pdf.surat.keterangan-usaha')
+        ->toBe('pdf.surat.bukti-pengambilan')
         ->and(SuratTerbit::resolveTemplateView('Surat Keterangan Kelahiran'))
-        ->toBe('pdf.surat.keterangan-kelahiran')
-        ->and(SuratTerbit::resolveTemplateView('Surat Keterangan Kematian'))
-        ->toBe('pdf.surat.keterangan-kematian')
-        ->and(SuratTerbit::resolveTemplateView('Surat Lainnya'))
-        ->toBe('pdf.surat.default');
+        ->toBe('pdf.surat.bukti-pengambilan')
+        ->and(SuratTerbit::resolveTemplateView(null))
+        ->toBe('pdf.surat.bukti-pengambilan');
 });
 
 test('nomor surat increments sequentially within the same year', function () {

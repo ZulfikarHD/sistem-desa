@@ -7,6 +7,7 @@ use App\Models\JenisSurat;
 use App\Models\LogVerifikasi;
 use App\Models\Notifikasi;
 use App\Models\PengajuanSurat;
+use App\Models\PengaturanDesa;
 use App\Models\SuratTerbit;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -25,6 +26,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             JenisSuratSeeder::class,
         ]);
+
+        // Pastikan baris identitas desa ada (kop PDF / nomor surat).
+        PengaturanDesa::instance();
 
         // ---------------------------------------------------------------------------
         // DEMO / FACTORY DATA — disable or comment this out in production.

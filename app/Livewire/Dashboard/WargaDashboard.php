@@ -56,8 +56,8 @@ class WargaDashboard extends Component
         return match ($status) {
             PengajuanSurat::STATUS_DIAJUKAN => 'Pengajuan Anda sedang menunggu ditinjau oleh petugas desa.',
             PengajuanSurat::STATUS_DISETUJUI,
-            PengajuanSurat::STATUS_DIPROSES => 'Surat Anda sedang disiapkan oleh petugas. Anda dapat mengunduh surat sementara di bawah.',
-            PengajuanSurat::STATUS_SIAP_DIAMBIL => 'Surat Anda sudah siap diambil! Datanglah ke kantor desa pada jadwal berikut:',
+            PengajuanSurat::STATUS_DIPROSES => 'Surat Anda sedang disiapkan oleh petugas. Bukti pengambilan akan tersedia setelah petugas menetapkan jadwal siap diambil.',
+            PengajuanSurat::STATUS_SIAP_DIAMBIL => 'Berkas Anda sudah siap diambil! Datanglah ke kantor desa pada jadwal berikut dengan membawa bukti pengambilan:',
             default => PengajuanSurat::statusLabel($status),
         };
     }

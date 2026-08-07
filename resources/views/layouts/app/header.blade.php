@@ -103,6 +103,16 @@
                         </flux:sidebar.item>
 
                         <flux:sidebar.item
+                            icon="building-library"
+                            :href="route('pengaturan-desa.edit')"
+                            :current="request()->routeIs('pengaturan-desa.*')"
+                            wire:navigate
+                            data-test="sidebar-pengaturan-desa-mobile"
+                        >
+                            {{ __('Pengaturan Desa') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
                             icon="clipboard-document-check"
                             :href="route('verifikasi.index')"
                             :current="request()->routeIs('verifikasi.*')"

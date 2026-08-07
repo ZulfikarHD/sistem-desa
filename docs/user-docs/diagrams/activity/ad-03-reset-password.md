@@ -8,7 +8,7 @@
 | **Nama Proses** | Reset Password (Lupa Password) |
 | **Aktor** | Warga / Admin / Petugas Desa |
 | **Use Case Terkait** | UC-07 |
-| **Panduan Pengguna** | [Lupa Password Warga](../../guides/warga/03-password-reset.md) · [Lupa Password Admin](../../guides/admin/15-password-reset.md) |
+| **Panduan Pengguna** | [Lupa Password Warga](../../guides/warga/03-password-reset.md) · [Lupa Password Admin](../../guides/admin/17-password-reset.md) |
 
 ## Deskripsi
 

@@ -1,7 +1,7 @@
 # Dokumen Siap Diambil - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 9 dari 15 — Cara menetapkan jadwal pengambilan dan mengirim notifikasi ke warga.
+> **Urutan:** 10 dari 17 — Cara menetapkan jadwal pengambilan dan mengirim notifikasi ke warga.
 
 ## Apa itu Dokumen Siap Diambil?
 

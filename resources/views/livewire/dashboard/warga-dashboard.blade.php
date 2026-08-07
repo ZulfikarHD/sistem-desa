@@ -129,7 +129,7 @@
                                         data-test="dashboard-warga-unduh-{{ $pengajuan->id }}"
                                     >
                                         <span class="sm:hidden">{{ __('Unduh') }}</span>
-                                        <span class="hidden sm:inline">{{ __('Unduh Surat') }}</span>
+                                        <span class="hidden sm:inline">{{ __('Unduh Bukti Pengambilan') }}</span>
                                     </flux:button>
                                 @endif
                                 <flux:button

@@ -1,7 +1,7 @@
 # Manajemen Profil - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 14 dari 15 — Cara mengelola data profil akun petugas desa.
+> **Urutan:** 16 dari 17 — Cara mengelola data profil akun petugas desa.
 
 ## Apa itu Manajemen Profil?
 

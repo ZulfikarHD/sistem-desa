@@ -46,7 +46,7 @@ test('warga melihat hero status pengajuan aktif dengan penjelasan', function () 
         ->assertSee('Ajukan Surat Baru');
 });
 
-test('warga dengan status diproses melihat tombol unduh surat', function () {
+test('warga dengan status diproses tidak melihat tombol unduh bukti', function () {
     $admin = User::factory()->admin()->create();
     $warga = User::factory()->create(['role' => 'warga']);
     $pengajuan = PengajuanSurat::factory()->diproses()->create([
@@ -61,8 +61,30 @@ test('warga dengan status diproses melihat tombol unduh surat', function () {
 
     Livewire::actingAs($warga)
         ->test(WargaDashboard::class)
-        ->assertSee('Surat Anda sedang disiapkan oleh petugas')
-        ->assertSee('Unduh Surat')
+        ->assertSee('Bukti pengambilan akan tersedia')
+        ->assertDontSee('Unduh Bukti Pengambilan')
+        ->assertDontSeeHtml('data-test="dashboard-warga-unduh-'.$pengajuan->id.'"');
+});
+
+test('warga dengan status siap diambil melihat tombol unduh bukti', function () {
+    $admin = User::factory()->admin()->create();
+    $warga = User::factory()->create(['role' => 'warga']);
+    $pengajuan = PengajuanSurat::factory()->siapDiambil()->create([
+        'user_id' => $warga->id,
+        'diverifikasi_oleh' => $admin->id,
+    ]);
+    SuratTerbit::factory()->create([
+        'pengajuan_id' => $pengajuan->id,
+        'diterbitkan_oleh' => $admin->id,
+        'tanggal_pengambilan' => now('Asia/Jakarta')->nextWeekday()->toDateString(),
+        'jam_kerja_label' => 'Senin–Kamis 08.00–16.00 WIB',
+        'siap_diambil_at' => now('Asia/Jakarta'),
+        'file_path' => 'surat-terbit/'.$pengajuan->id.'/surat.pdf',
+    ]);
+
+    Livewire::actingAs($warga)
+        ->test(WargaDashboard::class)
+        ->assertSee('Unduh Bukti Pengambilan')
         ->assertSeeHtml('data-test="dashboard-warga-unduh-'.$pengajuan->id.'"');
 });
 

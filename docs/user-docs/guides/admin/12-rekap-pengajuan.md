@@ -1,7 +1,7 @@
 # Rekap Pengajuan - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 11 dari 15 — Cara memfilter rekap dan mengekspor laporan CSV.
+> **Urutan:** 12 dari 17 — Cara memfilter rekap dan mengekspor laporan CSV.
 
 ## Apa itu Rekap Pengajuan?
 

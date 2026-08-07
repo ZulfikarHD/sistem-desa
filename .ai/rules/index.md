@@ -12,6 +12,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | app/Http/Middleware/** | .ai/rules/middleware.md |
 | app/Models/User.php, app/Models/JenisSurat.php, app/Models/PengajuanSurat.php, app/Models/SuratTerbit.php | .ai/rules/models.md |
 | app/Livewire/Pengajuan/** | .ai/rules/pengajuan.md |
+| app/Livewire/Pengaturan/** | .ai/rules/pengaturan.md |
 | app/Livewire/Rekap/** | .ai/rules/rekap.md |
 | app/Http/Responses/** | .ai/rules/responses.md |
 | routes/web.php | .ai/rules/routes.md |
@@ -19,3 +20,4 @@ Before planning or editing, find the row whose globs match the file's path and r
 | resources/views/pages/settings/** | .ai/rules/settings.md |
 | app/Livewire/SuratDiproses/** | .ai/rules/surat-diproses.md |
 | app/Livewire/Verifikasi/** | .ai/rules/verifikasi.md |
+| app/Livewire/Pengaturan/**, app/Models/PengaturanDesa.php | .ai/rules/pengaturan.md |

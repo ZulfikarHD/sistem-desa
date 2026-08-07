@@ -1,7 +1,7 @@
 # Detail Rekap & Timeline Proses Pengajuan - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 12 dari 16 — Cara membaca riwayat lengkap proses tiap pengajuan.
+> **Urutan:** 13 dari 17 — Cara membaca riwayat lengkap proses tiap pengajuan.
 
 ## Apa itu Detail Rekap Timeline?
 

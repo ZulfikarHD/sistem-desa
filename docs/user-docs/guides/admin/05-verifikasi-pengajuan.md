@@ -1,7 +1,7 @@
 # Verifikasi / Daftar Pengajuan Surat - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 4 dari 15 — Cara memeriksa, menyetujui, atau menolak pengajuan warga.
+> **Urutan:** 5 dari 17 — Cara memeriksa, menyetujui, atau menolak pengajuan warga.
 
 ## Apa itu Daftar Pengajuan Surat?
 

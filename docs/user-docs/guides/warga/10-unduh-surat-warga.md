@@ -1,56 +1,43 @@
-# Unduh/Cetak Surat - Panduan Pengguna (Warga)
+# Unduh/Cetak Bukti Pengambilan - Panduan Pengguna (Warga)
 
 > **Kelompok Pengguna:** Warga
-> **Urutan:** 10 dari 12 — Cara mendapatkan file PDF surat yang sudah diterbitkan.
+> **Urutan:** 10 dari 12 — Cara mengunduh bukti untuk mengambil berkas di kantor desa.
 
-## Apa itu Unduh/Cetak Surat?
+## Apa itu Bukti Pengambilan?
 
-Setelah pengajuan Anda berstatus **Diproses**, **Siap Diambil**, atau **Selesai**, Anda dapat **mengunduh** file PDF surat keterangan yang sudah dibuat desa. Unduh ulang kapan saja — isi surat (nomor dan QR) tetap sama. Kode QR di surat **tidak** menjadi baru saat diunduh ulang.
+Setelah pengajuan berstatus **Siap Diambil** atau **Selesai**, Anda dapat mengunduh **Bukti Pengambilan Berkas** (PDF). Dokumen ini berisi data pengajuan, jadwal ambil, dan kode QR untuk petugas — **bukan** surat keterangan resmi.
 
-Jika admin sudah mengatur tanggal pengambilan, halaman **Detail** menampilkan tanggal dan jam kerja kantor desa.
+Saat status masih **Diproses**, tombol unduh belum muncul. Tunggu notifikasi siap diambil.
 
 ## Cara Menggunakan
 
-### Unduh dari Riwayat Pengajuan
+### Unduh dari Riwayat
 
-1. Buka halaman **Status & Riwayat Pengajuan**.
-2. Cari baris pengajuan berstatus **Diproses**, **Siap Diambil**, atau **Selesai**.
-3. Klik tombol **Unduh Surat**.
-4. File PDF tersimpan di perangkat Anda.
-
-> 💡 **Tips:** Tombol unduh tidak muncul untuk status **Diajukan** atau **Ditolak**.
+1. Buka **Status & Riwayat Pengajuan**.
+2. Cari pengajuan **Siap Diambil** atau **Selesai**.
+3. Klik **Unduh Bukti Pengambilan**.
 
 ### Unduh atau Cetak dari Detail
 
-1. Dari riwayat, klik **Detail**.
-2. Jika tanggal pengambilan sudah di-set, lihat bagian **Tanggal Pengambilan** dan **Jam Kerja**.
-3. Klik **Unduh Surat** untuk menyimpan PDF, atau **Cetak Surat** untuk membuka PDF di tab baru lalu cetak dari browser.
-
-### Unduh Ulang
-
-1. Ulangi langkah unduh kapan saja selama status masih Diproses / Siap Diambil / Selesai.
-2. Nomor surat dan QR tetap sama.
-3. QR tetap yang sama — setelah petugas scan sekali saat pengambilan, QR tidak bisa dipakai ulang.
+1. Buka **Detail** pengajuan.
+2. Lihat tanggal dan jam kerja pengambilan.
+3. Klik **Unduh Bukti Pengambilan** atau **Cetak Bukti Pengambilan**.
 
 ## FAQ
 
+**Q: Apakah ini surat keterangan resmi?**
+A: Tidak. Ini bukti untuk mengambil berkas di kantor desa.
+
 **Q: Apakah unduh membuat QR baru?**
-A: Tidak. Unduh selalu memakai QR yang sama dengan saat surat diterbitkan.
+A: Tidak. QR tetap sama; setelah dipindai petugas sekali, tidak bisa dipakai ulang.
 
-**Q: Kapan saya bisa mengunduh?**
-A: Setelah status **Diproses** (PDF sudah digenerate). Bisa juga saat **Siap Diambil** atau **Selesai**.
-
-**Q: Apa bedanya Unduh dan Cetak?**
-A: Unduh menyimpan file ke perangkat. Cetak membuka PDF di browser agar bisa dicetak.
-
-**Q: Bagaimana jika unduh sempat gagal lalu berhasil lagi?**
-A: Sistem dapat membuat ulang file PDF dari data surat yang sudah tersimpan (tanpa mengubah QR). Coba unduh lagi; jika tetap gagal, hubungi admin.
+**Q: Kenapa tidak ada tombol saat Diproses?**
+A: Jadwal pengambilan belum ditetapkan. Tunggu status **Siap Diambil**.
 
 ## Troubleshooting
 
 | Masalah | Solusi |
 |---------|--------|
-| Tombol Unduh tidak muncul | Pastikan status Diproses / Siap Diambil / Selesai; refresh halaman |
-| Unduh gagal / error | Coba lagi; jika berulang, hubungi admin (data surat mungkin belum lengkap) |
-| Tanggal pengambilan tidak tampil di detail | Admin belum menandai dokumen siap diambil; tunggu notifikasi |
-| QR ditolak saat pengambilan | QR hanya berlaku sekali; unduh ulang tidak mengembalikan QR ke valid |
+| Tombol unduh tidak muncul | Pastikan status Siap Diambil / Selesai |
+| Unduh gagal | Coba lagi; hubungi admin jika berulang |
+| QR ditolak saat pengambilan | QR hanya sekali pakai |

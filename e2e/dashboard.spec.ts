@@ -180,7 +180,7 @@ test.describe('US-8.1 Dashboard Admin', () => {
 });
 
 test.describe('US-8.2 Dashboard Warga', () => {
-    test('hero menampilkan status aktif, penjelasan, dan unduh untuk diproses', async ({ page }) => {
+    test('hero menampilkan status aktif dan penjelasan untuk diproses tanpa unduh', async ({ page }) => {
         const stamp = Date.now();
         const adminEmail = `admin.dash.warga.${stamp}@example.com`;
         const wargaEmail = `warga.dash.hero.${stamp}@example.com`;
@@ -241,7 +241,7 @@ test.describe('US-8.2 Dashboard Warga', () => {
         await expect(page.locator(`[data-test="dashboard-warga-hero-penjelasan-${pengajuanId}"]`)).toContainText(
             'sedang disiapkan',
         );
-        await expect(page.locator(`[data-test="dashboard-warga-unduh-${pengajuanId}"]`)).toBeVisible();
+        await expect(page.locator(`[data-test="dashboard-warga-unduh-${pengajuanId}"]`)).toHaveCount(0);
         await expect(page.locator('[data-test="dashboard-warga-ajukan-baru"]')).toBeVisible();
         await expect(page.locator('[data-test="dashboard-warga-riwayat-section"]')).toBeVisible();
     });

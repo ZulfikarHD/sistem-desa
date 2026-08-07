@@ -1,7 +1,7 @@
 # Scan QR Pengambilan - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 10 dari 15 — Cara memindai QR saat warga datang mengambil surat.
+> **Urutan:** 11 dari 17 — Cara memindai QR saat warga datang mengambil surat.
 
 ## Apa itu Scan QR Pengambilan?
 

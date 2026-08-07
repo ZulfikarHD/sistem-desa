@@ -135,7 +135,7 @@
                                         :href="route('pengajuan-surat.unduh-surat', $item)"
                                         data-test="riwayat-pengajuan-unduh-surat-{{ $item->id }}"
                                     >
-                                        {{ __('Unduh Surat') }}
+                                        {{ __('Unduh Bukti Pengambilan') }}
                                     </flux:button>
                                 @endif
 

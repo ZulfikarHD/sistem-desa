@@ -8,7 +8,7 @@
 | **Nama Proses** | Transisi Status Pengajuan Surat |
 | **Aktor** | Sistem (dipicu oleh Warga dan Admin) |
 | **Use Case Terkait** | UC-09, UC-17, UC-19, UC-20, UC-14 |
-| **Panduan Pengguna** | [Migrasi Alur Status](../../guides/admin/12-migrasi-alur-status.md) |
+| **Panduan Pengguna** | [Migrasi Alur Status](../../guides/admin/14-migrasi-alur-status.md) |
 
 ## Deskripsi
 

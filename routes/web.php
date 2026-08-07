@@ -7,6 +7,7 @@ use App\Livewire\JenisSurat\PersyaratanDokumen;
 use App\Livewire\Pengajuan\DetailPengajuanWarga;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
 use App\Livewire\Pengajuan\RiwayatPengajuan;
+use App\Livewire\Pengaturan\FormPengaturanDesa;
 use App\Livewire\Rekap\DetailRekapPengajuan;
 use App\Livewire\Rekap\RekapPengajuan;
 use App\Livewire\SuratDiproses\DaftarSuratDiproses;
@@ -87,6 +88,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // US-2.1 — Kelola Data Jenis Surat
         Route::livewire('jenis-surat', DataJenisSurat::class)->name('jenis-surat.index');
+
+        // Identitas desa (kop bukti pengambilan + kode nomor surat)
+        Route::livewire('pengaturan-desa', FormPengaturanDesa::class)->name('pengaturan-desa.edit');
 
         // US-4.1 + US-4.2 — Verifikasi pengajuan (daftar & detail)
         Route::livewire('verifikasi', DaftarPengajuanVerifikasi::class)->name('verifikasi.index');

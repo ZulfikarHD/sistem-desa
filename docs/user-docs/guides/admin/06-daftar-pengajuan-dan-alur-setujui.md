@@ -1,7 +1,7 @@
 # Daftar Pengajuan Surat & Alur Setujui - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 5 dari 15 — Memahami perubahan nama menu dan alur setujui langsung diproses.
+> **Urutan:** 6 dari 17 — Memahami perubahan nama menu dan alur setujui langsung diproses.
 
 ## Apa itu fitur ini?
 

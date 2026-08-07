@@ -1,7 +1,7 @@
 # Surat Diproses & Siap Diambil - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 8 dari 15 — Kelola surat yang sedang diproses dan tandai siap diambil.
+> **Urutan:** 9 dari 17 — Kelola surat yang sedang diproses dan tandai siap diambil.
 
 ## Apa itu Surat Diproses?
 

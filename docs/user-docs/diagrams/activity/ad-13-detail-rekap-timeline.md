@@ -9,7 +9,7 @@
 | **Aktor** | Admin / Petugas Desa |
 | **Use Case Terkait** | UC-21 (ekstensi) |
 | **Fitur** | US-8.7 |
-| **Panduan Pengguna** | [Detail Rekap & Timeline](../../guides/admin/12-rekap-timeline.md) |
+| **Panduan Pengguna** | [Detail Rekap & Timeline](../../guides/admin/13-rekap-timeline.md) |
 
 ## Deskripsi
 

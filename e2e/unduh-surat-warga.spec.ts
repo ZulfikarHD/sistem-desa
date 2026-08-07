@@ -155,7 +155,7 @@ async function loginAs(page: import('@playwright/test').Page, email: string, pas
 }
 
 test.describe('US-7.6 Unduh/Cetak Surat Warga', () => {
-    test('warga unduh surat dari riwayat untuk status diproses tanpa regenerasi QR', async ({ page }) => {
+    test('warga unduh bukti dari riwayat untuk status siap_diambil tanpa regenerasi QR', async ({ page }) => {
         const stamp = Date.now();
         const adminEmail = `admin.unduh.ok.${stamp}@example.com`;
         const wargaEmail = `warga.unduh.ok.${stamp}@example.com`;
@@ -184,7 +184,9 @@ test.describe('US-7.6 Unduh/Cetak Surat Warga', () => {
             adminId,
             jenisSuratId: jenisId,
             nomorPengajuan: nomor,
-            status: 'diproses',
+            status: 'siap_diambil',
+            tanggalPengambilan: '2100-08-12',
+            jamKerjaLabel: 'Senin–Kamis 08.00–16.00 WIB',
         });
 
         const sebelum = getQrSnapshot(pengajuanId);
@@ -194,6 +196,7 @@ test.describe('US-7.6 Unduh/Cetak Surat Warga', () => {
 
         const unduh = page.locator(`[data-test="riwayat-pengajuan-unduh-surat-${pengajuanId}"]`);
         await expect(unduh).toBeVisible();
+        await expect(unduh).toContainText(/Bukti Pengambilan/);
 
         const downloadPromise = page.waitForEvent('download');
         await unduh.click();
@@ -367,23 +370,34 @@ test.describe('US-7.6 Unduh/Cetak Surat Warga', () => {
             status: 'diajukan',
         });
 
-        const diprosesId = seedPengajuanDenganSurat({
+        const siapId = seedPengajuanDenganSurat({
             wargaId,
             adminId,
             jenisSuratId: jenisId,
             nomorPengajuan: `PJ-E2E-UNDUH-${stamp}-3b`,
+            status: 'siap_diambil',
+            tanggalPengambilan: '2100-08-12',
+            jamKerjaLabel: 'Senin–Kamis 08.00–16.00 WIB',
+        });
+
+        const diprosesId = seedPengajuanDenganSurat({
+            wargaId,
+            adminId,
+            jenisSuratId: jenisId,
+            nomorPengajuan: `PJ-E2E-UNDUH-${stamp}-3c`,
             status: 'diproses',
         });
 
         await loginAs(page, wargaEmail);
         await page.goto('/riwayat-pengajuan');
         await expect(page.locator(`[data-test="riwayat-pengajuan-unduh-surat-${diajukanId}"]`)).toHaveCount(0);
-        await expect(page.locator(`[data-test="riwayat-pengajuan-unduh-surat-${diprosesId}"]`)).toBeVisible();
+        await expect(page.locator(`[data-test="riwayat-pengajuan-unduh-surat-${diprosesId}"]`)).toHaveCount(0);
+        await expect(page.locator(`[data-test="riwayat-pengajuan-unduh-surat-${siapId}"]`)).toBeVisible();
 
         const otherContext = await browser.newContext();
         const otherPage = await otherContext.newPage();
         await loginAs(otherPage, otherEmail);
-        const response = await otherPage.goto(`/pengajuan-surat/${diprosesId}/unduh-surat`);
+        const response = await otherPage.goto(`/pengajuan-surat/${siapId}/unduh-surat`);
         expect(response?.status()).toBe(403);
         await otherContext.close();
     });

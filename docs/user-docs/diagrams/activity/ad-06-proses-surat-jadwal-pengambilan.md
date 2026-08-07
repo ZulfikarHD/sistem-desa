@@ -8,7 +8,7 @@
 | **Nama Proses** | Proses Surat dan Penetapan Jadwal Pengambilan |
 | **Aktor** | Admin / Petugas Desa |
 | **Use Case Terkait** | UC-18, UC-19, UC-24 |
-| **Panduan Pengguna** | [Surat Diproses](../../guides/admin/08-surat-diproses.md) · [Dokumen Siap Diambil](../../guides/admin/09-dokumen-siap-diambil.md) |
+| **Panduan Pengguna** | [Surat Diproses](../../guides/admin/09-surat-diproses.md) · [Dokumen Siap Diambil](../../guides/admin/10-dokumen-siap-diambil.md) |
 
 ## Deskripsi
 

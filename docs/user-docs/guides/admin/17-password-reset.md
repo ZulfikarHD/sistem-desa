@@ -1,7 +1,7 @@
 # Lupa Password (Reset Password) - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 15 dari 15 — Cara mereset password akun petugas desa melalui email.
+> **Urutan:** 17 dari 17 — Cara mereset password akun petugas desa melalui email.
 
 ## Apa itu Lupa Password?
 

@@ -123,8 +123,9 @@ class SuratTerbit extends Model
         $tanggal ??= now();
         $tahun = $tanggal->format('Y');
         $bulanRomawi = self::bulanRomawi((int) $tanggal->format('n'));
-        $kodeKlasifikasi = (string) config('desa.kode_klasifikasi', '470');
-        $kodeDesa = (string) config('desa.kode_desa', 'DS-WDN');
+        $desa = PengaturanDesa::untukSurat();
+        $kodeKlasifikasi = (string) ($desa['kode_klasifikasi'] ?? '470');
+        $kodeDesa = (string) ($desa['kode_desa'] ?? 'DS-WDN');
         $suffix = '/'.$kodeDesa.'/'.$bulanRomawi.'/'.$tahun;
 
         $maxUrut = static::query()
@@ -152,10 +153,11 @@ class SuratTerbit extends Model
     public static function nomorSuratPattern(?CarbonInterface $tanggal = null): string
     {
         $tanggal ??= now();
+        $desa = PengaturanDesa::untukSurat();
         $tahun = $tanggal->format('Y');
         $bulanRomawi = preg_quote(self::bulanRomawi((int) $tanggal->format('n')), '/');
-        $kodeKlasifikasi = preg_quote((string) config('desa.kode_klasifikasi', '470'), '/');
-        $kodeDesa = preg_quote((string) config('desa.kode_desa', 'DS-WDN'), '/');
+        $kodeKlasifikasi = preg_quote((string) ($desa['kode_klasifikasi'] ?? '470'), '/');
+        $kodeDesa = preg_quote((string) ($desa['kode_desa'] ?? 'DS-WDN'), '/');
 
         return '/^'.$kodeKlasifikasi.'\/\d+\/'.$kodeDesa.'\/'.$bulanRomawi.'\/'.$tahun.'$/';
     }
@@ -202,7 +204,14 @@ class SuratTerbit extends Model
                 $qrToken = static::generateQrToken();
                 $filePath = 'surat-terbit/'.$pengajuan->id.'/surat.pdf';
 
-                $pdfBinary = static::renderPdfBinary($pengajuan, $nomorSurat, $qrToken, $tanggalTerbit);
+                $pdfBinary = static::renderPdfBinary(
+                    $pengajuan,
+                    $nomorSurat,
+                    $qrToken,
+                    $tanggalTerbit,
+                    null,
+                    null,
+                );
 
                 Storage::disk('local')->put($filePath, $pdfBinary);
 
@@ -283,6 +292,8 @@ class SuratTerbit extends Model
                 $this->nomor_surat,
                 $this->qr_token,
                 $this->tanggal_terbit,
+                $this->tanggal_pengambilan,
+                $this->jam_kerja_label,
             );
 
             Storage::disk('local')->put($canonicalPath, $pdfBinary);
@@ -294,52 +305,69 @@ class SuratTerbit extends Model
     }
 
     /**
-     * Render PDF ke string binary sesuai template jenis surat.
+     * Timpa file PDF dengan data terkini (nomor/QR sama). Dipakai setelah siap diambil.
+     */
+    public function regenerasiFilePdf(): void
+    {
+        $this->loadMissing(['pengajuan.user', 'pengajuan.jenisSurat']);
+
+        $pengajuan = $this->pengajuan;
+
+        if ($pengajuan === null) {
+            return;
+        }
+
+        $path = $this->canonicalFilePath();
+        $pdfBinary = static::renderPdfBinary(
+            $pengajuan,
+            $this->nomor_surat,
+            $this->qr_token,
+            $this->tanggal_terbit,
+            $this->tanggal_pengambilan,
+            $this->jam_kerja_label,
+        );
+
+        Storage::disk('local')->put($path, $pdfBinary);
+
+        if ($this->file_path !== $path) {
+            $this->update(['file_path' => $path]);
+        }
+    }
+
+    /**
+     * Render PDF bukti pengambilan ke string binary.
      */
     public static function renderPdfBinary(
         PengajuanSurat $pengajuan,
         string $nomorSurat,
         string $qrToken,
         CarbonInterface $tanggalTerbit,
+        ?CarbonInterface $tanggalPengambilan = null,
+        ?string $jamKerjaLabel = null,
     ): string {
-        $template = static::resolveTemplateView($pengajuan->jenisSurat?->nama_surat);
         $qrDataUri = static::qrCodeDataUri($qrToken);
 
-        return Pdf::loadView($template, [
+        return Pdf::loadView(static::resolveTemplateView(), [
             'pengajuan' => $pengajuan,
             'pemohon' => $pengajuan->user,
             'jenisSurat' => $pengajuan->jenisSurat,
             'nomorSurat' => $nomorSurat,
             'tanggalTerbit' => $tanggalTerbit,
+            'tanggalPengambilan' => $tanggalPengambilan,
+            'jamKerjaLabel' => $jamKerjaLabel,
             'qrDataUri' => $qrDataUri,
-            'desa' => config('desa'),
+            'desa' => PengaturanDesa::untukSurat(),
         ])
             ->setPaper('a4', 'portrait')
             ->output();
     }
 
     /**
-     * Pilih view Blade PDF berdasarkan nama jenis surat.
+     * Template PDF tunggal: bukti pengambilan berkas (bukan surat keterangan).
      */
-    public static function resolveTemplateView(?string $namaSurat): string
+    public static function resolveTemplateView(?string $namaSurat = null): string
     {
-        $nama = Str::lower($namaSurat ?? '');
-
-        $map = [
-            'domisili' => 'pdf.surat.keterangan-domisili',
-            'tidak mampu' => 'pdf.surat.keterangan-tidak-mampu',
-            'usaha' => 'pdf.surat.keterangan-usaha',
-            'kelahiran' => 'pdf.surat.keterangan-kelahiran',
-            'kematian' => 'pdf.surat.keterangan-kematian',
-        ];
-
-        foreach ($map as $keyword => $view) {
-            if (Str::contains($nama, $keyword)) {
-                return $view;
-            }
-        }
-
-        return 'pdf.surat.default';
+        return 'pdf.surat.bukti-pengambilan';
     }
 
     /**
@@ -491,6 +519,10 @@ class SuratTerbit extends Model
                 'jam_kerja_label' => $validasi['jam_kerja_label'],
                 'siap_diambil_at' => $siapDiambilAt,
             ]);
+
+            // Timpa PDF agar tanggal/jam pengambilan tercetak (QR & nomor tetap sama).
+            $surat->refresh();
+            $surat->regenerasiFilePdf();
 
             $pengajuanLocked->update([
                 'status' => PengajuanSurat::STATUS_SIAP_DIAMBIL,

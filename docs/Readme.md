@@ -40,7 +40,8 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Surat Diproses (US-8.5 & US-8.6)](dev-docs/features/surat-diproses.md) | Dedicated list/detail + Siap Diambil + siap_diambil_at |
 | [Dashboard Admin (US-8.1)](dev-docs/features/dashboard-admin.md) | Aging cards, urgent queue, active table |
 | [Dashboard Warga (US-8.2)](dev-docs/features/dashboard-warga.md) | Status-first hero, alur, unduh, riwayat, notifikasi |
-| [Unduh/Cetak Surat Warga (US-7.6)](dev-docs/features/unduh-surat-warga.md) | Warga download/print issued PDF; hybrid lazy regen if file missing |
+| [Unduh/Cetak Bukti Pengambilan (US-7.6)](dev-docs/features/unduh-surat-warga.md) | Warga unduh slip setelah siap diambil; hybrid regen |
+| [Pengaturan Desa](dev-docs/features/pengaturan-desa.md) | Admin edit identitas kop + kode nomor surat |
 | [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [Rekap Pengajuan & Reporting (US-6.1 – US-6.2)](dev-docs/features/rekap-pengajuan.md) | Admin filterable recap table, summary counts, CSV export |
 | [Rekap Timeline Detail (US-8.7)](dev-docs/features/rekap-timeline.md) | Admin detail page with chronological process timeline |
@@ -64,6 +65,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-018: Jam kerja + libur nasional config](dev-docs/decisions/018-jam-kerja-dan-libur-nasional-config.md) | Reject invalid pickup dates; labels from config |
 | [ADR-019: Warga unduh/cetak existing PDF](dev-docs/decisions/019-warga-unduh-cetak-existing-pdf.md) | Superseded by ADR-024 |
 | [ADR-024: Hybrid PDF lazy regenerate](dev-docs/decisions/024-hybrid-pdf-lazy-regenerate.md) | Store on issue; lazy regen if missing; never mint new QR |
+| [ADR-025: Bukti pengambilan + Pengaturan Desa](dev-docs/decisions/025-bukti-pengambilan-dan-pengaturan-desa.md) | Slip PDF (not surat keterangan); unduh after siap diambil; DB identitas |
 | [ADR-020: Setujui langsung diproses US-8.4](dev-docs/decisions/020-setujui-langsung-diproses-us-8-4.md) | Approve → diproses in one step; keep disetujui for historis |
 | [ADR-021: Surat Diproses page + siap_diambil_at](dev-docs/decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated list/detail; relocate Siap Diambil UI; timestamp for timeline |
 | [ADR-022: Dashboard aging helpers](dev-docs/decisions/022-dashboard-aging-and-status-helpers.md) | Component thresholds + PengajuanSurat status entered-at helpers |
@@ -124,7 +126,7 @@ See [user-docs/README.md](user-docs/README.md) — dikelompokkan per peran pengg
 | 7 | Validasi Kelengkapan | [guides/warga/07-pengajuan-surat-kelengkapan.md](user-docs/guides/warga/07-pengajuan-surat-kelengkapan.md) |
 | 8 | Dashboard Warga | [guides/warga/08-dashboard-warga.md](user-docs/guides/warga/08-dashboard-warga.md) |
 | 9 | Notifikasi & Riwayat | [guides/warga/09-notifikasi-pengajuan.md](user-docs/guides/warga/09-notifikasi-pengajuan.md) |
-| 10 | Unduh/Cetak Surat | [guides/warga/10-unduh-surat-warga.md](user-docs/guides/warga/10-unduh-surat-warga.md) |
+| 10 | Unduh/Cetak Bukti Pengambilan | [guides/warga/10-unduh-surat-warga.md](user-docs/guides/warga/10-unduh-surat-warga.md) |
 | 11 | Ajukan Ulang | [guides/warga/11-pengajuan-surat-ajukan-ulang.md](user-docs/guides/warga/11-pengajuan-surat-ajukan-ulang.md) |
 | 12 | Proteksi Akses Role | [guides/warga/12-role-middleware.md](user-docs/guides/warga/12-role-middleware.md) |
 
@@ -134,17 +136,18 @@ See [user-docs/README.md](user-docs/README.md) — dikelompokkan per peran pengg
 |---|---------|--------|
 | 1 | Login Berbasis Role | [guides/admin/01-role-based-login.md](user-docs/guides/admin/01-role-based-login.md) |
 | 2 | Dashboard Admin | [guides/admin/02-dashboard-admin.md](user-docs/guides/admin/02-dashboard-admin.md) |
-| 3 | Kelola Jenis Surat | [guides/admin/03-jenis-surat.md](user-docs/guides/admin/03-jenis-surat.md) |
-| 4 | Verifikasi Pengajuan | [guides/admin/04-verifikasi-pengajuan.md](user-docs/guides/admin/04-verifikasi-pengajuan.md) |
-| 5 | Daftar Pengajuan & Alur Setujui | [guides/admin/05-daftar-pengajuan-dan-alur-setujui.md](user-docs/guides/admin/05-daftar-pengajuan-dan-alur-setujui.md) |
-| 6 | Generate Surat PDF | [guides/admin/06-generate-surat-pdf.md](user-docs/guides/admin/06-generate-surat-pdf.md) |
-| 7 | Nomor Surat Resmi | [guides/admin/07-nomor-surat-resmi.md](user-docs/guides/admin/07-nomor-surat-resmi.md) |
-| 8 | Surat Diproses | [guides/admin/08-surat-diproses.md](user-docs/guides/admin/08-surat-diproses.md) |
-| 9 | Dokumen Siap Diambil | [guides/admin/09-dokumen-siap-diambil.md](user-docs/guides/admin/09-dokumen-siap-diambil.md) |
-| 10 | Scan QR Pengambilan | [guides/admin/10-qr-sekali-pakai.md](user-docs/guides/admin/10-qr-sekali-pakai.md) |
-| 11 | Rekap Pengajuan | [guides/admin/11-rekap-pengajuan.md](user-docs/guides/admin/11-rekap-pengajuan.md) |
-| 12 | Detail Rekap & Timeline | [guides/admin/12-rekap-timeline.md](user-docs/guides/admin/12-rekap-timeline.md) |
-| 13 | Migrasi Alur Status | [guides/admin/13-migrasi-alur-status.md](user-docs/guides/admin/13-migrasi-alur-status.md) |
-| 14 | Proteksi Akses Role | [guides/admin/14-role-middleware.md](user-docs/guides/admin/14-role-middleware.md) |
-| 15 | Manajemen Profil | [guides/admin/15-profile-management.md](user-docs/guides/admin/15-profile-management.md) |
-| 16 | Lupa Password | [guides/admin/16-password-reset.md](user-docs/guides/admin/16-password-reset.md) |
+| 3 | Pengaturan Desa | [guides/admin/03-pengaturan-desa.md](user-docs/guides/admin/03-pengaturan-desa.md) |
+| 4 | Kelola Jenis Surat | [guides/admin/04-jenis-surat.md](user-docs/guides/admin/04-jenis-surat.md) |
+| 5 | Verifikasi Pengajuan | [guides/admin/05-verifikasi-pengajuan.md](user-docs/guides/admin/05-verifikasi-pengajuan.md) |
+| 6 | Daftar Pengajuan & Alur Setujui | [guides/admin/06-daftar-pengajuan-dan-alur-setujui.md](user-docs/guides/admin/06-daftar-pengajuan-dan-alur-setujui.md) |
+| 7 | Generate Bukti Pengambilan PDF | [guides/admin/07-generate-surat-pdf.md](user-docs/guides/admin/07-generate-surat-pdf.md) |
+| 8 | Nomor Surat Resmi | [guides/admin/08-nomor-surat-resmi.md](user-docs/guides/admin/08-nomor-surat-resmi.md) |
+| 9 | Surat Diproses | [guides/admin/09-surat-diproses.md](user-docs/guides/admin/09-surat-diproses.md) |
+| 10 | Dokumen Siap Diambil | [guides/admin/10-dokumen-siap-diambil.md](user-docs/guides/admin/10-dokumen-siap-diambil.md) |
+| 11 | Scan QR Pengambilan | [guides/admin/11-qr-sekali-pakai.md](user-docs/guides/admin/11-qr-sekali-pakai.md) |
+| 12 | Rekap Pengajuan | [guides/admin/12-rekap-pengajuan.md](user-docs/guides/admin/12-rekap-pengajuan.md) |
+| 13 | Detail Rekap & Timeline | [guides/admin/13-rekap-timeline.md](user-docs/guides/admin/13-rekap-timeline.md) |
+| 14 | Migrasi Alur Status | [guides/admin/14-migrasi-alur-status.md](user-docs/guides/admin/14-migrasi-alur-status.md) |
+| 15 | Proteksi Akses Role | [guides/admin/15-role-middleware.md](user-docs/guides/admin/15-role-middleware.md) |
+| 16 | Manajemen Profil | [guides/admin/16-profile-management.md](user-docs/guides/admin/16-profile-management.md) |
+| 17 | Lupa Password | [guides/admin/17-password-reset.md](user-docs/guides/admin/17-password-reset.md) |

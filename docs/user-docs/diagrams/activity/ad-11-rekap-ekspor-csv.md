@@ -8,7 +8,7 @@
 | **Nama Proses** | Rekap Pengajuan dan Ekspor CSV |
 | **Aktor** | Admin / Petugas Desa |
 | **Use Case Terkait** | UC-21 |
-| **Panduan Pengguna** | [Rekap Pengajuan](../../guides/admin/11-rekap-pengajuan.md) |
+| **Panduan Pengguna** | [Rekap Pengajuan](../../guides/admin/12-rekap-pengajuan.md) |
 
 ## Deskripsi
 

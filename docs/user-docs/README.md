@@ -12,7 +12,7 @@ docs/user-docs/
 ├── guides/
 │   ├── publik/                        ← Panduan untuk Publik / Tamu (3 panduan)
 │   ├── warga/                         ← Panduan untuk Warga (12 panduan)
-│   └── admin/                         ← Panduan untuk Admin / Petugas Desa (15 panduan)
+│   └── admin/                         ← Panduan untuk Admin / Petugas Desa (17 panduan)
 └── diagrams/
     ├── usecase/                        ← Use case diagram per kelompok aktor
     └── activity/                       ← Activity diagram per proses (1 proses = 1 file)
@@ -78,7 +78,7 @@ docs/user-docs/
 | 7 | [Validasi Kelengkapan Pengajuan](guides/warga/07-pengajuan-surat-kelengkapan.md) | Memahami dokumen wajib dan pesan error sebelum kirim |
 | 8 | [Dashboard Warga](guides/warga/08-dashboard-warga.md) | Status surat aktif di halaman utama (alur + unduh + jadwal) |
 | 9 | [Notifikasi & Riwayat Pengajuan](guides/warga/09-notifikasi-pengajuan.md) | Melihat notifikasi perubahan status dan riwayat pengajuan |
-| 10 | [Unduh/Cetak Surat](guides/warga/10-unduh-surat-warga.md) | Mengunduh atau mencetak PDF surat yang sudah diterbitkan |
+| 10 | [Unduh/Cetak Bukti Pengambilan](guides/warga/10-unduh-surat-warga.md) | Mengunduh bukti pengambilan berkas (bukan surat resmi) |
 | 11 | [Ajukan Ulang Pengajuan](guides/warga/11-pengajuan-surat-ajukan-ulang.md) | Mengajukan ulang pengajuan yang sebelumnya ditolak |
 | 12 | [Proteksi Akses Berdasarkan Role](guides/warga/12-role-middleware.md) | Memahami batasan halaman warga dan arti 403 |
 
@@ -86,23 +86,24 @@ docs/user-docs/
 
 ## Panduan Pengguna — Admin / Petugas Desa
 
-> Untuk **admin atau petugas desa**. Ikuti urutan ini dari login hingga surat selesai diproses.
+> Untuk **admin atau petugas desa**. Baca dari atas ke bawah: **setup dulu** (identitas desa + jenis surat), baru operasional harian.
 
 | # | Panduan | Deskripsi |
 |---|---------|-----------|
 | 1 | [Login Berbasis Role](guides/admin/01-role-based-login.md) | Cara masuk ke Dashboard Admin dan keluar dari sistem |
 | 2 | [Dashboard Admin](guides/admin/02-dashboard-admin.md) | Membaca kartu aging dan memantau antrean yang mendesak |
-| 3 | [Kelola Jenis Surat](guides/admin/03-jenis-surat.md) | Menambah, mengubah, mengarsipkan, dan menghapus jenis surat |
-| 4 | [Verifikasi / Daftar Pengajuan](guides/admin/04-verifikasi-pengajuan.md) | Memeriksa, menyetujui, atau menolak pengajuan warga |
-| 5 | [Daftar Pengajuan & Alur Setujui](guides/admin/05-daftar-pengajuan-dan-alur-setujui.md) | Alur setujui langsung diproses dan perubahan nama menu |
-| 6 | [Generate Surat PDF](guides/admin/06-generate-surat-pdf.md) | Surat PDF otomatis dibuat saat admin menyetujui pengajuan |
-| 7 | [Nomor Surat Resmi](guides/admin/07-nomor-surat-resmi.md) | Memahami format dan arti nomor surat resmi otomatis |
-| 8 | [Surat Diproses & Siap Diambil](guides/admin/08-surat-diproses.md) | Menu Surat Diproses dan cara menandai surat siap diambil |
-| 9 | [Dokumen Siap Diambil](guides/admin/09-dokumen-siap-diambil.md) | Menetapkan tanggal pengambilan dan notifikasi ke warga |
-| 10 | [Scan QR Pengambilan](guides/admin/10-qr-sekali-pakai.md) | Memindai QR code sekali pakai saat warga mengambil surat |
-| 11 | [Rekap Pengajuan](guides/admin/11-rekap-pengajuan.md) | Memfilter rekap pengajuan dan mengekspor laporan CSV |
-| 12 | [Detail Rekap & Timeline Proses](guides/admin/12-rekap-timeline.md) | Membaca riwayat proses kronologis tiap pengajuan (US-8.7) |
-| 13 | [Migrasi Alur Status](guides/admin/13-migrasi-alur-status.md) | Referensi arti tiap status dan alur perubahan status surat |
-| 14 | [Proteksi Akses Berdasarkan Role](guides/admin/14-role-middleware.md) | Memahami batasan halaman admin dan arti 403 |
-| 15 | [Manajemen Profil](guides/admin/15-profile-management.md) | Melihat dan mengubah data profil serta ganti password |
-| 16 | [Lupa Password](guides/admin/16-password-reset.md) | Mereset password melalui email jika lupa |
+| 3 | [Pengaturan Desa](guides/admin/03-pengaturan-desa.md) | Atur identitas kantor untuk kop bukti pengambilan (wajib sebelum PDF) |
+| 4 | [Kelola Jenis Surat](guides/admin/04-jenis-surat.md) | Menambah, mengubah, mengarsipkan, dan menghapus jenis surat |
+| 5 | [Verifikasi / Daftar Pengajuan](guides/admin/05-verifikasi-pengajuan.md) | Memeriksa, menyetujui, atau menolak pengajuan warga |
+| 6 | [Daftar Pengajuan & Alur Setujui](guides/admin/06-daftar-pengajuan-dan-alur-setujui.md) | Alur setujui langsung diproses dan perubahan nama menu |
+| 7 | [Generate Bukti Pengambilan PDF](guides/admin/07-generate-surat-pdf.md) | PDF bukti pengambilan otomatis saat admin menyetujui |
+| 8 | [Nomor Surat Resmi](guides/admin/08-nomor-surat-resmi.md) | Memahami format dan arti nomor surat resmi otomatis |
+| 9 | [Surat Diproses & Siap Diambil](guides/admin/09-surat-diproses.md) | Menu Surat Diproses dan cara menandai surat siap diambil |
+| 10 | [Dokumen Siap Diambil](guides/admin/10-dokumen-siap-diambil.md) | Menetapkan tanggal pengambilan dan notifikasi ke warga |
+| 11 | [Scan QR Pengambilan](guides/admin/11-qr-sekali-pakai.md) | Memindai QR code sekali pakai saat warga mengambil surat |
+| 12 | [Rekap Pengajuan](guides/admin/12-rekap-pengajuan.md) | Memfilter rekap pengajuan dan mengekspor laporan CSV |
+| 13 | [Detail Rekap & Timeline Proses](guides/admin/13-rekap-timeline.md) | Membaca riwayat proses kronologis tiap pengajuan (US-8.7) |
+| 14 | [Migrasi Alur Status](guides/admin/14-migrasi-alur-status.md) | Referensi arti tiap status dan alur perubahan status surat |
+| 15 | [Proteksi Akses Berdasarkan Role](guides/admin/15-role-middleware.md) | Memahami batasan halaman admin dan arti 403 |
+| 16 | [Manajemen Profil](guides/admin/16-profile-management.md) | Melihat dan mengubah data profil serta ganti password |
+| 17 | [Lupa Password](guides/admin/17-password-reset.md) | Mereset password melalui email jika lupa |

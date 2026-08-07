@@ -1,7 +1,7 @@
 # Proteksi Akses Berdasarkan Role - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 13 dari 15 — Memahami batasan akses akun admin.
+> **Urutan:** 15 dari 17 — Memahami batasan akses akun admin.
 
 ## Apa itu Proteksi Role?
 

@@ -1,7 +1,7 @@
 # Dashboard Admin - Panduan Pengguna (Admin)
 
 > **Kelompok Pengguna:** Admin / Petugas Desa
-> **Urutan:** 2 dari 15 — Halaman utama setelah login; pantau semua antrean dari sini.
+> **Urutan:** 2 dari 17 — Halaman utama setelah login; pantau semua antrean dari sini.
 
 ## Apa itu Dashboard Admin?
 

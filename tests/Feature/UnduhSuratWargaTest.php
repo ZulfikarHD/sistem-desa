@@ -19,7 +19,7 @@ beforeEach(function () {
  * @return array{0: User, 1: PengajuanSurat, 2: SuratTerbit}
  */
 function buatPengajuanDenganSurat(
-    string $status = PengajuanSurat::STATUS_DIPROSES,
+    string $status = PengajuanSurat::STATUS_SIAP_DIAMBIL,
     ?string $tanggalPengambilan = null,
     ?string $jamKerjaLabel = null,
 ): array {
@@ -51,7 +51,7 @@ function buatPengajuanDenganSurat(
     return [$warga, $pengajuan->fresh(), $surat->fresh()];
 }
 
-test('warga can download surat pdf for diproses siap_diambil and selesai', function (string $status) {
+test('warga can download surat pdf for siap_diambil and selesai', function (string $status) {
     [$warga, $pengajuan, $surat] = buatPengajuanDenganSurat($status);
     $tokenSebelum = $surat->qr_token;
 
@@ -66,7 +66,6 @@ test('warga can download surat pdf for diproses siap_diambil and selesai', funct
     expect($surat->qr_token)->toBe($tokenSebelum)
         ->and($surat->qr_status)->toBe(SuratTerbit::QR_STATUS_VALID);
 })->with([
-    PengajuanSurat::STATUS_DIPROSES,
     PengajuanSurat::STATUS_SIAP_DIAMBIL,
     PengajuanSurat::STATUS_SELESAI,
 ]);
@@ -135,6 +134,7 @@ test('unduh forbidden when status not allowed', function (string $status) {
     PengajuanSurat::STATUS_DIAJUKAN,
     PengajuanSurat::STATUS_DISETUJUI,
     PengajuanSurat::STATUS_DITOLAK,
+    PengajuanSurat::STATUS_DIPROSES,
 ]);
 
 test('unduh lazy regenerates missing pdf without changing qr token', function () {
@@ -172,13 +172,14 @@ test('cetak lazy regenerates missing pdf without changing qr token', function ()
 });
 
 test('riwayat shows unduh button only for allowed statuses', function () {
-    [$warga, $pengajuan] = buatPengajuanDenganSurat(PengajuanSurat::STATUS_DIPROSES);
+    [$warga, $pengajuan] = buatPengajuanDenganSurat(PengajuanSurat::STATUS_SIAP_DIAMBIL);
 
     Livewire::actingAs($warga)
         ->test(RiwayatPengajuan::class)
-        ->assertSeeHtml('riwayat-pengajuan-unduh-surat-'.$pengajuan->id);
+        ->assertSeeHtml('riwayat-pengajuan-unduh-surat-'.$pengajuan->id)
+        ->assertSee('Unduh Bukti Pengambilan');
 
-    $pengajuan->update(['status' => PengajuanSurat::STATUS_DIAJUKAN]);
+    $pengajuan->update(['status' => PengajuanSurat::STATUS_DIPROSES]);
 
     Livewire::actingAs($warga)
         ->test(RiwayatPengajuan::class)

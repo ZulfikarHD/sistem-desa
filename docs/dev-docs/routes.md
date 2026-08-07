@@ -32,8 +32,8 @@ Non-Livewire routes (file downloads/previews) are plain `Route::get()` closures.
 
 - Both `unduh-surat` and `cetak-surat` enforce:
   - `$pengajuan->user_id === auth()->id()` (ownership)
-  - `$pengajuan->dapatUnduhSurat()` (status: `diproses`, `siap_diambil`, or `selesai`)
-  - `SuratTerbit::pastikanFilePdf()` — serve stored PDF or lazy-regenerate without minting a new QR (ADR-024)
+  - `$pengajuan->dapatUnduhSurat()` (status: `siap_diambil` or `selesai` only)
+  - `SuratTerbit::pastikanFilePdf()` — serve stored PDF or lazy-regenerate without minting a new QR (ADR-024/025)
 - `unduh-surat` → `Storage::download()` (forces browser download)
 - `cetak-surat` → `Storage::response()` with `Content-Type: application/pdf` (opens in browser/PDF viewer)
 

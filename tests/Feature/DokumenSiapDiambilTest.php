@@ -107,6 +107,9 @@ test('tandai siap diambil mengubah status menyimpan tanggal jam kerja dan notifi
         ->and($surat->jam_kerja_label)->not->toBeNull()
         ->and($surat->siap_diambil_at)->not->toBeNull();
 
+    Storage::disk('local')->assertExists($surat->file_path);
+    expect(Storage::disk('local')->get($surat->file_path))->toStartWith('%PDF');
+
     $notif = Notifikasi::query()
         ->where('user_id', $warga->id)
         ->where('pengajuan_id', $pengajuan->id)
