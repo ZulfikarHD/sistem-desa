@@ -151,7 +151,7 @@ test('hero menampilkan alur status dan judul fokus status surat', function () {
     Livewire::actingAs($warga)
         ->test(WargaDashboard::class)
         ->assertSee('Status surat Anda')
-        ->assertSee('Halo, Budi Warga')
+        ->assertDontSee('Halo, Budi Warga')
         ->assertSeeHtml('data-test="dashboard-warga-hero-alur-'.$pengajuan->id.'"')
         ->assertSee('Diajukan')
         ->assertSee('Diproses')

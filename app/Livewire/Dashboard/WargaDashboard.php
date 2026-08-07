@@ -64,8 +64,7 @@ class WargaDashboard extends Component
 
     public function render(): View
     {
-        $user = Auth::user();
-        $userId = $user?->id;
+        $userId = Auth::id();
         $hariIni = now('Asia/Jakarta')->startOfDay();
 
         $pengajuanAktif = PengajuanSurat::query()
@@ -90,8 +89,11 @@ class WargaDashboard extends Component
                     'langkah_aktif' => $this->indeksLangkahAktif($pengajuan->status),
                 ];
             })
-            // Terlama di status aktif dahulu
-            ->sortBy('masuk_at')
+            // Siap diambil dulu (aksi warga), lalu terlama di status
+            ->sortBy([
+                fn (array $item): int => $item['model']->status === PengajuanSurat::STATUS_SIAP_DIAMBIL ? 0 : 1,
+                ['masuk_at', 'asc'],
+            ])
             ->values();
 
         $riwayatTerbaru = PengajuanSurat::query()
@@ -116,7 +118,6 @@ class WargaDashboard extends Component
             ->count();
 
         return view('livewire.dashboard.warga-dashboard', [
-            'namaWarga' => $user?->name ?? 'Warga',
             'pengajuanAktif' => $pengajuanAktif,
             'langkahAlur' => $this->langkahAlur(),
             'riwayatTerbaru' => $riwayatTerbaru,
