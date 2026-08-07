@@ -20,7 +20,7 @@ Jenis surat adalah daftar master jenis surat keterangan yang dikelola admin desa
 ### Menambah jenis surat
 
 1. Buka halaman **Jenis Surat**.
-2. Klik **Tambah Jenis Surat**.
+2. Klik **Tambah Jenis Surat** — Anda diarahkan ke halaman khusus tambah.
 3. Isi **Nama Surat** (wajib) dan **Deskripsi** (opsional).
 4. Di bagian **Persyaratan dokumen**, isi minimal satu baris:
    - **Nama syarat** — contoh: `Fotokopi KTP`
@@ -31,13 +31,14 @@ Jenis surat adalah daftar master jenis surat keterangan yang dikelola admin desa
    - Jika pilih unggah: **Wajib** (default) atau **Boleh dikosongkan**
 5. Lihat **Pratinjau untuk warga** agar badge cocok dengan yang dilihat warga.
 6. (Opsional) Klik **Template KTP + KK + Pengantar RT** untuk mengisi 3 baris umum sekaligus.
-7. Klik **Simpan**.
+7. Klik **Simpan** — Anda kembali ke daftar jenis surat.
+8. Atau klik **Batal** / **Kembali** untuk membatalkan tanpa menyimpan.
 
 ### Mengubah jenis surat
 
-1. Di daftar, klik **Ubah** pada baris yang ingin diedit.
+1. Di daftar, klik **Ubah** pada baris yang ingin diedit — Anda diarahkan ke halaman khusus ubah.
 2. Perbarui nama, deskripsi, atau baris persyaratan (tambah / hapus / naik-turun urutan).
-3. Klik **Simpan**.
+3. Klik **Simpan** (atau **Batal** untuk kembali tanpa menyimpan).
 
 ### Mengarsipkan (soft delete)
 

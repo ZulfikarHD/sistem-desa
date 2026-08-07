@@ -136,6 +136,7 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         await expect(page.locator('[data-test="jenis-surat-heading"]')).toBeVisible();
 
         await page.locator('[data-test="jenis-surat-create-button"]').click();
+        await expect(page).toHaveURL(/\/admin\/jenis-surat\/create/);
         await expect(page.locator('[data-test="jenis-surat-form-title"]')).toContainText('Tambah Jenis Surat');
 
         await page.locator('[data-test="jenis-surat-nama-input"]').fill(namaSurat);
@@ -149,6 +150,7 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
 
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
+        await expect(page).toHaveURL(/\/admin\/jenis-surat$/);
         await expect(page.getByText(namaSurat)).toBeVisible();
     });
 
@@ -166,9 +168,9 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         });
 
         await loginAs(page, email);
-        await page.goto('/admin/jenis-surat');
+        await page.goto('/admin/jenis-surat/create');
+        await expect(page.locator('[data-test="jenis-surat-form-title"]')).toContainText('Tambah Jenis Surat');
 
-        await page.locator('[data-test="jenis-surat-create-button"]').click();
         await page.locator('[data-test="jenis-surat-nama-input"]').fill(namaSurat);
         await page.locator('[data-test="jenis-surat-template-domisili"]').click();
 
@@ -183,6 +185,7 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         await expect(page.locator('[data-test="jenis-surat-pratinjau-badge-2"]')).toContainText('Bawa ke kantor');
 
         await page.locator('[data-test="jenis-surat-save-button"]').click();
+        await expect(page).toHaveURL(/\/admin\/jenis-surat$/);
         await expect(page.getByText(namaSurat)).toBeVisible();
     });
 
@@ -231,7 +234,8 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         await page.locator('[data-test="jenis-surat-search"]').fill(oldName);
         await expect(page.getByText(oldName)).toBeVisible();
 
-        await page.getByRole('button', { name: 'Ubah' }).first().click();
+        await page.locator('[data-test^="jenis-surat-edit-"]').first().click();
+        await expect(page).toHaveURL(/\/admin\/jenis-surat\/\d+\/edit/);
         await expect(page.locator('[data-test="jenis-surat-form-title"]')).toContainText('Ubah Jenis Surat');
 
         const namaInput = page.locator('[data-test="jenis-surat-nama-input"]');
@@ -239,7 +243,7 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         await namaInput.fill(newName);
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
-        await expect(page.locator('[data-test="jenis-surat-form-title"]')).toBeHidden();
+        await expect(page).toHaveURL(/\/admin\/jenis-surat$/);
         await page.locator('[data-test="jenis-surat-search"]').fill(newName);
         await expect(page.getByText(newName)).toBeVisible();
         await expect(page.getByText(oldName)).toHaveCount(0);
@@ -258,14 +262,14 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         });
 
         await loginAs(page, email);
-        await page.goto('/admin/jenis-surat');
+        await page.goto('/admin/jenis-surat/create');
 
-        await page.locator('[data-test="jenis-surat-create-button"]').click();
         await expect(page.locator('[data-test="jenis-surat-form-title"]')).toBeVisible();
         await page.locator('[data-test="jenis-surat-nama-input"]').fill('');
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
         await expect(page.getByText(/Nama surat wajib diisi/i)).toBeVisible();
+        await expect(page).toHaveURL(/\/admin\/jenis-surat\/create/);
         await expect(page.locator('[data-test="jenis-surat-form-title"]')).toBeVisible();
     });
 
@@ -284,14 +288,14 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         ensureJenisSurat(existingName);
 
         await loginAs(page, email);
-        await page.goto('/admin/jenis-surat');
+        await page.goto('/admin/jenis-surat/create');
 
-        await page.locator('[data-test="jenis-surat-create-button"]').click();
         await page.locator('[data-test="jenis-surat-nama-input"]').fill(existingName);
         await fillPersyaratanRow(page, 0, { nama: 'Fotokopi KTP', cara: 'unggah', wajib: true });
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
         await expect(page.getByText(/Nama surat sudah digunakan/i)).toBeVisible();
+        await expect(page).toHaveURL(/\/admin\/jenis-surat\/create/);
     });
 
     test('validasi gagal jika nama syarat kosong', async ({ page }) => {
@@ -307,14 +311,14 @@ test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
         });
 
         await loginAs(page, email);
-        await page.goto('/admin/jenis-surat');
+        await page.goto('/admin/jenis-surat/create');
 
-        await page.locator('[data-test="jenis-surat-create-button"]').click();
         await page.locator('[data-test="jenis-surat-nama-input"]').fill(`Surat Tanpa Nama Syarat ${stamp}`);
         await page.locator('[data-test="jenis-surat-persyaratan-nama-0"]').fill('');
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
         await expect(page.getByText(/Nama syarat wajib diisi/i)).toBeVisible();
+        await expect(page).toHaveURL(/\/admin\/jenis-surat\/create/);
     });
 
     test('admin dapat soft delete lalu restore dan hard delete', async ({ page }) => {

@@ -3,6 +3,7 @@
 use App\Livewire\Dashboard\AdminDashboard;
 use App\Livewire\Dashboard\WargaDashboard;
 use App\Livewire\JenisSurat\DataJenisSurat;
+use App\Livewire\JenisSurat\FormJenisSurat;
 use App\Livewire\JenisSurat\PersyaratanDokumen;
 use App\Livewire\Pengajuan\DetailPengajuanWarga;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
@@ -86,8 +87,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::livewire('dashboard', AdminDashboard::class)->name('dashboard.admin');
 
-        // US-2.1 — Kelola Data Jenis Surat
+        // US-2.1 — Kelola Data Jenis Surat (daftar + halaman khusus tambah/ubah)
         Route::livewire('jenis-surat', DataJenisSurat::class)->name('jenis-surat.index');
+        Route::livewire('jenis-surat/create', FormJenisSurat::class)->name('jenis-surat.create');
+        Route::livewire('jenis-surat/{jenisSurat}/edit', FormJenisSurat::class)
+            ->name('jenis-surat.edit')
+            ->whereNumber('jenisSurat');
 
         // Identitas desa (kop bukti pengambilan + kode nomor surat)
         Route::livewire('pengaturan-desa', FormPengaturanDesa::class)->name('pengaturan-desa.edit');

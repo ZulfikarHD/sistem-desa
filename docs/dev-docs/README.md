@@ -58,7 +58,8 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [003](decisions/003-role-middleware-403.md) | Role middleware denies with HTTP 403 |
 | [004](decisions/004-profile-password-reset-fortify.md) | Profile + password reset via Fortify settings (not Breeze) |
 | [005](decisions/005-public-pages-brand-redesign.md) | Public pages brand redesign (forest / saffron + split auth) |
-| [006](decisions/006-jenis-surat-table-and-admin-crud.md) | `jenis_surat` naming, modal CRUD, soft/hard delete |
+| [006](decisions/006-jenis-surat-table-and-admin-crud.md) | `jenis_surat` naming, soft/hard delete (modal UI → ADR-028) |
+| [028](decisions/028-jenis-surat-dedicated-form-pages.md) | Dedicated create/edit pages for jenis surat (supersedes modal CRUD) |
 | [007](decisions/007-warga-persyaratan-dokumen-view.md) | Warga persyaratan view via Livewire modal |
 | [008](decisions/008-public-persyaratan-dokumen-access.md) | Public `/persyaratan-dokumen` + layouts/public for guests |
 | [009](decisions/009-pengajuan-surat-table-and-nomor-format.md) | `pengajuan_surat` naming + PJ-YYYYMMDD-#### nomor generation |

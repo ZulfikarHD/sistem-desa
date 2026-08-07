@@ -13,6 +13,7 @@ app/Livewire/
 │   └── WargaDashboard.php
 ├── JenisSurat/
 │   ├── DataJenisSurat.php
+│   ├── FormJenisSurat.php
 │   └── PersyaratanDokumen.php
 ├── Notifikasi/
 │   └── PanelNotifikasi.php
@@ -96,15 +97,34 @@ Helpers: `penjelasanStatus()`, `langkahAlur()`, `indeksLangkahAktif()`.
 | **Route** | `GET /admin/jenis-surat` → `jenis-surat.index` |
 | **View** | `livewire/jenis-surat/data-jenis-surat.blade.php` |
 | **Role** | `admin` |
-| **Stories** | US-2.1, ADR-006 |
+| **Stories** | US-2.1, ADR-006, ADR-028 |
 
-Full CRUD for master jenis surat with inline Flux modal form:
-- `create()` / `edit(int $id)` / `save()` — create or update a jenis surat record
-- `softDelete(int $id)` — soft-delete if no active pengajuan references it
+List + archive for master jenis surat (create/edit are separate pages):
+- `softDelete(int $id)` — soft-delete (Arsipkan)
 - `restore(int $id)` — restore soft-deleted record
-- `confirmForceDelete(int $id)` / `forceDelete()` — permanent delete (only if no FK references)
-- `$search` — live search filter on `nama_surat`
-- `$showTrashed` — toggle to include soft-deleted records in the list
+- `confirmForceDelete(int $id)` / `forceDelete()` — permanent delete from arsip
+- `$search` — live search filter on nama / deskripsi / persyaratan
+- `$showTrashed` — toggle arsip list
+
+Links: **Tambah** → `jenis-surat.create`, **Ubah** → `jenis-surat.edit`.
+
+---
+
+### `JenisSurat/FormJenisSurat`
+
+| | |
+|-|-|
+| **Routes** | `GET /admin/jenis-surat/create` → `jenis-surat.create`; `GET /admin/jenis-surat/{jenisSurat}/edit` → `jenis-surat.edit` |
+| **View** | `livewire/jenis-surat/form-jenis-surat.blade.php` |
+| **Role** | `admin` |
+| **Stories** | US-2.1, US-9.1, ADR-028 |
+
+Dedicated create/edit form with structured persyaratan rows:
+- `mount(?JenisSurat $jenisSurat = null)` — create vs edit (soft-deleted → 404)
+- `save()` — validate, sync rows, regenerate ringkasan, redirect to list
+- `cancel()` — redirect to list without saving
+- `addPersyaratanRow` / `removePersyaratanRow` / `movePersyaratanRowUp` / `movePersyaratanRowDown`
+- `applyDomisiliTemplate()` — KTP + KK unggah wajib + pengantar RT bawa kantor
 
 ---
 

@@ -29,7 +29,8 @@ flowchart TD
 
     %% TAMBAH
     D -->|"Tambah"| E[Klik Tambah Jenis Surat]
-    E --> F["Isi form:\n- Nama Surat (wajib)\n- Deskripsi (opsional)\n- Baris persyaratan (≥1):\n  nama + cara memenuhi\n  (+ wajib/opsional jika unggah)"]
+    E --> E2[Buka halaman Tambah Jenis Surat]
+    E2 --> F["Isi form:\n- Nama Surat (wajib)\n- Deskripsi (opsional)\n- Baris persyaratan (≥1):\n  nama + cara memenuhi\n  (+ wajib/opsional jika unggah)"]
     F --> G[Klik Simpan]
     G --> H{Validasi}
     H -->|"Nama sudah digunakan"| I1[Tampilkan pesan error duplikat]
@@ -37,17 +38,20 @@ flowchart TD
     H -->|"Nama syarat kosong / tanpa baris"| I2[Tampilkan pesan error]
     I2 --> F
     H -->|"Valid"| J[Jenis surat + baris persyaratan tersimpan]
-    J --> End([Selesai])
+    J --> J2[Kembali ke daftar jenis surat]
+    J2 --> End([Selesai])
 
     %% UBAH
     D -->|"Ubah"| K[Klik Ubah pada baris yang dipilih]
-    K --> L[Edit data yang diperlukan]
+    K --> K2[Buka halaman Ubah Jenis Surat]
+    K2 --> L[Edit data yang diperlukan]
     L --> M[Klik Simpan]
     M --> N{Validasi}
     N -->|"Tidak valid"| O[Tampilkan pesan error]
     O --> L
     N -->|"Valid"| P[Data tersimpan]
-    P --> End
+    P --> P2[Kembali ke daftar jenis surat]
+    P2 --> End
 
     %% ARSIPKAN
     D -->|"Arsipkan"| Q[Klik Arsipkan pada baris aktif]
@@ -80,8 +84,8 @@ flowchart TD
 
 | Langkah | Aktivitas | Keterangan |
 |---------|-----------|------------|
-| Tambah | Buat jenis surat baru | Nama wajib unik; persyaratan dokumen wajib diisi |
-| Ubah | Edit data yang ada | Nama tetap harus unik |
+| Tambah | Buat jenis surat baru di halaman khusus | Nama wajib unik; minimal satu baris persyaratan; setelah simpan kembali ke daftar |
+| Ubah | Edit data di halaman khusus | Nama tetap harus unik; soft-deleted tidak bisa diubah (404) |
 | Arsipkan | Soft delete | Data tersimpan di arsip, tidak muncul di form warga |
 | Pulihkan | Kembalikan dari arsip | Jenis surat kembali aktif dan bisa dipilih warga |
 | Hapus permanen | Hard delete | Hanya dari arsip; gagal jika ada pengajuan terkait |

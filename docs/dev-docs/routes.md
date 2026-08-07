@@ -45,6 +45,9 @@ Non-Livewire routes (file downloads/previews) are plain `Route::get()` closures.
 |--------|-----|------------|---------------------|-------|
 | GET | `/admin/dashboard` | `dashboard.admin` | `AdminDashboard` | US-1.2 + US-8.1 |
 | GET | `/admin/jenis-surat` | `jenis-surat.index` | `DataJenisSurat` | US-2.1 |
+| GET | `/admin/jenis-surat/create` | `jenis-surat.create` | `FormJenisSurat` | US-2.1 + US-9.1 |
+| GET | `/admin/jenis-surat/{jenisSurat}/edit` | `jenis-surat.edit` | `FormJenisSurat` | US-2.1 + US-9.1 |
+| GET | `/admin/pengaturan-desa` | `pengaturan-desa.edit` | `FormPengaturanDesa` | Identitas desa |
 | GET | `/admin/verifikasi` | `verifikasi.index` | `DaftarPengajuanVerifikasi` | US-4.1 + US-8.3 |
 | GET | `/admin/verifikasi/dokumen/{dokumen}` | `verifikasi.dokumen.show` | Closure | US-4.x; inline preview of private KTP/KK file |
 | GET | `/admin/verifikasi/dokumen/{dokumen}/unduh` | `verifikasi.dokumen.download` | Closure | US-4.x; force download of private KTP/KK file |

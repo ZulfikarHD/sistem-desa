@@ -1,7 +1,7 @@
 # ADR-006: jenis_surat table name and admin CRUD via Livewire modal
 
 **Date:** 2026-08-06
-**Status:** accepted
+**Status:** partially superseded — modal CRUD UI superseded by ADR-028; table naming and soft/hard delete remain
 **Supersedes:** —
 
 ## Context

@@ -2,7 +2,6 @@
 
 use App\Livewire\JenisSurat\DataJenisSurat;
 use App\Models\JenisSurat;
-use App\Models\JenisSuratPersyaratan;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
@@ -27,193 +26,6 @@ test('admin can visit jenis surat page', function () {
         ->get(route('jenis-surat.index'))
         ->assertOk()
         ->assertSeeLivewire(DataJenisSurat::class);
-});
-
-test('admin can create jenis surat dengan persyaratan terstruktur', function () {
-    $user = User::factory()->admin()->create();
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
-        ->set('nama_surat', 'Surat Keterangan Domisili')
-        ->set('deskripsi', 'Surat untuk keterangan tempat tinggal')
-        ->set('persyaratanRows', [
-            [
-                'key' => 'a',
-                'nama' => 'Fotokopi KTP',
-                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
-                'is_wajib' => true,
-            ],
-            [
-                'key' => 'b',
-                'nama' => 'Surat pengantar RT/RW',
-                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_BAWA_KANTOR,
-                'is_wajib' => true,
-            ],
-        ])
-        ->call('save')
-        ->assertHasNoErrors();
-
-    $jenisSurat = JenisSurat::query()->where('nama_surat', 'Surat Keterangan Domisili')->first();
-
-    expect($jenisSurat)->not->toBeNull()
-        ->and($jenisSurat->deskripsi)->toBe('Surat untuk keterangan tempat tinggal')
-        ->and($jenisSurat->persyaratan_dokumen)->toContain('Fotokopi KTP')
-        ->and($jenisSurat->persyaratan)->toHaveCount(2);
-
-    $this->assertDatabaseHas('jenis_surat_persyaratan', [
-        'jenis_surat_id' => $jenisSurat->id,
-        'nama' => 'Fotokopi KTP',
-        'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
-        'is_wajib' => true,
-    ]);
-
-    $this->assertDatabaseHas('jenis_surat_persyaratan', [
-        'jenis_surat_id' => $jenisSurat->id,
-        'nama' => 'Surat pengantar RT/RW',
-        'cara_pemenuhan' => JenisSuratPersyaratan::CARA_BAWA_KANTOR,
-    ]);
-});
-
-test('admin can create jenis surat without deskripsi', function () {
-    $user = User::factory()->admin()->create();
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
-        ->set('nama_surat', 'Surat Tanpa Deskripsi')
-        ->set('deskripsi', '')
-        ->set('persyaratanRows', [
-            [
-                'key' => 'a',
-                'nama' => 'Fotokopi KTP',
-                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
-                'is_wajib' => true,
-            ],
-        ])
-        ->call('save')
-        ->assertHasNoErrors();
-
-    $this->assertDatabaseHas('jenis_surat', [
-        'nama_surat' => 'Surat Tanpa Deskripsi',
-        'deskripsi' => null,
-    ]);
-});
-
-test('admin can update jenis surat dan baris persyaratan', function () {
-    $user = User::factory()->admin()->create();
-    $jenisSurat = JenisSurat::factory()->create([
-        'nama_surat' => 'Surat Lama',
-        'deskripsi' => 'Deskripsi lama',
-    ]);
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('edit', $jenisSurat->id)
-        ->set('nama_surat', 'Surat Baru')
-        ->set('deskripsi', 'Deskripsi baru')
-        ->set('persyaratanRows', [
-            [
-                'key' => 'x',
-                'nama' => 'Dokumen baru',
-                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_INFO,
-                'is_wajib' => true,
-            ],
-        ])
-        ->call('save')
-        ->assertHasNoErrors();
-
-    $fresh = $jenisSurat->fresh();
-
-    expect($fresh->nama_surat)->toBe('Surat Baru')
-        ->and($fresh->deskripsi)->toBe('Deskripsi baru')
-        ->and($fresh->persyaratan_dokumen)->toContain('Dokumen baru')
-        ->and($fresh->persyaratan)->toHaveCount(1)
-        ->and($fresh->persyaratan->first()->cara_pemenuhan)->toBe(JenisSuratPersyaratan::CARA_INFO);
-});
-
-test('nama_surat is required', function () {
-    $user = User::factory()->admin()->create();
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
-        ->set('nama_surat', '')
-        ->set('persyaratanRows', [
-            [
-                'key' => 'a',
-                'nama' => 'Fotokopi KTP',
-                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
-                'is_wajib' => true,
-            ],
-        ])
-        ->call('save')
-        ->assertHasErrors(['nama_surat' => 'required']);
-});
-
-test('minimal satu baris persyaratan wajib saat simpan', function () {
-    $user = User::factory()->admin()->create();
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
-        ->set('nama_surat', 'Surat Baru')
-        ->set('persyaratanRows', [])
-        ->call('save')
-        ->assertHasErrors(['persyaratanRows']);
-});
-
-test('nama syarat wajib diisi', function () {
-    $user = User::factory()->admin()->create();
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
-        ->set('nama_surat', 'Surat Baru')
-        ->set('persyaratanRows', [
-            [
-                'key' => 'a',
-                'nama' => '',
-                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
-                'is_wajib' => true,
-            ],
-        ])
-        ->call('save')
-        ->assertHasErrors(['persyaratanRows.0.nama' => 'required']);
-});
-
-test('nama_surat must be unique on create', function () {
-    $user = User::factory()->admin()->create();
-    JenisSurat::factory()->create(['nama_surat' => 'Surat Duplikat']);
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
-        ->set('nama_surat', 'Surat Duplikat')
-        ->set('persyaratanRows', [
-            [
-                'key' => 'a',
-                'nama' => 'Fotokopi KTP',
-                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
-                'is_wajib' => true,
-            ],
-        ])
-        ->call('save')
-        ->assertHasErrors(['nama_surat' => 'unique']);
-});
-
-test('nama_surat unique rule ignores current record on edit', function () {
-    $user = User::factory()->admin()->create();
-    $jenisSurat = JenisSurat::factory()->create(['nama_surat' => 'Surat Tetap']);
-
-    Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('edit', $jenisSurat->id)
-        ->set('deskripsi', 'Deskripsi diperbarui')
-        ->call('save')
-        ->assertHasNoErrors();
-
-    expect($jenisSurat->fresh()->deskripsi)->toBe('Deskripsi diperbarui');
 });
 
 test('admin can search jenis surat by nama', function () {
@@ -287,3 +99,14 @@ test('force delete only works on trashed records', function () {
         ->test(DataJenisSurat::class)
         ->call('confirmForceDelete', $jenisSurat->id);
 })->throws(ModelNotFoundException::class);
+
+test('daftar menampilkan tautan ke halaman tambah dan ubah', function () {
+    $user = User::factory()->admin()->create();
+    $jenisSurat = JenisSurat::factory()->create(['nama_surat' => 'Surat Link']);
+
+    $this->actingAs($user)
+        ->get(route('jenis-surat.index'))
+        ->assertOk()
+        ->assertSee(route('jenis-surat.create'), false)
+        ->assertSee(route('jenis-surat.edit', $jenisSurat), false);
+});

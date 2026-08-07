@@ -1,6 +1,6 @@
 <?php
 
-use App\Livewire\JenisSurat\DataJenisSurat;
+use App\Livewire\JenisSurat\FormJenisSurat;
 use App\Models\JenisSurat;
 use App\Models\JenisSuratPersyaratan;
 use App\Models\User;
@@ -10,8 +10,7 @@ test('admin dapat menambah menghapus dan mengurutkan baris persyaratan', functio
     $user = User::factory()->admin()->create();
 
     $component = Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
+        ->test(FormJenisSurat::class)
         ->assertSet('persyaratanRows.0.cara_pemenuhan', JenisSuratPersyaratan::CARA_UNGGAH)
         ->assertSet('persyaratanRows.0.is_wajib', 1)
         ->call('addPersyaratanRow');
@@ -35,8 +34,7 @@ test('pilihan wajib hanya relevan untuk cara unggah', function () {
     $user = User::factory()->admin()->create();
 
     Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
+        ->test(FormJenisSurat::class)
         ->set('persyaratanRows.0.cara_pemenuhan', JenisSuratPersyaratan::CARA_BAWA_KANTOR)
         ->assertSet('persyaratanRows.0.is_wajib', 1)
         ->set('persyaratanRows.0.cara_pemenuhan', JenisSuratPersyaratan::CARA_UNGGAH)
@@ -56,8 +54,7 @@ test('template cepat domisili mengisi tiga baris default', function () {
     $user = User::factory()->admin()->create();
 
     $component = Livewire::actingAs($user)
-        ->test(DataJenisSurat::class)
-        ->call('create')
+        ->test(FormJenisSurat::class)
         ->call('applyDomisiliTemplate')
         ->assertSet('persyaratanRows.0.nama', 'Fotokopi KTP')
         ->assertSet('persyaratanRows.0.cara_pemenuhan', JenisSuratPersyaratan::CARA_UNGGAH)
