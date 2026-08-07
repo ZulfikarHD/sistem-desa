@@ -67,34 +67,77 @@ See [dev-docs/README.md](dev-docs/README.md)
 
 ## User Docs
 
-See [user-docs/README.md](user-docs/README.md)
+See [user-docs/README.md](user-docs/README.md) — dikelompokkan per peran pengguna (Publik, Warga, Admin).
 
-| Document | Description |
-|----------|-------------|
-| [Panduan Beranda, Masuk, dan Daftar](user-docs/guides/public-pages.md) | Cara memakai beranda dan akun uji |
-| [Panduan Registrasi Akun Warga](user-docs/guides/citizen-registration.md) | Cara warga mendaftar akun |
-| [Panduan Login Berbasis Role](user-docs/guides/role-based-login.md) | Cara masuk dan keluar sesuai role |
-| [Panduan Proteksi Akses Role](user-docs/guides/role-middleware.md) | Batasan akses warga vs admin |
-| [Panduan Manajemen Profil](user-docs/guides/profile-management.md) | Cara edit profil dan ganti password |
-| [Panduan Lupa Password](user-docs/guides/password-reset.md) | Cara reset password via email |
-| [Panduan Kelola Jenis Surat](user-docs/guides/jenis-surat.md) | Cara admin menambah/ubah/arsip/hapus jenis surat |
-| [Panduan Persyaratan Dokumen](user-docs/guides/persyaratan-dokumen.md) | Cara warga melihat persyaratan jenis surat |
-| [Panduan Akses Publik Persyaratan Dokumen](user-docs/guides/persyaratan-dokumen-publik.md) | Cara pengunjung tanpa akun melihat persyaratan |
-| [Panduan Pengajuan Surat](user-docs/guides/pengajuan-surat-form.md) | Cara warga mengajukan surat keterangan online |
-| [Panduan Unggah Dokumen Persyaratan](user-docs/guides/pengajuan-surat-dokumen.md) | Cara mengunggah KTP/KK pada formulir pengajuan |
-| [Panduan Validasi Kelengkapan Pengajuan](user-docs/guides/pengajuan-surat-kelengkapan.md) | Aturan dokumen wajib sebelum kirim pengajuan |
-| [Panduan Ajukan Ulang Pengajuan](user-docs/guides/pengajuan-surat-ajukan-ulang.md) | Cara ajukan ulang setelah pengajuan ditolak |
-| [Panduan Verifikasi / Daftar Pengajuan](user-docs/guides/verifikasi-pengajuan.md) | Cara admin memeriksa, setujui/tolak pengajuan |
-| [Panduan Daftar Pengajuan & Alur Setujui](user-docs/guides/daftar-pengajuan-dan-alur-setujui.md) | Rename menu + setujui langsung diproses (US-8.3/8.4) |
-| [Panduan Migrasi Alur Status](user-docs/guides/migrasi-alur-status.md) | Arti status dan alur setujui → diproses |
-| [Panduan Generate Surat PDF](user-docs/guides/generate-surat-pdf.md) | Cara surat PDF otomatis dibuat saat admin setujui |
-| [Panduan Nomor Surat Resmi](user-docs/guides/nomor-surat-resmi.md) | Arti format nomor surat resmi otomatis |
-| [Panduan Scan QR Pengambilan](user-docs/guides/qr-sekali-pakai.md) | Cara admin scan QR sekali pakai saat pengambilan |
-| [Panduan Dokumen Siap Diambil](user-docs/guides/dokumen-siap-diambil.md) | Cara admin set tanggal pengambilan + notifikasi warga |
-| [Panduan Surat Diproses & Siap Diambil](user-docs/guides/surat-diproses.md) | Menu Surat Diproses + tandai siap diambil (US-8.5/8.6) |
-| [Panduan Dashboard Admin](user-docs/guides/dashboard-admin.md) | Cara membaca kartu aging dan menindaklanjuti (US-8.1) |
-| [Panduan Dashboard Warga](user-docs/guides/dashboard-warga.md) | Cara melihat status surat di halaman utama (US-8.2) |
-| [Panduan Unduh/Cetak Surat](user-docs/guides/unduh-surat-warga.md) | Cara warga mengunduh atau mencetak PDF surat |
-| [Panduan Notifikasi & Riwayat Pengajuan](user-docs/guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
-| [Panduan Rekap Pengajuan](user-docs/guides/rekap-pengajuan.md) | Cara admin memfilter dan ekspor laporan pengajuan |
-| [Panduan Detail Timeline Rekap](user-docs/guides/rekap-timeline.md) | Cara admin melihat riwayat proses per pengajuan (US-8.7) |
+### Diagram Sistem
+
+#### Use Case Diagram
+
+| Diagram | Deskripsi |
+|---------|-----------|
+| [Gambaran Umum](user-docs/diagrams/usecase/uc-overview.md) | Semua aktor, 24 use case, relasi include/extend |
+| [Publik / Tamu](user-docs/diagrams/usecase/uc-publik.md) | Use case beranda, persyaratan publik, registrasi |
+| [Warga](user-docs/diagrams/usecase/uc-warga.md) | Use case login, pengajuan, unduh, notifikasi |
+| [Admin / Petugas Desa](user-docs/diagrams/usecase/uc-admin.md) | Use case verifikasi, surat, QR, rekap |
+
+#### Activity Diagram (1 proses = 1 file)
+
+| Kode | Diagram | Aktor |
+|------|---------|-------|
+| AD-01 | [Registrasi Akun Warga](user-docs/diagrams/activity/ad-01-registrasi-akun-warga.md) | Publik |
+| AD-02 | [Login & Redirect Dashboard](user-docs/diagrams/activity/ad-02-login-redirect-dashboard.md) | Warga/Admin |
+| AD-03 | [Reset Password](user-docs/diagrams/activity/ad-03-reset-password.md) | Warga/Admin |
+| AD-04 | [Pengajuan Surat Keterangan](user-docs/diagrams/activity/ad-04-pengajuan-surat.md) | Warga |
+| AD-05 | [Verifikasi Pengajuan](user-docs/diagrams/activity/ad-05-verifikasi-pengajuan.md) | Admin |
+| AD-06 | [Proses Surat & Jadwal Pengambilan](user-docs/diagrams/activity/ad-06-proses-surat-jadwal-pengambilan.md) | Admin |
+| AD-07 | [Scan QR Pengambilan](user-docs/diagrams/activity/ad-07-scan-qr-pengambilan.md) | Admin |
+| AD-08 | [Unduh / Cetak Surat](user-docs/diagrams/activity/ad-08-unduh-cetak-surat.md) | Warga |
+| AD-09 | [Ajukan Ulang Setelah Ditolak](user-docs/diagrams/activity/ad-09-ajukan-ulang.md) | Warga |
+| AD-10 | [Kelola Master Jenis Surat](user-docs/diagrams/activity/ad-10-kelola-jenis-surat.md) | Admin |
+| AD-11 | [Rekap & Ekspor CSV](user-docs/diagrams/activity/ad-11-rekap-ekspor-csv.md) | Admin |
+| AD-12 | [Alur Transisi Status Pengajuan](user-docs/diagrams/activity/ad-12-alur-status-pengajuan.md) | Sistem |
+
+### Panduan Pengguna — Publik / Tamu
+
+| # | Panduan | Tautan |
+|---|---------|--------|
+| 1 | Beranda, Masuk, dan Daftar | [guides/publik/01-public-pages.md](user-docs/guides/publik/01-public-pages.md) |
+| 2 | Akses Publik Persyaratan Dokumen | [guides/publik/02-persyaratan-dokumen-publik.md](user-docs/guides/publik/02-persyaratan-dokumen-publik.md) |
+| 3 | Registrasi Akun Warga | [guides/publik/03-citizen-registration.md](user-docs/guides/publik/03-citizen-registration.md) |
+
+### Panduan Pengguna — Warga
+
+| # | Panduan | Tautan |
+|---|---------|--------|
+| 1 | Login Berbasis Role | [guides/warga/01-role-based-login.md](user-docs/guides/warga/01-role-based-login.md) |
+| 2 | Manajemen Profil | [guides/warga/02-profile-management.md](user-docs/guides/warga/02-profile-management.md) |
+| 3 | Lupa Password | [guides/warga/03-password-reset.md](user-docs/guides/warga/03-password-reset.md) |
+| 4 | Persyaratan Dokumen | [guides/warga/04-persyaratan-dokumen.md](user-docs/guides/warga/04-persyaratan-dokumen.md) |
+| 5 | Pengajuan Surat | [guides/warga/05-pengajuan-surat-form.md](user-docs/guides/warga/05-pengajuan-surat-form.md) |
+| 6 | Unggah Dokumen Persyaratan | [guides/warga/06-pengajuan-surat-dokumen.md](user-docs/guides/warga/06-pengajuan-surat-dokumen.md) |
+| 7 | Validasi Kelengkapan | [guides/warga/07-pengajuan-surat-kelengkapan.md](user-docs/guides/warga/07-pengajuan-surat-kelengkapan.md) |
+| 8 | Dashboard Warga | [guides/warga/08-dashboard-warga.md](user-docs/guides/warga/08-dashboard-warga.md) |
+| 9 | Notifikasi & Riwayat | [guides/warga/09-notifikasi-pengajuan.md](user-docs/guides/warga/09-notifikasi-pengajuan.md) |
+| 10 | Unduh/Cetak Surat | [guides/warga/10-unduh-surat-warga.md](user-docs/guides/warga/10-unduh-surat-warga.md) |
+| 11 | Ajukan Ulang | [guides/warga/11-pengajuan-surat-ajukan-ulang.md](user-docs/guides/warga/11-pengajuan-surat-ajukan-ulang.md) |
+| 12 | Proteksi Akses Role | [guides/warga/12-role-middleware.md](user-docs/guides/warga/12-role-middleware.md) |
+
+### Panduan Pengguna — Admin / Petugas Desa
+
+| # | Panduan | Tautan |
+|---|---------|--------|
+| 1 | Login Berbasis Role | [guides/admin/01-role-based-login.md](user-docs/guides/admin/01-role-based-login.md) |
+| 2 | Dashboard Admin | [guides/admin/02-dashboard-admin.md](user-docs/guides/admin/02-dashboard-admin.md) |
+| 3 | Kelola Jenis Surat | [guides/admin/03-jenis-surat.md](user-docs/guides/admin/03-jenis-surat.md) |
+| 4 | Verifikasi Pengajuan | [guides/admin/04-verifikasi-pengajuan.md](user-docs/guides/admin/04-verifikasi-pengajuan.md) |
+| 5 | Daftar Pengajuan & Alur Setujui | [guides/admin/05-daftar-pengajuan-dan-alur-setujui.md](user-docs/guides/admin/05-daftar-pengajuan-dan-alur-setujui.md) |
+| 6 | Generate Surat PDF | [guides/admin/06-generate-surat-pdf.md](user-docs/guides/admin/06-generate-surat-pdf.md) |
+| 7 | Nomor Surat Resmi | [guides/admin/07-nomor-surat-resmi.md](user-docs/guides/admin/07-nomor-surat-resmi.md) |
+| 8 | Surat Diproses | [guides/admin/08-surat-diproses.md](user-docs/guides/admin/08-surat-diproses.md) |
+| 9 | Dokumen Siap Diambil | [guides/admin/09-dokumen-siap-diambil.md](user-docs/guides/admin/09-dokumen-siap-diambil.md) |
+| 10 | Scan QR Pengambilan | [guides/admin/10-qr-sekali-pakai.md](user-docs/guides/admin/10-qr-sekali-pakai.md) |
+| 11 | Rekap Pengajuan | [guides/admin/11-rekap-pengajuan.md](user-docs/guides/admin/11-rekap-pengajuan.md) |
+| 12 | Migrasi Alur Status | [guides/admin/12-migrasi-alur-status.md](user-docs/guides/admin/12-migrasi-alur-status.md) |
+| 13 | Proteksi Akses Role | [guides/admin/13-role-middleware.md](user-docs/guides/admin/13-role-middleware.md) |
+| 14 | Manajemen Profil | [guides/admin/14-profile-management.md](user-docs/guides/admin/14-profile-management.md) |
+| 15 | Lupa Password | [guides/admin/15-password-reset.md](user-docs/guides/admin/15-password-reset.md) |
