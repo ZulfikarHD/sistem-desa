@@ -895,15 +895,15 @@ flowchart TD
     Start([Mulai]) --> A[Login sebagai warga]
     A --> B[Buka Riwayat Pengajuan atau Dashboard]
     B --> C{Status pengajuan\nSiap Diambil atau Selesai?}
-    C -->|"Tidak — status lain"| D[Tombol Unduh/Cetak tidak tersedia]
+    C -->|"Tidak - status lain"| D[Tombol Unduh/Cetak tidak tersedia]
     D --> End([Selesai])
     C -->|"Ya"| E{Pilih aksi}
     E -->|"Unduh"| F[Klik tombol Unduh Surat]
     E -->|"Cetak"| G[Klik tombol Cetak Surat]
     F --> H{File PDF ada di storage?}
     G --> H
-    H -->|"Ya"| I[Sajikan PDF ke browser\n(download atau inline untuk cetak)]
-    H -->|"Tidak — file hilang"| J[Sistem generate ulang PDF\ntanpa membuat QR baru]
+    H -->|"Ya"| I["Sajikan PDF ke browser\n(download atau inline untuk cetak)"]
+    H -->|"Tidak - file hilang"| J[Sistem generate ulang PDF\ntanpa membuat QR baru]
     J --> I
     I --> End
 ```
@@ -1233,10 +1233,10 @@ erDiagram
         string email UK
         string no_telepon
         text alamat
-        string role "warga | admin"
+        string role "warga / admin"
         timestamp email_verified_at
         string password
-        timestamps created_at
+        timestamp created_at
     }
 
     jenis_surat {
@@ -1244,7 +1244,7 @@ erDiagram
         string nama_surat UK "100 chars"
         text deskripsi
         text persyaratan_dokumen "ringkasan generated"
-        timestamps created_at
+        timestamp created_at
         timestamp deleted_at "SoftDeletes"
     }
 
@@ -1252,38 +1252,38 @@ erDiagram
         bigint id PK
         bigint jenis_surat_id FK
         string nama
-        string cara_pemenuhan "unggah|bawa_kantor|info"
+        string cara_pemenuhan "unggah / bawa_kantor / info"
         boolean is_wajib
         int urutan
-        timestamps created_at
+        timestamp created_at
     }
 
     pengajuan_surat {
         bigint id PK
         bigint user_id FK
         bigint jenis_surat_id FK
-        string nomor_pengajuan UK "PJ-YYYYMMDD-####"
+        string nomor_pengajuan UK "PJ-YYYYMMDD-NNNN"
         text keperluan
-        string status "diajukan|diproses|ditolak|siap_diambil|selesai"
+        string status "diajukan / diproses / ditolak / siap_diambil / selesai"
         text catatan_admin
         bigint diverifikasi_oleh FK "nullable"
         date tanggal_pengajuan
-        timestamps created_at
+        timestamp created_at
     }
 
     dokumen_persyaratan {
         bigint id PK
         bigint pengajuan_id FK
-        string jenis_dokumen "ktp | kk"
+        string jenis_dokumen "ktp / kk"
         string file_path "disk local privat"
-        timestamps created_at
+        timestamp created_at
     }
 
     log_verifikasi {
         bigint id PK
         bigint pengajuan_id FK
         bigint admin_id FK
-        string aksi "setujui|tolak|siap_diambil"
+        string aksi "setujui / tolak / siap_diambil"
         text keterangan
         timestamp created_at
     }
@@ -1293,25 +1293,25 @@ erDiagram
         bigint user_id FK
         bigint pengajuan_id FK
         text pesan
-        enum status_baca "belum | dibaca"
+        string status_baca "belum / dibaca"
         timestamp created_at
     }
 
     surat_terbit {
         bigint id PK
-        bigint pengajuan_id UK_FK "1:1"
-        string nomor_surat UK "470/{urut}/DS-WDN/{romawi}/{tahun}"
+        bigint pengajuan_id FK,UK "relasi 1:1"
+        string nomor_surat UK "470/urut/DS-WDN/romawi/tahun"
         string file_path "disk local privat"
         date tanggal_terbit
         date tanggal_pengambilan
         timestamp siap_diambil_at
         string jam_kerja_label
         string qr_token UK "64 chars opaque"
-        string qr_status "valid | invalid"
+        string qr_status "valid / invalid"
         timestamp qr_digunakan_at
         bigint qr_digunakan_oleh FK "nullable"
         bigint diterbitkan_oleh FK
-        timestamps created_at
+        timestamp created_at
     }
 
     users ||--o{ pengajuan_surat : "mengajukan"
