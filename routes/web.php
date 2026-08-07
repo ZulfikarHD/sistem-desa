@@ -7,6 +7,7 @@ use App\Livewire\JenisSurat\PersyaratanDokumen;
 use App\Livewire\Pengajuan\DetailPengajuanWarga;
 use App\Livewire\Pengajuan\FormPengajuanSurat;
 use App\Livewire\Pengajuan\RiwayatPengajuan;
+use App\Livewire\Rekap\DetailRekapPengajuan;
 use App\Livewire\Rekap\RekapPengajuan;
 use App\Livewire\SuratDiproses\DaftarSuratDiproses;
 use App\Livewire\SuratDiproses\DetailSuratDiproses;
@@ -134,6 +135,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // US-6.1 + US-6.2 — Rekap pengajuan & export CSV
         Route::livewire('rekap-pengajuan', RekapPengajuan::class)->name('rekap-pengajuan.index');
+
+        // US-8.7 — Detail rekap + timeline proses (path mengikuti konvensi rekap-pengajuan, bukan /admin/rekap/{id})
+        Route::livewire('rekap-pengajuan/{pengajuan}', DetailRekapPengajuan::class)
+            ->name('rekap-pengajuan.show')
+            ->whereNumber('pengajuan');
     });
 });
 

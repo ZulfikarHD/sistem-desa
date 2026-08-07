@@ -35,6 +35,14 @@ Halaman untuk petugas/admin desa melihat seluruh pengajuan surat dalam satu tabe
 
 Isi kolom CSV sama dengan kolom tabel: Nomor Pengajuan, Nama Warga, Jenis Surat, Tanggal Pengajuan, Status, Admin Verifikator.
 
+### Melihat timeline proses satu pengajuan
+
+1. Pada baris pengajuan, klik **Lihat Detail**
+2. Baca **Ringkasan Pengajuan** dan **Timeline Proses**
+3. Unduh PDF jika tersedia, atau klik **Kembali ke Rekap**
+
+Lihat panduan lengkap: [Detail Timeline Rekap](rekap-timeline.md).
+
 ## FAQ
 
 **Q: Mengapa warga tidak bisa membuka halaman ini?**  

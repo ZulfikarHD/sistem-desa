@@ -34,6 +34,7 @@ Technical documentation for contributors working on sistem-desa.
 | Unduh/Cetak Surat Warga (US-7.6) | [features/unduh-surat-warga.md](features/unduh-surat-warga.md) |
 | Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3) | [features/notifikasi-pengajuan.md](features/notifikasi-pengajuan.md) |
 | Rekap Pengajuan & Reporting (US-6.1 – US-6.2) | [features/rekap-pengajuan.md](features/rekap-pengajuan.md) |
+| Rekap Timeline Detail (US-8.7) | [features/rekap-timeline.md](features/rekap-timeline.md) |
 
 ## API
 
@@ -65,3 +66,4 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [020](decisions/020-setujui-langsung-diproses-us-8-4.md) | Setujui langsung diproses; keep disetujui historis |
 | [021](decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated Surat Diproses pages + siap_diambil_at |
 | [022](decisions/022-dashboard-aging-and-status-helpers.md) | Dashboard aging helpers + component thresholds |
+| [023](decisions/023-rekap-timeline-detail-page.md) | Rekap timeline detail path + actor/fallback rules |

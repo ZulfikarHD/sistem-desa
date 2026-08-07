@@ -82,6 +82,8 @@ No public JSON API.
 - [Verifikasi Pengajuan](verifikasi-pengajuan.md) — source of status + `diverifikasi_oleh`
 - [Migrasi Alur Status (US-7.1)](migrasi-alur-status.md)
 - [Form Pengajuan Surat](pengajuan-surat-form.md) — data source
+- [Rekap Timeline Detail (US-8.7)](rekap-timeline.md) — detail page + process timeline
 - [ADR-013](../decisions/013-rekap-summary-filters-and-csv-bom.md)
 - [ADR-014](../decisions/014-status-flow-migration-us-7-1.md)
 - Phase 07 — penerbitan surat columns on this page
+- Phase 08 US-8.7 — detail timeline extension (does not change list table columns)

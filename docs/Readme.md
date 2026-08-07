@@ -40,6 +40,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Unduh/Cetak Surat Warga (US-7.6)](dev-docs/features/unduh-surat-warga.md) | Warga download/print issued PDF; detail shows pickup hours |
 | [Notifikasi & Riwayat Pengajuan (US-5.1 – US-5.3)](dev-docs/features/notifikasi-pengajuan.md) | In-app notifications, bell panel, warga detail & riwayat |
 | [Rekap Pengajuan & Reporting (US-6.1 – US-6.2)](dev-docs/features/rekap-pengajuan.md) | Admin filterable recap table, summary counts, CSV export |
+| [Rekap Timeline Detail (US-8.7)](dev-docs/features/rekap-timeline.md) | Admin detail page with chronological process timeline |
 | [ADR-001: Keep `name` column + logout after register](dev-docs/decisions/001-registration-name-column-and-redirect.md) | Why `name` (not `nama`) and guest redirect after register |
 | [ADR-002: Role-based login redirect](dev-docs/decisions/002-role-based-login-redirect.md) | Why custom LoginResponse + dual dashboards |
 | [ADR-003: Role middleware 403](dev-docs/decisions/003-role-middleware-403.md) | Why denied access uses HTTP 403 |
@@ -62,6 +63,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-020: Setujui langsung diproses US-8.4](dev-docs/decisions/020-setujui-langsung-diproses-us-8-4.md) | Approve → diproses in one step; keep disetujui for historis |
 | [ADR-021: Surat Diproses page + siap_diambil_at](dev-docs/decisions/021-surat-diproses-page-and-siap-diambil-at.md) | Dedicated list/detail; relocate Siap Diambil UI; timestamp for timeline |
 | [ADR-022: Dashboard aging helpers](dev-docs/decisions/022-dashboard-aging-and-status-helpers.md) | Component thresholds + PengajuanSurat status entered-at helpers |
+| [ADR-023: Rekap timeline detail page](dev-docs/decisions/023-rekap-timeline-detail-page.md) | Detail path under rekap-pengajuan; actor/fallback rules for timeline |
 
 ## User Docs
 
@@ -95,3 +97,4 @@ See [user-docs/README.md](user-docs/README.md)
 | [Panduan Unduh/Cetak Surat](user-docs/guides/unduh-surat-warga.md) | Cara warga mengunduh atau mencetak PDF surat |
 | [Panduan Notifikasi & Riwayat Pengajuan](user-docs/guides/notifikasi-pengajuan.md) | Cara warga melihat notifikasi status dan riwayat pengajuan |
 | [Panduan Rekap Pengajuan](user-docs/guides/rekap-pengajuan.md) | Cara admin memfilter dan ekspor laporan pengajuan |
+| [Panduan Detail Timeline Rekap](user-docs/guides/rekap-timeline.md) | Cara admin melihat riwayat proses per pengajuan (US-8.7) |

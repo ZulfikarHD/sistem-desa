@@ -130,6 +130,7 @@
                 <flux:table.column>{{ __('Tanggal Pengajuan') }}</flux:table.column>
                 <flux:table.column>{{ __('Status') }}</flux:table.column>
                 <flux:table.column>{{ __('Admin Verifikator') }}</flux:table.column>
+                <flux:table.column>{{ __('Aksi') }}</flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
@@ -161,6 +162,17 @@
                         </flux:table.cell>
                         <flux:table.cell data-test="rekap-pengajuan-admin-{{ $item->id }}">
                             {{ $item->diverifikasiOleh?->name ?? '—' }}
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:button
+                                size="sm"
+                                variant="ghost"
+                                :href="route('rekap-pengajuan.show', $item)"
+                                wire:navigate
+                                data-test="rekap-pengajuan-detail-{{ $item->id }}"
+                            >
+                                {{ __('Lihat Detail') }}
+                            </flux:button>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforeach
