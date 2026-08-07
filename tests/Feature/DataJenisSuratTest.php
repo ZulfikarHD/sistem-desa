@@ -2,6 +2,7 @@
 
 use App\Livewire\JenisSurat\DataJenisSurat;
 use App\Models\JenisSurat;
+use App\Models\JenisSuratPersyaratan;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
@@ -28,7 +29,7 @@ test('admin can visit jenis surat page', function () {
         ->assertSeeLivewire(DataJenisSurat::class);
 });
 
-test('admin can create jenis surat', function () {
+test('admin can create jenis surat dengan persyaratan terstruktur', function () {
     $user = User::factory()->admin()->create();
 
     Livewire::actingAs($user)
@@ -36,14 +37,41 @@ test('admin can create jenis surat', function () {
         ->call('create')
         ->set('nama_surat', 'Surat Keterangan Domisili')
         ->set('deskripsi', 'Surat untuk keterangan tempat tinggal')
-        ->set('persyaratan_dokumen', "- Fotokopi KTP\n- Fotokopi KK")
+        ->set('persyaratanRows', [
+            [
+                'key' => 'a',
+                'nama' => 'Fotokopi KTP',
+                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
+                'is_wajib' => true,
+            ],
+            [
+                'key' => 'b',
+                'nama' => 'Surat pengantar RT/RW',
+                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_BAWA_KANTOR,
+                'is_wajib' => true,
+            ],
+        ])
         ->call('save')
         ->assertHasNoErrors();
 
-    $this->assertDatabaseHas('jenis_surat', [
-        'nama_surat' => 'Surat Keterangan Domisili',
-        'deskripsi' => 'Surat untuk keterangan tempat tinggal',
-        'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi KK",
+    $jenisSurat = JenisSurat::query()->where('nama_surat', 'Surat Keterangan Domisili')->first();
+
+    expect($jenisSurat)->not->toBeNull()
+        ->and($jenisSurat->deskripsi)->toBe('Surat untuk keterangan tempat tinggal')
+        ->and($jenisSurat->persyaratan_dokumen)->toContain('Fotokopi KTP')
+        ->and($jenisSurat->persyaratan)->toHaveCount(2);
+
+    $this->assertDatabaseHas('jenis_surat_persyaratan', [
+        'jenis_surat_id' => $jenisSurat->id,
+        'nama' => 'Fotokopi KTP',
+        'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
+        'is_wajib' => true,
+    ]);
+
+    $this->assertDatabaseHas('jenis_surat_persyaratan', [
+        'jenis_surat_id' => $jenisSurat->id,
+        'nama' => 'Surat pengantar RT/RW',
+        'cara_pemenuhan' => JenisSuratPersyaratan::CARA_BAWA_KANTOR,
     ]);
 });
 
@@ -55,7 +83,14 @@ test('admin can create jenis surat without deskripsi', function () {
         ->call('create')
         ->set('nama_surat', 'Surat Tanpa Deskripsi')
         ->set('deskripsi', '')
-        ->set('persyaratan_dokumen', '- Fotokopi KTP')
+        ->set('persyaratanRows', [
+            [
+                'key' => 'a',
+                'nama' => 'Fotokopi KTP',
+                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
+                'is_wajib' => true,
+            ],
+        ])
         ->call('save')
         ->assertHasNoErrors();
 
@@ -65,12 +100,11 @@ test('admin can create jenis surat without deskripsi', function () {
     ]);
 });
 
-test('admin can update jenis surat', function () {
+test('admin can update jenis surat dan baris persyaratan', function () {
     $user = User::factory()->admin()->create();
     $jenisSurat = JenisSurat::factory()->create([
         'nama_surat' => 'Surat Lama',
         'deskripsi' => 'Deskripsi lama',
-        'persyaratan_dokumen' => '- Dokumen lama',
     ]);
 
     Livewire::actingAs($user)
@@ -78,13 +112,24 @@ test('admin can update jenis surat', function () {
         ->call('edit', $jenisSurat->id)
         ->set('nama_surat', 'Surat Baru')
         ->set('deskripsi', 'Deskripsi baru')
-        ->set('persyaratan_dokumen', '- Dokumen baru')
+        ->set('persyaratanRows', [
+            [
+                'key' => 'x',
+                'nama' => 'Dokumen baru',
+                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_INFO,
+                'is_wajib' => true,
+            ],
+        ])
         ->call('save')
         ->assertHasNoErrors();
 
-    expect($jenisSurat->fresh()->nama_surat)->toBe('Surat Baru')
-        ->and($jenisSurat->fresh()->deskripsi)->toBe('Deskripsi baru')
-        ->and($jenisSurat->fresh()->persyaratan_dokumen)->toBe('- Dokumen baru');
+    $fresh = $jenisSurat->fresh();
+
+    expect($fresh->nama_surat)->toBe('Surat Baru')
+        ->and($fresh->deskripsi)->toBe('Deskripsi baru')
+        ->and($fresh->persyaratan_dokumen)->toContain('Dokumen baru')
+        ->and($fresh->persyaratan)->toHaveCount(1)
+        ->and($fresh->persyaratan->first()->cara_pemenuhan)->toBe(JenisSuratPersyaratan::CARA_INFO);
 });
 
 test('nama_surat is required', function () {
@@ -94,21 +139,47 @@ test('nama_surat is required', function () {
         ->test(DataJenisSurat::class)
         ->call('create')
         ->set('nama_surat', '')
-        ->set('persyaratan_dokumen', '- Fotokopi KTP')
+        ->set('persyaratanRows', [
+            [
+                'key' => 'a',
+                'nama' => 'Fotokopi KTP',
+                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
+                'is_wajib' => true,
+            ],
+        ])
         ->call('save')
         ->assertHasErrors(['nama_surat' => 'required']);
 });
 
-test('persyaratan_dokumen is required', function () {
+test('minimal satu baris persyaratan wajib saat simpan', function () {
     $user = User::factory()->admin()->create();
 
     Livewire::actingAs($user)
         ->test(DataJenisSurat::class)
         ->call('create')
         ->set('nama_surat', 'Surat Baru')
-        ->set('persyaratan_dokumen', '')
+        ->set('persyaratanRows', [])
         ->call('save')
-        ->assertHasErrors(['persyaratan_dokumen' => 'required']);
+        ->assertHasErrors(['persyaratanRows']);
+});
+
+test('nama syarat wajib diisi', function () {
+    $user = User::factory()->admin()->create();
+
+    Livewire::actingAs($user)
+        ->test(DataJenisSurat::class)
+        ->call('create')
+        ->set('nama_surat', 'Surat Baru')
+        ->set('persyaratanRows', [
+            [
+                'key' => 'a',
+                'nama' => '',
+                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
+                'is_wajib' => true,
+            ],
+        ])
+        ->call('save')
+        ->assertHasErrors(['persyaratanRows.0.nama' => 'required']);
 });
 
 test('nama_surat must be unique on create', function () {
@@ -119,7 +190,14 @@ test('nama_surat must be unique on create', function () {
         ->test(DataJenisSurat::class)
         ->call('create')
         ->set('nama_surat', 'Surat Duplikat')
-        ->set('persyaratan_dokumen', '- Fotokopi KTP')
+        ->set('persyaratanRows', [
+            [
+                'key' => 'a',
+                'nama' => 'Fotokopi KTP',
+                'cara_pemenuhan' => JenisSuratPersyaratan::CARA_UNGGAH,
+                'is_wajib' => true,
+            ],
+        ])
         ->call('save')
         ->assertHasErrors(['nama_surat' => 'unique']);
 });
@@ -183,11 +261,13 @@ test('admin can restore soft deleted jenis surat', function () {
     expect($jenisSurat->fresh()->trashed())->toBeFalse();
 });
 
-test('admin can force delete soft deleted jenis surat', function () {
+test('admin can force delete soft deleted jenis surat dan cascade persyaratan', function () {
     $user = User::factory()->admin()->create();
     $jenisSurat = JenisSurat::factory()->create(['nama_surat' => 'Surat Hapus Permanen']);
-    $jenisSurat->delete();
     $id = $jenisSurat->id;
+    $persyaratanId = $jenisSurat->persyaratan()->first()->id;
+
+    $jenisSurat->delete();
 
     Livewire::actingAs($user)
         ->test(DataJenisSurat::class)
@@ -196,6 +276,7 @@ test('admin can force delete soft deleted jenis surat', function () {
         ->call('forceDelete');
 
     $this->assertDatabaseMissing('jenis_surat', ['id' => $id]);
+    $this->assertDatabaseMissing('jenis_surat_persyaratan', ['id' => $persyaratanId]);
 });
 
 test('force delete only works on trashed records', function () {

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\JenisSurat;
+use App\Models\JenisSuratPersyaratan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,5 +29,25 @@ class JenisSuratFactory extends Factory
             'deskripsi' => fake()->sentence(),
             'persyaratan_dokumen' => "- Fotokopi KTP\n- Fotokopi Kartu Keluarga\n- Surat pengantar RT/RW",
         ];
+    }
+
+    /**
+     * Setelah create, isi baris persyaratan terstruktur dari teks persyaratan_dokumen
+     * tanpa menimpa teks tersebut (tetap kompatibel dengan deteksi keyword Phase 03
+     * sampai US-9.3 menggantinya).
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (JenisSurat $jenisSurat): void {
+            if ($jenisSurat->persyaratan()->exists()) {
+                return;
+            }
+
+            $rows = JenisSuratPersyaratan::parseFromFreeText($jenisSurat->persyaratan_dokumen);
+
+            foreach ($rows as $row) {
+                $jenisSurat->persyaratan()->create($row);
+            }
+        });
     }
 }

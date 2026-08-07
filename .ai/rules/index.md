@@ -20,4 +20,3 @@ Before planning or editing, find the row whose globs match the file's path and r
 | resources/views/pages/settings/** | .ai/rules/settings.md |
 | app/Livewire/SuratDiproses/** | .ai/rules/surat-diproses.md |
 | app/Livewire/Verifikasi/** | .ai/rules/verifikasi.md |
-| app/Livewire/Pengaturan/**, app/Models/PengaturanDesa.php | .ai/rules/pengaturan.md |

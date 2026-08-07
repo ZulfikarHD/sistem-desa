@@ -13,7 +13,7 @@ Technical documentation for contributors working on sistem-desa.
 | Role-Based Middleware (US-1.3) | [features/role-middleware.md](features/role-middleware.md) |
 | Profile Management (US-1.4) | [features/profile-management.md](features/profile-management.md) |
 | Password Reset (US-1.5) | [features/password-reset.md](features/password-reset.md) |
-| Jenis Surat Management (US-2.1) | [features/jenis-surat.md](features/jenis-surat.md) |
+| Jenis Surat Management (US-2.1 + US-9.1/9.2) | [features/jenis-surat.md](features/jenis-surat.md) |
 | Persyaratan Dokumen Warga (US-2.2) | [features/persyaratan-dokumen.md](features/persyaratan-dokumen.md) |
 | Akses Publik Persyaratan Dokumen (US-2.3) | [features/persyaratan-dokumen-publik.md](features/persyaratan-dokumen-publik.md) |
 | Form Pengajuan Surat (US-3.1) | [features/pengajuan-surat-form.md](features/pengajuan-surat-form.md) |
@@ -62,7 +62,8 @@ No public JSON API for auth yet — Fortify uses session-based form POSTs. Endpo
 | [007](decisions/007-warga-persyaratan-dokumen-view.md) | Warga persyaratan view via Livewire modal |
 | [008](decisions/008-public-persyaratan-dokumen-access.md) | Public `/persyaratan-dokumen` + layouts/public for guests |
 | [009](decisions/009-pengajuan-surat-table-and-nomor-format.md) | `pengajuan_surat` naming + PJ-YYYYMMDD-#### nomor generation |
-| [010](decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | KTP/KK text detection + private file storage |
+| [010](decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | KTP/KK text detection + private file storage (rules → ADR-026) |
+| [026](decisions/026-persyaratan-terstruktur-supersede-keyword-upload.md) | Structured persyaratan rows supersede keyword upload rules |
 | [011](decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only secure routes for dokumen preview/download |
 | [012](decisions/012-verifikasi-log-and-concurrent-lock.md) | `log_verifikasi` audit table + pessimistic locking |
 | [013](decisions/013-rekap-summary-filters-and-csv-bom.md) | Rekap summary ignores status filter; CSV UTF-8 BOM |

@@ -5,7 +5,7 @@
 
 ## Apa itu Jenis Surat?
 
-Jenis surat adalah daftar master jenis surat keterangan yang dikelola admin desa (misalnya Domisili, Tidak Mampu). Setiap jenis punya deskripsi (opsional) dan daftar persyaratan dokumen (wajib). Data ini menjadi acuan warga saat mengajukan surat.
+Jenis surat adalah daftar master jenis surat keterangan yang dikelola admin desa (misalnya Domisili, Tidak Mampu). Setiap jenis punya deskripsi (opsional) dan **daftar persyaratan terstruktur** — satu baris per syarat, dengan pilihan bagaimana warga memenuhinya (unggah di aplikasi, bawa ke kantor, atau hanya informasi).
 
 ## Cara Menggunakan
 
@@ -21,16 +21,22 @@ Jenis surat adalah daftar master jenis surat keterangan yang dikelola admin desa
 
 1. Buka halaman **Jenis Surat**.
 2. Klik **Tambah Jenis Surat**.
-3. Isi form:
-   - **Nama Surat** (wajib): contoh `Surat Keterangan Domisili`
-   - **Deskripsi** (opsional): ringkasan kegunaan surat
-   - **Persyaratan Dokumen** (wajib): daftar dokumen, satu baris per item
-4. Klik **Simpan**.
+3. Isi **Nama Surat** (wajib) dan **Deskripsi** (opsional).
+4. Di bagian **Persyaratan dokumen**, isi minimal satu baris:
+   - **Nama syarat** — contoh: `Fotokopi KTP`
+   - **Bagaimana warga memenuhi?**
+     - **Unggah di aplikasi** — warga kirim foto/scan lewat HP
+     - **Bawa ke kantor desa** — berkas fisik, tanpa tombol unggah
+     - **Tidak perlu file** — hanya catatan/informasi
+   - Jika pilih unggah: **Wajib** (default) atau **Boleh dikosongkan**
+5. Lihat **Pratinjau untuk warga** agar badge cocok dengan yang dilihat warga.
+6. (Opsional) Klik **Template KTP + KK + Pengantar RT** untuk mengisi 3 baris umum sekaligus.
+7. Klik **Simpan**.
 
 ### Mengubah jenis surat
 
 1. Di daftar, klik **Ubah** pada baris yang ingin diedit.
-2. Perbarui field yang diperlukan.
+2. Perbarui nama, deskripsi, atau baris persyaratan (tambah / hapus / naik-turun urutan).
 3. Klik **Simpan**.
 
 ### Mengarsipkan (soft delete)
@@ -49,7 +55,7 @@ Jenis surat adalah daftar master jenis surat keterangan yang dikelola admin desa
 
 1. Aktifkan **Tampilkan arsip**.
 2. Klik **Hapus Permanen**.
-3. Konfirmasi di dialog. Data dihapus selamanya dan tidak bisa dipulihkan.
+3. Konfirmasi di dialog. Data dihapus selamanya (beserta baris persyaratannya) dan tidak bisa dipulihkan.
 
 > ⚠️ **Peringatan:** Hapus permanen hanya tersedia dari arsip. Jenis surat yang masih aktif tidak bisa langsung dihapus permanen.
 
@@ -61,10 +67,17 @@ A: Halaman ini hanya untuk role admin. Akun warga tidak dapat mengaksesnya.
 **Q: Mengapa nama surat ditolak?**
 A: Nama surat tidak boleh sama dengan nama yang sudah ada (termasuk yang masih di arsip).
 
+**Q: Apa bedanya Wajib dan Boleh dikosongkan?**
+A: **Wajib** harus diunggah sebelum pengajuan dikirim. **Boleh dikosongkan** untuk dokumen opsional / “jika ada”.
+
+**Q: Kapan memakai Bawa ke kantor desa?**
+A: Untuk berkas fisik seperti pengantar RT/RW yang tidak perlu diunggah online.
+
 ## Troubleshooting
 
 | Masalah | Solusi |
 |---------|--------|
 | Tidak menemukan menu Jenis Surat | Pastikan Anda login sebagai admin, lalu refresh halaman |
 | Pesan "Nama surat sudah digunakan" | Gunakan nama berbeda, atau cek arsip lalu pulihkan/hapus permanen |
-| Pesan "Persyaratan dokumen wajib diisi" | Isi daftar persyaratan sebelum menyimpan |
+| Pesan "Nama syarat wajib diisi" / "Minimal satu persyaratan" | Isi nama pada setiap baris dan pastikan ada minimal satu syarat |
+| Pilihan Wajib tidak muncul | Pastikan **Cara memenuhi** = Unggah di aplikasi |

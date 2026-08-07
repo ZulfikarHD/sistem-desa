@@ -4,9 +4,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /**
- * US-2.1 — Kelola Data Jenis Surat (Admin)
- * Happy path: list, search, create, edit.
- * Edge/failure: guest redirect, warga 403, validasi nama wajib & unik.
+ * US-2.1 + US-9.1 — Kelola Data Jenis Surat & Persyaratan Terstruktur (Admin)
+ * Happy path: list, search, create, edit, structured persyaratan, template, pratinjau.
+ * Edge/failure: guest redirect, warga 403, validasi nama & minimal satu syarat.
  */
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -45,14 +45,18 @@ function ensureUser(options: {
 }
 
 function ensureJenisSurat(namaSurat: string, deskripsi = 'Deskripsi e2e'): void {
+    // Hindari variabel $ di string --execute (bash meng-expand meskipun di JSON.stringify).
     const php = [
-        `\\App\\Models\\JenisSurat::updateOrCreate(`,
+        `\\App\\Models\\JenisSurat::query()->updateOrCreate(`,
         `['nama_surat' => ${JSON.stringify(namaSurat)}],`,
         `[`,
         `'deskripsi' => ${JSON.stringify(deskripsi)},`,
         `'persyaratan_dokumen' => "- Fotokopi KTP\\n- Fotokopi KK",`,
         `]`,
-        `);`,
+        `)->syncPersyaratan([`,
+        `['nama' => 'Fotokopi KTP', 'cara_pemenuhan' => 'unggah', 'is_wajib' => true, 'urutan' => 0],`,
+        `['nama' => 'Fotokopi KK', 'cara_pemenuhan' => 'unggah', 'is_wajib' => true, 'urutan' => 1],`,
+        `]);`,
     ].join('');
 
     execSync(`php artisan tinker --execute ${JSON.stringify(php)}`, {
@@ -68,7 +72,23 @@ async function loginAs(page: import('@playwright/test').Page, email: string, pas
     await page.locator('[data-test="login-button"]').click();
 }
 
-test.describe('US-2.1 Kelola Data Jenis Surat', () => {
+async function fillPersyaratanRow(
+    page: import('@playwright/test').Page,
+    index: number,
+    options: { nama: string; cara: 'unggah' | 'bawa_kantor' | 'info'; wajib?: boolean },
+): Promise<void> {
+    await page.locator(`[data-test="jenis-surat-persyaratan-nama-${index}"]`).fill(options.nama);
+    await page.locator(`[data-test="jenis-surat-persyaratan-cara-${index}-${options.cara}"]`).click();
+
+    if (options.cara === 'unggah') {
+        const wajib = options.wajib ?? true;
+        await page
+            .locator(`[data-test="jenis-surat-persyaratan-wajib-${index}-${wajib ? 'true' : 'false'}"]`)
+            .click();
+    }
+}
+
+test.describe('US-2.1 / US-9.1 Kelola Data Jenis Surat', () => {
     test('guest yang mengakses halaman jenis surat diarahkan ke login', async ({ page }) => {
         await page.goto('/admin/jenis-surat');
         await expect(page).toHaveURL(/\/login/);
@@ -96,7 +116,7 @@ test.describe('US-2.1 Kelola Data Jenis Surat', () => {
         await expect(page.getByText(/403|Forbidden|tidak diizinkan|Unauthorized/i).first()).toBeVisible();
     });
 
-    test('admin dapat membuka daftar jenis surat dan menambah data', async ({ page }) => {
+    test('admin dapat membuka daftar jenis surat dan menambah data dengan syarat terstruktur', async ({ page }) => {
         const stamp = Date.now();
         const email = `admin.jenis.create.${stamp}@example.com`;
         const nik = uniqueNik(Number(String(stamp).slice(-6)) + 1);
@@ -120,9 +140,49 @@ test.describe('US-2.1 Kelola Data Jenis Surat', () => {
 
         await page.locator('[data-test="jenis-surat-nama-input"]').fill(namaSurat);
         await page.locator('[data-test="jenis-surat-deskripsi-input"]').fill('Untuk keterangan tempat tinggal');
-        await page.locator('[data-test="jenis-surat-persyaratan-input"]').fill('- Fotokopi KTP\n- Fotokopi KK');
+        await fillPersyaratanRow(page, 0, { nama: 'Fotokopi KTP', cara: 'unggah', wajib: true });
+        await page.locator('[data-test="jenis-surat-add-persyaratan"]').click();
+        await fillPersyaratanRow(page, 1, { nama: 'Surat pengantar RT/RW', cara: 'bawa_kantor' });
+
+        await expect(page.locator('[data-test="jenis-surat-pratinjau-badge-0"]')).toContainText('Wajib diunggah');
+        await expect(page.locator('[data-test="jenis-surat-pratinjau-badge-1"]')).toContainText('Bawa ke kantor');
+
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
+        await expect(page.getByText(namaSurat)).toBeVisible();
+    });
+
+    test('admin dapat memakai template cepat dan melihat pratinjau badge', async ({ page }) => {
+        const stamp = Date.now();
+        const email = `admin.jenis.template.${stamp}@example.com`;
+        const nik = uniqueNik(Number(String(stamp).slice(-6)) + 8);
+        const namaSurat = `Surat Template E2E ${stamp}`;
+
+        ensureUser({
+            email,
+            name: 'Admin Jenis Template',
+            role: 'admin',
+            nik,
+        });
+
+        await loginAs(page, email);
+        await page.goto('/admin/jenis-surat');
+
+        await page.locator('[data-test="jenis-surat-create-button"]').click();
+        await page.locator('[data-test="jenis-surat-nama-input"]').fill(namaSurat);
+        await page.locator('[data-test="jenis-surat-template-domisili"]').click();
+
+        await expect(page.locator('[data-test="jenis-surat-persyaratan-nama-0"]')).toHaveValue('Fotokopi KTP');
+        await expect(page.locator('[data-test="jenis-surat-persyaratan-nama-1"]')).toHaveValue(
+            'Fotokopi Kartu Keluarga (KK)',
+        );
+        await expect(page.locator('[data-test="jenis-surat-persyaratan-nama-2"]')).toHaveValue(
+            'Surat pengantar RT/RW',
+        );
+        await expect(page.locator('[data-test="jenis-surat-pratinjau-badge-0"]')).toContainText('Wajib diunggah');
+        await expect(page.locator('[data-test="jenis-surat-pratinjau-badge-2"]')).toContainText('Bawa ke kantor');
+
+        await page.locator('[data-test="jenis-surat-save-button"]').click();
         await expect(page.getByText(namaSurat)).toBeVisible();
     });
 
@@ -179,7 +239,6 @@ test.describe('US-2.1 Kelola Data Jenis Surat', () => {
         await namaInput.fill(newName);
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
-        // Tunggu modal tertutup agar state Livewire stabil sebelum mengubah pencarian
         await expect(page.locator('[data-test="jenis-surat-form-title"]')).toBeHidden();
         await page.locator('[data-test="jenis-surat-search"]').fill(newName);
         await expect(page.getByText(newName)).toBeVisible();
@@ -229,13 +288,13 @@ test.describe('US-2.1 Kelola Data Jenis Surat', () => {
 
         await page.locator('[data-test="jenis-surat-create-button"]').click();
         await page.locator('[data-test="jenis-surat-nama-input"]').fill(existingName);
-        await page.locator('[data-test="jenis-surat-persyaratan-input"]').fill('- Fotokopi KTP');
+        await fillPersyaratanRow(page, 0, { nama: 'Fotokopi KTP', cara: 'unggah', wajib: true });
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
         await expect(page.getByText(/Nama surat sudah digunakan/i)).toBeVisible();
     });
 
-    test('validasi gagal jika persyaratan dokumen kosong', async ({ page }) => {
+    test('validasi gagal jika nama syarat kosong', async ({ page }) => {
         const stamp = Date.now();
         const email = `admin.jenis.persyaratan.${stamp}@example.com`;
         const nik = uniqueNik(Number(String(stamp).slice(-6)) + 6);
@@ -251,11 +310,11 @@ test.describe('US-2.1 Kelola Data Jenis Surat', () => {
         await page.goto('/admin/jenis-surat');
 
         await page.locator('[data-test="jenis-surat-create-button"]').click();
-        await page.locator('[data-test="jenis-surat-nama-input"]').fill(`Surat Tanpa Persyaratan ${stamp}`);
-        await page.locator('[data-test="jenis-surat-persyaratan-input"]').fill('');
+        await page.locator('[data-test="jenis-surat-nama-input"]').fill(`Surat Tanpa Nama Syarat ${stamp}`);
+        await page.locator('[data-test="jenis-surat-persyaratan-nama-0"]').fill('');
         await page.locator('[data-test="jenis-surat-save-button"]').click();
 
-        await expect(page.getByText(/Persyaratan dokumen wajib diisi/i)).toBeVisible();
+        await expect(page.getByText(/Nama syarat wajib diisi/i)).toBeVisible();
     });
 
     test('admin dapat soft delete lalu restore dan hard delete', async ({ page }) => {
@@ -282,7 +341,6 @@ test.describe('US-2.1 Kelola Data Jenis Surat', () => {
         await page.getByRole('button', { name: 'Arsipkan' }).first().click();
         await expect(page.getByText(namaSurat)).toHaveCount(0);
 
-        // Buka arsip
         await page.locator('[data-test="jenis-surat-trash-toggle"]').click();
         await page.locator('[data-test="jenis-surat-search"]').fill(namaSurat);
         await expect(page.getByText(namaSurat)).toBeVisible();
@@ -290,7 +348,6 @@ test.describe('US-2.1 Kelola Data Jenis Surat', () => {
         await page.getByRole('button', { name: 'Pulihkan' }).first().click();
         await expect(page.getByText(namaSurat)).toHaveCount(0);
 
-        // Kembali ke daftar aktif, arsipkan lagi, lalu hapus permanen
         await page.locator('[data-test="jenis-surat-trash-toggle"]').click();
         await page.locator('[data-test="jenis-surat-search"]').fill(namaSurat);
         await expect(page.getByText(namaSurat)).toBeVisible();

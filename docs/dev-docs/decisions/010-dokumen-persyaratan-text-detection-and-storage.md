@@ -1,7 +1,8 @@
 # ADR-010: Dokumen Persyaratan Text Detection and Private Storage
 
 **Date:** 2026-08-06
-**Status:** accepted
+**Status:** superseded (upload/wajib **rules** superseded by ADR-026; private storage + `dokumen_persyaratan` metadata still apply until US-9.3 revises them)
+**Superseded by:** [ADR-026](026-persyaratan-terstruktur-supersede-keyword-upload.md)
 
 ## Context
 

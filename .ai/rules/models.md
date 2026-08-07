@@ -46,3 +46,6 @@ dapatUnduhSurat / statusBolehUnduhSurat only siap_diambil and selesai (not dipro
 
 ## Bukti pengambilan PDF template
 PDF template is always pdf.surat.bukti-pengambilan. regenerasiFilePdf() on tandaiSiapDiambil keeps same QR/nomor. Kop/kode from PengaturanDesa::untukSurat().
+
+## jenis_surat_persyaratan cascade and sync helper
+JenisSurat::persyaratan() hasMany ordered by urutan; syncPersyaratan() replaces rows in a transaction and regenerates persyaratan_dokumen. Force-delete cascades child rows via FK. Parse/migrate helpers live on JenisSuratPersyaratan (no Enum/Service file).

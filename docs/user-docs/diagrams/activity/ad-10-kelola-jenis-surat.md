@@ -12,7 +12,7 @@
 
 ## Deskripsi
 
-Proses ini menggambarkan alur aktivitas admin dalam mengelola data master jenis surat keterangan. Admin dapat menambah jenis surat baru, mengubah data yang ada, mengarsipkan (soft delete), memulihkan dari arsip, atau menghapus permanen. Data ini digunakan sebagai pilihan warga saat mengajukan surat.
+Proses ini menggambarkan alur aktivitas admin dalam mengelola data master jenis surat keterangan. Admin dapat menambah jenis surat baru (beserta baris persyaratan terstruktur: unggah / bawa kantor / info), mengubah data yang ada, mengarsipkan (soft delete), memulihkan dari arsip, atau menghapus permanen. Data ini digunakan sebagai pilihan warga saat mengajukan surat.
 
 **Prasyarat:** Admin sudah login dan mengakses menu Jenis Surat.
 
@@ -29,14 +29,14 @@ flowchart TD
 
     %% TAMBAH
     D -->|"Tambah"| E[Klik Tambah Jenis Surat]
-    E --> F["Isi form:\n- Nama Surat (wajib)\n- Deskripsi (opsional)\n- Persyaratan Dokumen (wajib)"]
+    E --> F["Isi form:\n- Nama Surat (wajib)\n- Deskripsi (opsional)\n- Baris persyaratan (≥1):\n  nama + cara memenuhi\n  (+ wajib/opsional jika unggah)"]
     F --> G[Klik Simpan]
     G --> H{Validasi}
     H -->|"Nama sudah digunakan"| I1[Tampilkan pesan error duplikat]
     I1 --> F
-    H -->|"Persyaratan kosong"| I2[Tampilkan pesan error]
+    H -->|"Nama syarat kosong / tanpa baris"| I2[Tampilkan pesan error]
     I2 --> F
-    H -->|"Valid"| J[Jenis surat tersimpan dan muncul di daftar aktif]
+    H -->|"Valid"| J[Jenis surat + baris persyaratan tersimpan]
     J --> End([Selesai])
 
     %% UBAH

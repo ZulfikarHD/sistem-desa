@@ -16,3 +16,6 @@ DatabaseSeeder::seedDemoFactoryData() creates sample pengajuan (mixed statuses) 
 
 ## Demo surat_terbit uses terbitkanUntuk
 seedDemoFactoryData creates diproses/siap_diambil/selesai surat via SuratTerbit::terbitkanUntuk so real PDFs exist on local disk. Do not use SuratTerbit::factory alone for demo rows that need unduh.
+
+## JenisSuratSeeder seeds structured persyaratan rows
+JenisSuratSeeder uses syncPersyaratan with explicit cara_pemenuhan/is_wajib (KTP/KK unggah wajib, pengantar bawa_kantor, opsional unggah is_wajib false). Do not rely only on KTP/KK keywords in free text for seeder correctness. Local/test only.

@@ -93,7 +93,7 @@ docs/user-docs/
 | 1 | [Login Berbasis Role](guides/admin/01-role-based-login.md) | Cara masuk ke Dashboard Admin dan keluar dari sistem |
 | 2 | [Dashboard Admin](guides/admin/02-dashboard-admin.md) | Membaca kartu aging dan memantau antrean yang mendesak |
 | 3 | [Pengaturan Desa](guides/admin/03-pengaturan-desa.md) | Atur identitas kantor untuk kop bukti pengambilan (wajib sebelum PDF) |
-| 4 | [Kelola Jenis Surat](guides/admin/04-jenis-surat.md) | Menambah, mengubah, mengarsipkan, dan menghapus jenis surat |
+| 4 | [Kelola Jenis Surat](guides/admin/04-jenis-surat.md) | Menambah/ubah jenis surat beserta baris persyaratan terstruktur |
 | 5 | [Verifikasi / Daftar Pengajuan](guides/admin/05-verifikasi-pengajuan.md) | Memeriksa, menyetujui, atau menolak pengajuan warga |
 | 6 | [Daftar Pengajuan & Alur Setujui](guides/admin/06-daftar-pengajuan-dan-alur-setujui.md) | Alur setujui langsung diproses dan perubahan nama menu |
 | 7 | [Generate Bukti Pengambilan PDF](guides/admin/07-generate-surat-pdf.md) | PDF bukti pengambilan otomatis saat admin menyetujui |

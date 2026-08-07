@@ -22,7 +22,7 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [Role-Based Middleware (US-1.3)](dev-docs/features/role-middleware.md) | Technical docs for role gate + 403 |
 | [Profile Management (US-1.4)](dev-docs/features/profile-management.md) | Technical docs for profile edit + password change |
 | [Password Reset (US-1.5)](dev-docs/features/password-reset.md) | Technical docs for forgot-password flow |
-| [Jenis Surat Management (US-2.1)](dev-docs/features/jenis-surat.md) | Admin CRUD jenis surat + soft/hard delete |
+| [Jenis Surat Management (US-2.1 + US-9.1/9.2)](dev-docs/features/jenis-surat.md) | Admin CRUD jenis surat + persyaratan terstruktur |
 | [Persyaratan Dokumen Warga (US-2.2)](dev-docs/features/persyaratan-dokumen.md) | Warga browse + detail persyaratan dokumen |
 | [Akses Publik Persyaratan Dokumen (US-2.3)](dev-docs/features/persyaratan-dokumen-publik.md) | Guest browse persyaratan tanpa login + CTA daftar/login |
 | [Form Pengajuan Surat (US-3.1)](dev-docs/features/pengajuan-surat-form.md) | Warga submit pengajuan + auto nomor_pengajuan |
@@ -54,7 +54,8 @@ See [dev-docs/README.md](dev-docs/README.md)
 | [ADR-007: Warga persyaratan dokumen view](dev-docs/decisions/007-warga-persyaratan-dokumen-view.md) | Why warga-only route + modal detail for US-2.2 |
 | [ADR-008: Public persyaratan dokumen access](dev-docs/decisions/008-public-persyaratan-dokumen-access.md) | Why same public route + layouts/public for guests |
 | [ADR-009: pengajuan_surat table + nomor format](dev-docs/decisions/009-pengajuan-surat-table-and-nomor-format.md) | Why singular table name + PJ-YYYYMMDD-#### nomor |
-| [ADR-010: dokumen persyaratan upload](dev-docs/decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | Text-based KTP/KK detection + private disk storage |
+| [ADR-010: dokumen persyaratan upload](dev-docs/decisions/010-dokumen-persyaratan-text-detection-and-storage.md) | Text-based KTP/KK detection (rules superseded by ADR-026) |
+| [ADR-026: persyaratan terstruktur](dev-docs/decisions/026-persyaratan-terstruktur-supersede-keyword-upload.md) | Structured rows supersede keyword upload rules |
 | [ADR-011: verifikasi dokumen secure route](dev-docs/decisions/011-verifikasi-dokumen-secure-route.md) | Admin-only preview/download routes for private dokumen |
 | [ADR-012: log_verifikasi and concurrent lock](dev-docs/decisions/012-verifikasi-log-and-concurrent-lock.md) | Audit log table + lockForUpdate on approve/reject |
 | [ADR-013: Rekap summary filters + CSV BOM](dev-docs/decisions/013-rekap-summary-filters-and-csv-bom.md) | Ringkasan ignores status filter; CSV UTF-8 BOM |
