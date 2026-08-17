@@ -25,6 +25,11 @@ return new class extends Migration
 
             $table->index(['user_id', 'status']);
             $table->index('tanggal_pengajuan');
+            $table->index('status', 'pengajuan_surat_status_index');
+            $table->index(
+                ['jenis_surat_id', 'status', 'tanggal_pengajuan'],
+                'pengajuan_surat_rekap_filter_index'
+            );
         });
     }
 

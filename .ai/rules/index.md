@@ -10,6 +10,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | app/Livewire/JenisSurat/**, resources/views/livewire/jenis-surat/** | .ai/rules/jenis-surat.md |
 | resources/views/layouts/** | .ai/rules/layouts.md |
 | app/Http/Middleware/** | .ai/rules/middleware.md |
+| database/migrations/** | .ai/rules/migrations.md |
 | app/Models/User.php, app/Models/JenisSurat.php, app/Models/PengajuanSurat.php, app/Models/SuratTerbit.php | .ai/rules/models.md |
 | app/Livewire/Pengajuan/** | .ai/rules/pengajuan.md |
 | app/Livewire/Pengaturan/** | .ai/rules/pengaturan.md |

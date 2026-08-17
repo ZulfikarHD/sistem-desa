@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('file_path', 255);
             $table->date('tanggal_terbit');
             $table->date('tanggal_pengambilan')->nullable();
+            $table->timestamp('siap_diambil_at')->nullable();
             $table->string('jam_kerja_label', 100)->nullable();
             $table->string('qr_token', 64)->unique();
             $table->string('qr_status', 20)->default('valid');

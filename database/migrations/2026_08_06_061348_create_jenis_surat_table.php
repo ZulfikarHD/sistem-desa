@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->text('persyaratan_dokumen')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

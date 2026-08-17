@@ -14,11 +14,19 @@ return new class extends Migration
         Schema::create('dokumen_persyaratan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pengajuan_id')->constrained('pengajuan_surat')->cascadeOnDelete();
-            $table->string('jenis_dokumen', 10);
+            $table->foreignId('jenis_surat_persyaratan_id')
+                ->nullable()
+                ->constrained('jenis_surat_persyaratan')
+                ->nullOnDelete();
+            $table->string('jenis_dokumen', 255);
             $table->string('file_path', 255);
             $table->timestamps();
 
-            $table->unique(['pengajuan_id', 'jenis_dokumen']);
+            // Nama index dipendekkan: nama otomatis Laravel melebihi batas 64 karakter MySQL.
+            $table->unique(
+                ['pengajuan_id', 'jenis_surat_persyaratan_id'],
+                'dokumen_persyaratan_pengajuan_syarat_unique'
+            );
             $table->index('jenis_dokumen');
         });
     }
