@@ -321,6 +321,18 @@ Fitur ini merealisasikan UC-06 untuk pengguna berperan admin. Fungsionalitas ide
 
 _Sisipkan Gambar 4.27: Halaman Manajemen Profil Admin (`/settings/profile`) — identik dengan halaman profil warga, dengan role Admin yang tampil dalam mode read-only._
 
+**_13. Halaman Kelola Pengguna (`/admin/pengguna`)_**
+
+Halaman ini memungkinkan admin membuat dan melihat akun pengguna sistem tanpa harus melalui halaman registrasi publik. Fitur ini berguna ketika petugas desa perlu mendaftarkan warga yang belum memiliki akses *online*, atau menambahkan akun admin/petugas desa baru. Halaman menampilkan tabel seluruh pengguna dengan kolom: nama, email, NIK, peran (*badge* Warga/Admin), dan tanggal pendaftaran (WIB). Tersedia pencarian *live* berdasarkan nama, email, atau NIK, serta filter peran (Semua / Warga / Admin). Tombol **Tambah Pengguna** mengarah ke halaman form tambah.
+
+_Sisipkan Gambar 4.28: Halaman Kelola Pengguna (`/admin/pengguna`) — tabel daftar pengguna dengan filter peran dan tombol Tambah Pengguna._
+
+**_14. Halaman Form Tambah Pengguna (`/admin/pengguna/create`)_**
+
+Admin mengisi formulir dengan data: peran (Warga atau Admin/Petugas Desa), NIK (16 digit), nama lengkap, nomor telepon, alamat, surel, kata sandi, dan konfirmasi kata sandi. Validasi mengikuti aturan yang sama dengan registrasi publik (UC-03): NIK dan surel harus unik, NIK tepat 16 digit angka, format surel valid, serta kata sandi dan konfirmasi harus cocok. Perbedaan utama: admin dapat memilih peran `warga` atau `admin`, dan akun yang dibuat langsung ditandai `email_verified_at` sehingga pengguna dapat login tanpa proses verifikasi surel. Setelah berhasil disimpan, admin diarahkan kembali ke daftar pengguna.
+
+_Sisipkan Gambar 4.29: Halaman Form Tambah Pengguna (`/admin/pengguna/create`) — formulir dengan pilihan peran, NIK, dan data kontak._
+
 ---
 
 **_4.1.6 Implementasi Fitur Otomatis Sistem_**
@@ -406,6 +418,9 @@ Pengujian dilaksanakan pada lingkungan pengembangan lokal menggunakan data uji d
 | A-13 | Memperbarui profil (nama, nomor telepon, alamat) | Data baru valid | Profil tersimpan; perubahan tampil di halaman profil | Sesuai harapan |
 | A-14 | Mencoba mengubah NIK melalui halaman profil | NIK diubah | NIK tidak dapat diubah; *field* bersifat *read-only* | Sesuai harapan |
 | A-15 | Logout | Klik tombol Keluar | Sesi diakhiri; pengguna diarahkan ke halaman beranda | Sesuai harapan |
+| A-16 | Admin membuat akun warga baru melalui halaman Kelola Pengguna | Data lengkap valid, peran Warga | Akun tersimpan dengan role `warga`; `email_verified_at` terisi; dapat login | Sesuai harapan |
+| A-17 | Admin membuat akun admin/petugas desa baru | Data lengkap valid, peran Admin | Akun tersimpan dengan role `admin`; diarahkan ke `/admin/dashboard` saat login | Sesuai harapan |
+| A-18 | Warga mencoba mengakses halaman kelola pengguna admin | Akses `/admin/pengguna` sebagai warga | Sistem mengembalikan HTTP 403 | Sesuai harapan |
 
 ---
 
@@ -538,7 +553,7 @@ Pengujian dilaksanakan pada lingkungan pengembangan lokal menggunakan data uji d
 
 | **Kelompok** | **Jumlah Skenario** | **Sesuai Harapan** | **Tidak Sesuai** |
 | ------------ | ------------------- | ------------------ | ---------------- |
-| A — Autentikasi & Manajemen Profil | 15 | 15 | 0 |
+| A — Autentikasi & Manajemen Profil | 18 | 18 | 0 |
 | B — Jenis Surat & Persyaratan | 8 | 8 | 0 |
 | C — Pengajuan, Unggah & Validasi | 9 | 9 | 0 |
 | D — Verifikasi Pengajuan | 6 | 6 | 0 |
@@ -547,9 +562,9 @@ Pengujian dilaksanakan pada lingkungan pengembangan lokal menggunakan data uji d
 | G — Notifikasi & Riwayat | 3 | 3 | 0 |
 | H — Rekap & Ekspor CSV | 5 | 5 | 0 |
 | I — Fitur Lanjutan & Kontrol Akses | 6 | 6 | 0 |
-| **Total** | **66** | **66** | **0** |
+| **Total** | **69** | **69** | **0** |
 
-Berdasarkan hasil pengujian pada Tabel 4.5 sampai dengan Tabel 4.13 yang dirangkum pada Tabel 4.14, seluruh 66 skenario pengujian yang mencakup fitur utama dan kasus batas sistem menunjukkan hasil yang **sesuai harapan**. Dengan demikian, secara fungsional sistem yang dibangun telah berjalan sesuai dengan spesifikasi kebutuhan yang dirancang pada Bab III.
+Berdasarkan hasil pengujian pada Tabel 4.5 sampai dengan Tabel 4.13 yang dirangkum pada Tabel 4.14, seluruh 69 skenario pengujian yang mencakup fitur utama dan kasus batas sistem menunjukkan hasil yang **sesuai harapan**. Dengan demikian, secara fungsional sistem yang dibangun telah berjalan sesuai dengan spesifikasi kebutuhan yang dirancang pada Bab III.
 
 ---
 
@@ -561,7 +576,7 @@ Implementasi sistem yang telah dilaksanakan secara keseluruhan selaras dengan ra
 
 **a. Kelengkapan _Use Case_**
 
-Seluruh 24 *use case* yang didefinisikan pada Tabel 3.8 (UC-01 s.d. UC-24) berhasil diimplementasikan. Setiap *use case* memiliki setidaknya satu Livewire *component* yang bersesuaian — sebagaimana tertuang dalam peta komponen pada dokumen arsitektur sistem, terdapat 13 Livewire *component* yang melayani seluruh *use case* tersebut. Cakupan setiap *use case* terverifikasi melalui skenario pengujian Black Box pada Subbab 4.2.2.
+Seluruh 24 *use case* yang didefinisikan pada Tabel 3.8 (UC-01 s.d. UC-24) berhasil diimplementasikan, ditambah fitur tambahan **Kelola Pengguna** untuk admin. Setiap *use case* memiliki setidaknya satu Livewire *component* yang bersesuaian — sebagaimana tertuang dalam peta komponen pada dokumen arsitektur sistem, terdapat 15 Livewire *component* yang melayani seluruh *use case* dan fitur pendukung tersebut. Cakupan setiap *use case* terverifikasi melalui skenario pengujian Black Box pada Subbab 4.2.2.
 
 **b. Arsitektur Sistem**
 

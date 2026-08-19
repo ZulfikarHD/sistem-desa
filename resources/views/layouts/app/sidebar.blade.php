@@ -75,6 +75,16 @@
                         </flux:sidebar.item>
 
                         <flux:sidebar.item
+                            icon="users"
+                            :href="route('pengguna.index')"
+                            :current="request()->routeIs('pengguna.*')"
+                            wire:navigate
+                            data-test="sidebar-pengguna"
+                        >
+                            {{ __('Kelola Pengguna') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item
                             icon="clipboard-document-check"
                             :href="route('verifikasi.index')"
                             :current="request()->routeIs('verifikasi.*')"
